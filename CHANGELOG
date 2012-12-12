@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.0.ALPHA
+-Datasources created for both Projects and Timestamps tables
+	-Methods to insert and delete rows from the tables
+	-Methods to list all rows in a table
+
 1.0.1
 -Created database helper
 -Created database tables Projects and Timestamp

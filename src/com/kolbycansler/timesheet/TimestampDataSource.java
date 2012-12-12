@@ -1,0 +1,87 @@
+package com.kolbycansler.timesheet;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+
+public class TimestampDataSource {
+	
+	/* Create variables for use in accessing Projects table  */
+	private SQLiteDatabase database;
+	private TimesheetDatabaseHelper dbHelper;
+		/* Creates an array of the column names that can be used in place of 
+		 * writing out all column names in a query
+		 */
+	private String[] allColumns = { TimestampTable.COLUMN_TIMESTAMP_ID,
+			TimestampTable.COLUMN_TIME_IN, TimestampTable.COLUMN_TIME_OUT,
+			TimestampTable.COLUMN_PROJECT };
+	
+	/*  */
+	public TimestampDataSource(Context context) {
+		dbHelper = new TimesheetDatabaseHelper(context);
+	}
+	
+	/* Open the database to write to it */
+	public void open() throws SQLException {
+		database = dbHelper.getWritableDatabase();
+	}
+	
+	/* Close the database when done using it */
+	public void close() {
+		dbHelper.close();
+	}
+	
+	/* Method to create new Timestamp entry */
+	public Timestamp createTimestamp(String timeIn, String timeOut, int project) {
+		ContentValues values = new ContentValues();
+		values.put(TimestampTable.COLUMN_TIME_IN, timeIn);
+		values.put(TimestampTable.COLUMN_TIME_OUT, timeOut);
+		values.put(TimestampTable.COLUMN_PROJECT, project);
+		long insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, null, values);
+		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, 
+				TimestampTable.COLUMN_TIMESTAMP_ID + " = " + insertId, null, 
+				null, null, null);
+		cursor.moveToFirst();
+		Timestamp newTimestamp = cursorToTimestamp(cursor);
+		cursor.close();
+		return newTimestamp;
+	}
+	
+	/* Method to delete a timestamp entry */
+	public void deleteTimestamp(Timestamp timestamp) {
+		long id = timestamp.getId();
+		System.out.println("Timestamp deleted with id: " + id);
+		database.delete(TimestampTable.TABLE_TIMESTAMP, TimestampTable.COLUMN_TIMESTAMP_ID
+				+ " = " + id, null);
+	}
+	
+	/* Method to load all timestamps into a list */
+	public List<Timestamp> getAllTimestamps() {
+		List<Timestamp> timestamps = new ArrayList<Timestamp>();
+		
+		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, null, 
+				null, null, null, null);
+		
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Timestamp timestamp = cursorToTimestamp(cursor);
+			timestamps.add(timestamp); // Refers to List<Timestamp> 
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return timestamps;
+	}
+	
+	private Timestamp cursorToTimestamp(Cursor cursor) {
+		Timestamp timestamp = new Timestamp();
+		timestamp.setId(cursor.getLong(0));
+		timestamp.setTimestamp(cursor.getString(1));
+		return timestamp;
+	}
+
+}
