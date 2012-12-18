@@ -4,11 +4,114 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world" />
+    <TabHost
+        android:id="@+id/tabhost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+        </TabWidget>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <RelativeLayout
+                android:id="@+id/tab1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <TextView
+                    android:id="@+id/totalTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="54dp"
+                    android:text="@string/total" />
+
+                <TextView
+                    android:id="@+id/totalDisplayextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/totalTextView"
+                    android:layout_alignBottom="@+id/totalTextView"
+                    android:layout_toRightOf="@+id/totalTextView"
+                    android:text="@string/defaultTotal" />
+
+                <ImageButton
+                    android:id="@+id/previousButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/totalDisplayextView"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@+id/totalDisplayextView"
+                    android:src="@android:drawable/btn_star" 
+                	android:contentDescription="@string/notSet" />
+                
+                 <ImageButton
+                    android:id="@+id/nextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/previousButton"
+                    android:src="@android:drawable/btn_star"
+                    android:contentDescription="@string/notSet" />
+
+                <Button
+                    android:id="@+id/quickAddButton"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/previousButton"
+                    android:layout_toLeftOf="@+id/addNewButton"
+                    android:text="@string/quickAdd" />
+
+                <Button
+                    android:id="@+id/addNewButton"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/quickAddButton"
+                    android:layout_alignBottom="@+id/quickAddButton"
+                    android:layout_alignLeft="@+id/previousButton"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/addNew" />
+
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/previousButton"
+                    android:layout_toLeftOf="@+id/nextButton"
+                    android:layout_toRightOf="@+id/previousButton"
+                    android:ems="10"
+                    android:inputType="date" >
+
+                    <requestFocus />
+                </EditText>
+
+            </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+                </LinearLayout>
+            </FrameLayout>
+    </TabHost>
 
 </RelativeLayout>
