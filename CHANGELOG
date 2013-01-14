@@ -1,17 +1,24 @@
 CHANGELOG
 =========
 
+1.0.ALPHA_001
+-Created timestamp_listview.xml to template the ListView needed for displaying rows from the database
+	-Still learning how to create class for binding items to the custom view
+-Created layout page to add a new timestamp to the database
+	-Need to design layout and create class to use layout
+-Added columns Date In and Date Out to the timestamp table for easier where clause searching
+
+
 1.0.ALPHA
 -Datasources created for both Projects and Timestamps tables
 	-Methods to insert and delete rows from the tables
 	-Methods to list all rows in a table
 
+
 1.0.1
 -Created database helper
 -Created database tables Projects and Timestamp
 
-STILL TO DO
--Create methods to manage database resources such as inserting, deleting, and updating
 
 1.0.0
 Nothing much to report. Just created the basic project. Will hopefully start on

@@ -11,7 +11,9 @@ public class TimestampTable {
 	public static final String PROJECT_ID = "COLUMN_PROJECT_ID";
 	public static final String COLUMN_TIMESTAMP_ID = "_id";
 	public static final String COLUMN_TIME_IN = "time_in";
+	public static final String COLUMN_DATE_IN = "date_in";
 	public static final String COLUMN_TIME_OUT = "time_out";
+	public static final String COLUMN_DATE_OUT = "date_out";
 	public static final String COLUMN_PROJECT = "project";
 
 	/* Database Creation SQL Statement */
@@ -20,7 +22,9 @@ public class TimestampTable {
 			+ "("
 			+ COLUMN_TIMESTAMP_ID + " integer primary key autoincrement, "
 			+ COLUMN_TIME_IN + " text not null, "
+			+ COLUMN_DATE_IN + " text not null, "
 			+ COLUMN_TIME_OUT + " text not null, "
+			+ COLUMN_DATE_OUT + " text not null, "
 			+ COLUMN_PROJECT + " integer,"
 			+ " FOREIGN KEY (" + COLUMN_PROJECT + ") REFERENCES "
 			+ TABLE_PROJECTS + "(" + PROJECT_ID + "));";

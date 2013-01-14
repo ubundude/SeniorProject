@@ -1,6 +1,7 @@
 package com.kolbycansler.timesheet;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -18,8 +19,8 @@ public class TimestampDataSource {
 		 * writing out all column names in a query
 		 */
 	private String[] allColumns = { TimestampTable.COLUMN_TIMESTAMP_ID,
-			TimestampTable.COLUMN_TIME_IN, TimestampTable.COLUMN_TIME_OUT,
-			TimestampTable.COLUMN_PROJECT };
+			TimestampTable.COLUMN_TIME_IN, TimestampTable.COLUMN_DATE_IN, 
+			TimestampTable.COLUMN_TIME_OUT, TimestampTable.COLUMN_DATE_OUT, TimestampTable.COLUMN_PROJECT };
 	
 	/*  */
 	public TimestampDataSource(Context context) {
@@ -37,11 +38,13 @@ public class TimestampDataSource {
 	}
 	
 	/* Method to create new Timestamp entry */
-	public Timestamp createTimestamp(String timeIn, String timeOut, int project) {
+	public Timestamp createTimestamp(String timeIn, String timeOut, int project, String dateIn, String dateOut) {
 		ContentValues values = new ContentValues();
 		values.put(TimestampTable.COLUMN_TIME_IN, timeIn);
 		values.put(TimestampTable.COLUMN_TIME_OUT, timeOut);
 		values.put(TimestampTable.COLUMN_PROJECT, project);
+		values.put(TimestampTable.COLUMN_DATE_IN, dateIn);
+		values.put(TimestampTable.COLUMN_DATE_OUT, dateOut);
 		long insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, null, values);
 		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, 
 				TimestampTable.COLUMN_TIMESTAMP_ID + " = " + insertId, null, 
@@ -61,10 +64,10 @@ public class TimestampDataSource {
 	}
 	
 	/* Method to load all timestamps into a list */
-	public List<Timestamp> getAllTimestamps() {
+	public List<Timestamp> getAllTimestamps(String forDate) {
 		List<Timestamp> timestamps = new ArrayList<Timestamp>();
 		
-		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, null, 
+		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, TimestampTable.COLUMN_DATE_IN + "==" + forDate, 
 				null, null, null, null);
 		
 		cursor.moveToFirst();

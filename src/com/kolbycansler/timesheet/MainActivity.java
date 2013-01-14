@@ -1,34 +1,44 @@
+/**
+ * @author Kolby Cansler <golfguy90@gmail.com>
+ * @version 1.0.ALPHA
+ * 
+ * Implements the Main layout class.
+ */
+
 package com.kolbycansler.timesheet;
+
+import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
-import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
+import android.widget.ArrayAdapter;
+import android.app.ListActivity;
 
-public class MainActivity extends Activity {
-
+public class MainActivity extends Activity { //TODO Reinstate ListActivity Here
+	private TimestampDataSource dataSource;
+	
+	public String date; //Date will be gotten from the date selected on layout
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
-        tabHost.setup();
         
-        TabSpec spec1 = tabHost.newTabSpec("Tab 1");
-        spec1.setContent(R.id.tab1);
-        spec1.setIndicator("Report");
+        dataSource = new TimestampDataSource(this);
+        dataSource.open();
         
-        TabSpec spec2 = tabHost.newTabSpec("Tab 2");
-        spec2.setContent(R.id.tab2);
-        spec2.setIndicator("Day");
+       List<Timestamp> values = dataSource.getAllTimestamps(date);
+       
+       ArrayAdapter<Timestamp> adapter = new ArrayAdapter<Timestamp>(this, 
+    		   R.layout.timestamp_listview, values);
+       //setListAdapter(adapter);
         
-        TabSpec spec3 = tabHost.newTabSpec("Tab 3");
-        spec3.setContent(R.id.tab3);
-        spec3.setIndicator("Weeek");
+       
     }
 
-    @Override
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_main, menu);
