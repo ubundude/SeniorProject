@@ -1,12 +1,22 @@
 CHANGELOG
 =========
 
+1.0.ALPHA_002
+-Added Timestamp Editor Layout
+	-Replaced the AddTimestamp layout in Alpha_001
+-Added Project Editor Layout
+-Renamed timestamp_listview.xml to listview_timestamp.xml to keep all custom listviews together
+-Created custom TimestampAdapter for displaying information to listview_timestamp
+-Added ProjectEditorActivity.java 
+-Added TimestampEditorActivity.java
+
+
 1.0.ALPHA_001
 -Created timestamp_listview.xml to template the ListView needed for displaying rows from the database
 	-Still learning how to create class for binding items to the custom view
 -Created layout page to add a new timestamp to the database
 	-Need to design layout and create class to use layout
--Added columns Date In and Date Out to the timestamp table for easier where clause searching
+-Added columns Date In and Date Out to the Timestamp table for easier where clause searching
 
 
 1.0.ALPHA

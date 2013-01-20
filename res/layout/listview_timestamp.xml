@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/projectShortTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/defaultText"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageButton
+            android:id="@+id/editImageButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/projectShortTextView"
+            android:src="@drawable/edit"
+            android:contentDescription="@string/edit" />
+
+        <ImageButton
+            android:id="@+id/minusImageButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/editImageButton"
+            android:contentDescription="@string/minusButton"
+            android:src="@drawable/minus" />
+
+        <EditText
+            android:id="@+id/hoursEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/minusImageButton"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/plusImageButton"
+            android:layout_toRightOf="@+id/minusImageButton"
+            android:ems="10"
+            android:inputType="numberDecimal" >
+
+            <requestFocus />
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/plusImageButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="@string/plusButton"
+            android:src="@drawable/plus" />
+
+        <TextView
+            android:id="@+id/projectFullTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/projectShortTextView"
+            android:text="@string/defaultText"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
