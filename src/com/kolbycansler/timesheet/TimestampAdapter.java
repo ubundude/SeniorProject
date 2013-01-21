@@ -9,36 +9,67 @@ package com.kolbycansler.timesheet;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class TimestampAdapter extends ArrayAdapter<TimestampBinder> {
-	private final Context context;
-	List<TimestampBinder> values = null;
+public class TimestampAdapter extends BaseAdapter {
+	Context context;
+	private List<Timestamp> list;
 	
-	public TimestampAdapter(Context context, int layoutResourceId, List<TimestampBinder> data){
-		super(context, layoutResourceId, data);
-		this.context = context;
-		this.values = values;
+	public TimestampAdapter(Context c, List<Timestamp> values) {
+		c = context;
+		list = values;
 	}
-	
+
+	public int getCount() {
+		return list.size();
+	}
+
+	public Object getItem(int position) {
+		return list.get(position);
+	}
+
+	public long getItemId(int position) {
+		return position;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) 
-				context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.listview_timestamp, parent, false);
-		TextView shortTextView = (TextView) rowView.findViewById(R.id.projectShortTextView);
-		EditText editText = (EditText) rowView.findViewById(R.id.projectFullTextView);
-		TextView fullNameTextView = (TextView) rowView.findViewById(R.id.hoursTextView);
+		View row = convertView;
+		TimestampHolder holder = null;
 		
+		if(row == null) {
+			LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+			row = inflater.inflate(R.layout.listview_timestamp, parent, false);
+			
+			holder = new TimestampHolder();
+			holder.projectShortTextView = (TextView)row.findViewById(R.id.projectShortTextView);
+			holder.fullNameTextView = (TextView)row.findViewById(R.id.fullNameTextView);
+			holder.minusImageButton = (ImageButton)row.findViewById(R.id.minusImageButton);
+			holder.hoursEditText = (EditText)row.findViewById(R.id.hoursEditText);
+			holder.plusImageButton = (ImageButton)row.findViewById(R.id.plusImageButton);
+			
+			row.setTag(holder);
+		} else {
+			holder = (TimestampHolder)row.getTag();
+		}
 		
-		return rowView;
+		return row;
 	}
 	
-	
+	static class TimestampHolder {
+
+		ImageButton plusImageButton;
+		EditText hoursEditText;
+		ImageButton minusImageButton;
+		TextView fullNameTextView;
+		TextView projectShortTextView;
+	}
 }

@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.0.ALPHA_003
+-Fixed Known Adapter issues
+-Updated database
+-App Compiles and Runs!
+
 1.0.ALPHA_002
 -Added Timestamp Editor Layout
 	-Replaced the AddTimestamp layout in Alpha_001

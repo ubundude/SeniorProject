@@ -33,7 +33,6 @@ public final class R {
         public static final int hoursTextView=0x7f070002;
         public static final int linearLayout1=0x7f070015;
         public static final int linearLayout2=0x7f07001c;
-        public static final int list=0x7f070003;
         public static final int menu_settings=0x7f070029;
         public static final int minusImageButton=0x7f070025;
         public static final int plusImageButton=0x7f070027;
@@ -57,6 +56,7 @@ public final class R {
         public static final int timeOutTextView=0x7f07001b;
         public static final int timeTextView=0x7f070012;
         public static final int timestampEditorTitleTextView=0x7f070011;
+        public static final int timestampListView=0x7f070003;
         public static final int titleTextView=0x7f070000;
         public static final int totalTextView=0x7f070001;
     }
