@@ -37,7 +37,7 @@ public class ProjectsDataSource {
 	}
 	
 	/* Create a new database entry */
-	public Project createProject(String name, String shortCode, long rate, String desc) {
+	public Project createProject(String name, String shortCode, String rate, String desc) {
 		ContentValues values = new ContentValues(); // Set a new values array to store column values
 		values.put(ProjectsTable.COLUMN_NAME, name); // Put Project Name into values array
 		values.put(ProjectsTable.COLUMN_SHORTCODE, shortCode); // Put Project Short Code into values array

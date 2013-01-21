@@ -20,8 +20,8 @@ public class ProjectsTable {
 			+ COLUMN_PROJECT_ID + " integer primary key autoincrement, "
 			+ COLUMN_NAME + " text not null, "
 			+ COLUMN_SHORTCODE + " text not null, "
-			+ COLUMN_DESC + " text not null, "
-			+ COLUMN_RATE + " real not null"
+			+ COLUMN_RATE + " text not null, "
+			+ COLUMN_DESC + " text not null"
 			+ ");";
 	
 	/* Create the Database Table Projects */

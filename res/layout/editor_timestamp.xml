@@ -27,7 +27,9 @@
         android:layout_alignTop="@+id/timeTextView"
         android:layout_toRightOf="@+id/timeTextView"
         android:ems="10"
-        android:inputType="numberDecimal" >
+        android:enabled="false"
+        android:inputType="numberDecimal"
+        android:text="@string/defaultTotal" >
 
         <requestFocus />
     </EditText>
@@ -159,6 +161,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
+            android:onClick="saveHandler"
             android:text="@string/save" />
 
         <Button
@@ -167,6 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".50"
             android:gravity="center_vertical|fill"
+            android:onClick=""
             android:text="@string/cancel" />
 
     </LinearLayout>

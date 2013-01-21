@@ -37,13 +37,14 @@ public class TimestampDataSource {
 	}
 	
 	/* Method to create new Timestamp entry */
-	public Timestamp createTimestamp(String timeIn, String timeOut, int project, String dateIn, String dateOut) {
+	public Timestamp createTimestamp(String dateIn, String timeIn, String dateOut, String timeOut, String comments, int project) {
 		ContentValues values = new ContentValues();
-		values.put(TimestampTable.COLUMN_TIME_IN, timeIn);
-		values.put(TimestampTable.COLUMN_TIME_OUT, timeOut);
+		values.put(TimestampTable.COLUMN_TIME_IN, dateIn);
+		values.put(TimestampTable.COLUMN_DATE_IN, timeIn);
+		values.put(TimestampTable.COLUMN_TIME_OUT, dateOut);
+		values.put(TimestampTable.COLUMN_DATE_OUT, timeOut);
+		values.put(TimestampTable.COLUMN_COMMENTS, comments);
 		values.put(TimestampTable.COLUMN_PROJECT, project);
-		values.put(TimestampTable.COLUMN_DATE_IN, dateIn);
-		values.put(TimestampTable.COLUMN_DATE_OUT, dateOut);
 		long insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, null, values);
 		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, 
 				TimestampTable.COLUMN_TIMESTAMP_ID + " = " + insertId, null, 

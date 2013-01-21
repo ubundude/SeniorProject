@@ -7,6 +7,15 @@
 
 package com.kolbycansler.timesheet;
 
+import java.text.SimpleDateFormat;
+
+/*
+ * TODO Get date stuff working
+ * TODO Quick Add button logic
+ * TODO Figure out what else needs done :p
+ */
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.os.Bundle;
@@ -20,8 +29,12 @@ import android.widget.ListView;
 public class MainActivity extends Activity { 
 	private TimestampDataSource dataSource;
 	Button quickAdd, addNew; 
+	Date c;
+	public String date;
 	
-	public String date; //Date will be gotten from the date selected on layout
+	SimpleDateFormat formatter = new SimpleDateFormat("EEE");
+	
+	//date = formatter.format(c.getTime());
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +50,6 @@ public class MainActivity extends Activity {
         
         quickAdd = (Button) findViewById(R.id.quickAddButton);
         addNew = (Button) findViewById(R.id.addNewButton);
-        //addNew.setOnClickListener(addNewHandler());
         //quickAdd.setOnClickListener(quickAddHandler);
        
     }

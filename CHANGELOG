@@ -1,5 +1,12 @@
 CHANGELOG
 =========
+NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
+
+1.0.ALPHA_004
+-TimestampEditor will now place values into the database when the save button is pressed
+-ProjectEditor will now place values into the database when the save button is pressed
+-Updated the main interface
+-Minor database and datasource tweaks
 
 1.0.ALPHA_003
 -Fixed Known Adapter issues
