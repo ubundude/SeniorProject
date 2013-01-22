@@ -46,8 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.89"
             android:ems="10"
-            android:inputType="textMultiLine"
-            android:text="Sun03/04/1990" >
+            android:enabled="false"
+            android:inputType="textMultiLine" >
 
             <requestFocus />
         </EditText>

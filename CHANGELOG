@@ -2,6 +2,9 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_005
+-Fixed issues getting and formating the current date
+
 1.0.ALPHA_004
 -TimestampEditor will now place values into the database when the save button is pressed
 -ProjectEditor will now place values into the database when the save button is pressed
