@@ -3,11 +3,11 @@ package com.kolbycansler.timesheet;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 /*
- * TODO Cancel button should return to TimestampEditor
  * TODO Need Delete button
  */
 
@@ -34,12 +34,19 @@ public class ProjectEditorActivity extends Activity {
 		fullName = fullNameEditText.getText().toString();
 		rate = rateEditText.getText().toString();
 		description = descEditText.getText().toString();
+	
+		proDS.open();
+		try {
+			proDS.createProject(fullName, shortCode, rate, description);
+		} catch (Exception ex) {
+			Log.d("projectSaveFail", ex.getMessage(), ex.fillInStackTrace());
+		}
+		proDS.close();
 		
-		proDS.createProject(fullName, shortCode, rate, description);
-		
-		Intent intent = new Intent(this, TimestampEditorActivity.class);
-    	startActivity(intent);
-		
+		finish();
 	}
 
+	public void cancelButtonHandler(View v){
+		finish();
+	}
 }

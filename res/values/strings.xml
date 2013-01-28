@@ -8,7 +8,7 @@
     <string name="day">Day</string>
     <string name="defaultDate">mm/dd/yy</string>
     <string name="defaultText">default</string>
-    <string name="defaultTotal">0.00 h</string>
+    <string name="defaultTime">0.00 h</string>
     <string name="description">Description:</string>
     <string name="edit">Edit</string>
     <string name="fullName">Full Name:</string>

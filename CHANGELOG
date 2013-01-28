@@ -2,6 +2,16 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_006
+-Fixed MainActivity Select fail due to bad date passing
+-Fixed Timestamp Editor Save handler
+-Created Method in TimestampEditor to set buttons to current time and date
+-Created method in TimestampEditor for creating and displaying a TimePicker
+-Cancel Buttons Working
+-Quick Add button logic implemented, not saving
+-Project Edit button works
+
+
 1.0.ALPHA_005
 -Fixed issues getting and formating the current date
 

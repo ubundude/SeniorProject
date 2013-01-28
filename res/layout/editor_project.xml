@@ -98,14 +98,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:text="@string/save" />
+            android:text="@string/save" 
+            android:onClick="saveHandler" />
 
         <Button
             android:id="@+id/cancelProjectButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:text="@string/cancel" />
+            android:text="@string/cancel" 
+            android:onClick="cancelHandler" />
 
     </LinearLayout>
 

@@ -14,7 +14,6 @@ import java.util.Locale;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -24,29 +23,31 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /*
- * TODO Date Class to get date for page and select
  * TODO Logic for plus and minus date buttons
- * TODO Quick Add button logic
+ * TODO Fix timestamps not displaying - test the date format being passed
  * TODO Figure out what else needs done :p
  */
 
 public class MainActivity extends Activity { 
 	private TimestampDataSource dataSource;
-	public Calendar c = Calendar.getInstance();
+	Calendar c = Calendar.getInstance();
+	public String dateViewForm = "EEE\nMM/dd/yyyy";
+	public String dateForm = "M/dd/yyyy";
 	public String date, dateView;
-	public String format = "EEE\nMM/dd/yyyy";
+	TimestampDataSource timeDS = new TimestampDataSource(this);
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        
-        SimpleDateFormat form = new SimpleDateFormat(format);
-    	dateView = form.format(c.getTime());
-        
         dataSource = new TimestampDataSource(this);
         dataSource.open();
+        
+        SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
+        SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
+        dateView = formDateView.format(c.getTime());
+    	date = formDate.format(c.getTime());
         
         List<Timestamp> values = dataSource.getAllTimestamps(date); 
         
@@ -66,7 +67,21 @@ public class MainActivity extends Activity {
     }
     
     public void quickAddHandler(View view) {
-    	//TODO Implement logic to insert a basic entry into timestamp with the current time
+    	String timeIn, timeOut, dateIn, dateOut, comment;
+    	int project = 0;
+    	comment = null;
+    	timeIn = Integer.toString(Calendar.HOUR_OF_DAY) + ":" + Integer.toString(Calendar.MINUTE);
+    	timeOut = timeIn;
+    	dateIn = Integer.toString(Calendar.MONTH) + "/" + Integer.toString(Calendar.DAY_OF_MONTH) + "/" + Integer.toString(Calendar.YEAR);
+    	dateOut = dateIn;
+    	
+    	timeDS.open();
+    	try {
+    	timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comment, project);
+    	} catch (Exception ex) {
+    		Log.d("QuickAddFail", ex.getMessage(), ex.fillInStackTrace());
+    	}
+    	timeDS.close();
     }
 
     

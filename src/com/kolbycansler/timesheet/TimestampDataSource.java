@@ -45,14 +45,18 @@ public class TimestampDataSource {
 		values.put(TimestampTable.COLUMN_DATE_OUT, timeOut);
 		values.put(TimestampTable.COLUMN_COMMENTS, comments);
 		values.put(TimestampTable.COLUMN_PROJECT, project);
+
 		long insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, null, values);
+		
 		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, 
 				TimestampTable.COLUMN_TIMESTAMP_ID + " = " + insertId, null, 
 				null, null, null);
+    	
 		cursor.moveToFirst();
 		Timestamp newTimestamp = cursorToTimestamp(cursor);
 		cursor.close();
 		return newTimestamp;
+	
 	}
 	
 	/* Method to delete a timestamp entry */

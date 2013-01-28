@@ -29,7 +29,7 @@
         android:ems="10"
         android:enabled="false"
         android:inputType="numberDecimal"
-        android:text="@string/defaultTotal" >
+        android:text="@string/defaultTime" >
 
         <requestFocus />
     </EditText>
@@ -63,10 +63,20 @@
             android:layout_height="wrap_content"
             android:layout_weight=".30"
             android:gravity="fill"
-            android:text="@string/edit" />
+            android:text="@string/edit" 
+            android:onClick="editHandler"/>
     </LinearLayout>
+    
+     <TextView
+        android:id="@+id/timeInTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout1"
+        android:text="@string/timeIn" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -79,28 +89,28 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".70"
-            android:gravity="fill_vertical|fill_horizontal"
             android:text="@string/defaultDate" />
 
-        <EditText
-            android:id="@+id/timeInEditText"
+        <Button
+            android:id="@+id/timeInButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".30"
-            android:ems="10"
-            android:inputType="time" />
-    </LinearLayout>
+            android:text="@string/defaultTime"
+            android:onClick="showTimePickerDialog" />
 
+    </LinearLayout>
+    
     <TextView
         android:id="@+id/timeOutTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/linearLayout2"
         android:text="@string/timeOut" />
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -111,32 +121,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".70"
-            android:gravity="fill"
             android:text="@string/defaultDate" />
 
-        <EditText
-            android:id="@+id/timeOutEditText"
+        <Button
+            android:id="@+id/timeOutButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".30"
-            android:ems="10"
-            android:inputType="time" />
+            android:text="@string/defaultTime" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/timeInTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/linearLayout1"
-        android:text="@string/timeIn" />
 
     <TextView
         android:id="@+id/commentsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/linearLayout2"
+        android:layout_below="@+id/linearLayout3"
         android:text="@string/comments" />
 
     <EditText
@@ -150,6 +150,7 @@
         android:inputType="textMultiLine" />
 
     <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -169,10 +170,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:gravity="center_vertical|fill"
-            android:onClick=""
+            android:onClick="cancelHandler"
             android:text="@string/cancel" />
-
     </LinearLayout>
 
 </RelativeLayout>

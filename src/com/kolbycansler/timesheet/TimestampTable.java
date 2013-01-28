@@ -26,7 +26,7 @@ public class TimestampTable {
 			+ COLUMN_TIME_IN + " text not null, "
 			+ COLUMN_DATE_OUT + " text not null, "
 			+ COLUMN_TIME_OUT + " text not null, "
-			+ COLUMN_COMMENTS + " text not null, "
+			+ COLUMN_COMMENTS + " text, "
 			+ COLUMN_PROJECT + " integer,"
 			+ " FOREIGN KEY (" + COLUMN_PROJECT + ") REFERENCES "
 			+ TABLE_PROJECTS + "(" + PROJECT_ID + "));";
