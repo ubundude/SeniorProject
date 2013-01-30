@@ -2,6 +2,10 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_007
+-Plus and Minus button logic started
+-Javadoc Commenting added to MainActivity and TimestampEditorActivity
+
 1.0.ALPHA_006
 -Fixed MainActivity Select fail due to bad date passing
 -Fixed Timestamp Editor Save handler

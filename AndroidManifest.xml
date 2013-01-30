@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kolbycansler.timesheet"
     android:versionCode="1"
-    android:versionName="1.0.ALPHA_005" >
+    android:versionName="1.0.ALPHA_007" >
 
     <uses-sdk
         android:minSdkVersion="8"
