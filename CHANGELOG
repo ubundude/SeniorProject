@@ -2,6 +2,8 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_008
+
 1.0.ALPHA_007
 -Plus and Minus button logic started
 -Javadoc Commenting added to MainActivity and TimestampEditorActivity

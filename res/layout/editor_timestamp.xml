@@ -96,8 +96,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".30"
-            android:text="@string/defaultTime"
-            android:onClick="showTimePickerDialog" />
+            android:text="@string/defaultTime" />
 
     </LinearLayout>
     

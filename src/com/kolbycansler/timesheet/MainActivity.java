@@ -1,6 +1,6 @@
 /**
  * @author Kolby Cansler <golfguy90@gmail.com>
- * @version 1.0.ALPHA_007
+ * @version 1.0.ALPHA_008
  * 
  * Implements the Main layout class.
  */
