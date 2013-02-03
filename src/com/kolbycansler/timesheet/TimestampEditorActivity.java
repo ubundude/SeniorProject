@@ -11,30 +11,27 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.os.Build;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.app.DialogFragment;
-import android.text.format.DateFormat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
-//import android.widget.Spinner;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 /* 
  * TODO Need way to populate from database
  * TODO Buttons should display current date or date loaded from database
- * TODO Buttons should popup a datePicker when clicked and set text to that
  * TODO Hours TextView should update to total time calulated from timeIn - timeOut
- * TODO Need delete button
  * TODO Figure out the spinner
  */
 
@@ -44,12 +41,11 @@ import android.widget.TimePicker;
  * Creates the layout and logic needed for the user to interact
  * with the editor to add a new timestamp to the database.
  */
-@SuppressLint("NewApi")
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TimestampEditorActivity extends Activity {
+	private SQLiteDatabase db;
+	private SQLiteOpenHelper dbHelp;
 	/** Datasources to get objects for using database tables */
 	private TimestampDataSource timeDS;
-	//private ProjectsDataSource proDS;
 	/** Gets a valid calendar instance */
 	final Calendar c = Calendar.getInstance();
 	/** Strings for correctly formating the date and time */
@@ -58,23 +54,38 @@ public class TimestampEditorActivity extends Activity {
 	/** Strings to store formatted dates and times */
 	private static String timeIn;
 	private static String timeOut;
-	private String dateIn;
-	private String dateOut;
-	private static String fromWhere;
-	/** Id's for the dialogs used by time and date pickers */
-	static final int DATE_IN_DIALOG_ID = 0;
-	static final int TIME_IN_DIALOG_ID = 0;
-	static final int DATE_OUT_DIALOG_ID = 0;
-	static final int TIME_OUT_DIALOG_ID = 0;
-	/** Initialize all buttons for use*/
-	Button dateInButton;
+	private static String dateIn;
+	private static String dateOut;
+	/** Initialize all form elements for use*/
+	static Button dateInButton;
 	static Button timeInButton;
-	Button dateOutButton;
+	static Button dateOutButton;
 	static Button timeOutButton;
-	/** Initializes spinner for use */
-	//Spinner projectSpinner;
-	/** Initialize the EditText for use */
+	static Spinner projectSpinner;
 	EditText commentsEditText;
+	/** Variable to store the value of the button calling the picker */
+	private int fromWhere = 0;
+	/** Gets a new TimePickerDialog and sets the calendar time to value picked */
+	TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {		
+			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			c.set(Calendar.MINUTE, minute);
+			updateLabel();
+		}
+	};
+	/** Gets a new DatePickerDialog and sets the calendar time to the value picked */
+	DatePickerDialog.OnDateSetListener d = new DatePickerDialog.OnDateSetListener() {
+		@Override
+		public void onDateSet(DatePicker view, int year, int month,
+				int dayOfMonth) {
+			c.set(Calendar.YEAR, year);
+			c.set(Calendar.MONTH, month);
+			c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+			updateLabel();
+		}
+	};
+	
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,25 +112,111 @@ public class TimestampEditorActivity extends Activity {
 		timeInButton.setText(timeIn);
 		timeOutButton.setText(timeOut);
         
-        //projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
-        
-        //loadSpinnerData();
+		try {
+        loadSpinnerData();
+		} catch (Exception ex){
+			Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
+		}
 		
+		/**
+		 * Logic to handle clicking the Time In button
+		 * 
+		 * Gets current time from the button to pass to the Time Picker
+		 * and then calls a new TimePickerDialog to set the button
+		 * to a new time
+		 */
 		timeInButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				fromWhere = "timeIn";
-				//showTimePickerDialog(this);
+				int hour, minute;
+				hour = Integer.valueOf(timeInButton.getText().toString().substring(0, 2));
+				minute = Integer.valueOf(timeInButton.getText().toString().substring(3));
+				new TimePickerDialog(TimestampEditorActivity.this, t, 
+						hour, minute,
+						true).show();
+				fromWhere = 1;
 			}
 		});
 		
+		/**
+		 * Logic to handle clicking the Time Out button
+		 * 
+		 * Gets current time from the button to pass to the Time Picker
+		 * and then calls a new TimePickerDialog to set the button
+		 * to a new time
+		 */
 		timeOutButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				fromWhere = "timeOut";
-				//showTimePickerDialog(this);
-				
+				int hour, minute;
+				hour = Integer.valueOf(timeOutButton.getText().toString().substring(0, 2));
+				minute = Integer.valueOf(timeOutButton.getText().toString().substring(3));
+				new TimePickerDialog(TimestampEditorActivity.this, t, 
+						hour, minute,
+						true).show();
+				fromWhere = 2;
+			}
+		});
+		
+		/**
+		 * Logic to handle clicking the Date In button
+		 * 
+		 * Gets current time from the button to pass to the Time Picker
+		 * and then calls a new Date PickerDialog to set the button
+		 * to a new time
+		 */
+		dateInButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int year, month, dayOfMonth;
+				year = Integer.valueOf(dateInButton.getText().toString().substring(6));
+				month = Integer.valueOf(dateInButton.getText().toString().substring(0, 2)) - 1;
+				dayOfMonth = Integer.valueOf(dateInButton.getText().toString().substring(3, 5));
+				new DatePickerDialog(TimestampEditorActivity.this, d,
+						year, month, dayOfMonth).show();
+				fromWhere = 3;
+			}
+		});
+		
+		/**
+		 * Logic to handle clicking the Date Out button
+		 * 
+		 * Gets current time from the button to pass to the Time Picker
+		 * and then calls a new DatePickerDialog to set the button
+		 * to a new time
+		 */
+		dateOutButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int year, month, dayOfMonth;
+				year = Integer.valueOf(dateOutButton.getText().toString().substring(6));
+				month = Integer.valueOf(dateOutButton.getText().toString().substring(0, 2)) - 1;
+				dayOfMonth = Integer.valueOf(dateOutButton.getText().toString().substring(3, 5));
+				new DatePickerDialog(TimestampEditorActivity.this, d,
+						year, month, dayOfMonth).show();
+				fromWhere = 4;
 			}
 		});
         
+	}
+	
+	/** Method to set the value of the button used to the date or time picked */
+	public void updateLabel() {
+		SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
+		SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
+		
+		switch (fromWhere) {
+		case 1:
+			timeInButton.setText(formTime.format(c.getTime()));
+			break;
+		case 2:
+			timeOutButton.setText(formTime.format(c.getTime()));
+			break;
+		case 3: 
+			dateInButton.setText(formDate.format(c.getTime()));
+			break;
+		case 4:
+			dateOutButton.setText(formDate.format(c.getTime()));
+			break;
+		}
 	}
 
 		/**
@@ -176,49 +273,35 @@ public class TimestampEditorActivity extends Activity {
        		finish();
        	}
        	
-       	/*
-       	@SuppressLint("NewApi")
-		public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
+       	public void timestampDeleteHandler(View v) {
+       		// TODO Write method
+       	}
+       
+       	public Cursor fetchAllProjects() {
        		
-       		@SuppressLint("NewApi")
-			@Override
-       		public Dialog onCreateDialog(Bundle savedInstanceState) {
-       			final Calendar c = Calendar.getInstance();
-       			int hour = c.get(Calendar.HOUR_OF_DAY);
-       			int minute = c.get(Calendar.MINUTE);
-       			
-       			return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
-       		}
-       		
-       		@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-			@SuppressLint("NewApi")
-			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-       			// TODO Set to something
-       			String time;
-       			time = hourOfDay + ":" + minute;
-       			if (fromWhere.equals(timeIn)) {
-       				timeInButton.setText(time);
-       			} else if (fromWhere.equals(timeOut)) {
-       				timeOutButton.setText(time);
-       			}
-       			
-       		}
+       		dbHelp.getWritableDatabase();
+			return db.rawQuery("SELECT _id, name FROM projects", null);
        	}
        	
-       	public void showTimePickerDialog(OnClickListener click) {
-       		DialogFragment newFragment = new TimePickerFragment();
-       		newFragment.show(getFragmentManager(), "timePicker");
-       	}
-       	*/
-       
        //TODO Fix spinner loading data
        
-      /* private void loadSpinnerData() {
-    	   List<Project> labels = proDS.getAllProjects();
-    	   ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labels);
-    	   dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    	   projectSpinner.setAdapter(dataAdapter);
+       @SuppressWarnings("deprecation")
+       private void loadSpinnerData() {
+    	   Cursor c = fetchAllProjects();
+    	   startManagingCursor(c);
+    	   
+    	   String[] from = new String[]{"name"};
+    	   int[] to = new int[]{android.R.id.text1};
+    	   SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item,
+    			   c, from, to);
+    	   
+    	   adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    	   
+    	   projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
+    	   projectSpinner.setAdapter(adapter);
+    	   dbHelp.close();
+    	   
        }
-       */
+       
        
 }

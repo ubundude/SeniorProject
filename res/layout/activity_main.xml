@@ -33,18 +33,18 @@
             android:layout_height="wrap_content"
             android:text="@string/defaultTime" />
 
-        <ImageButton
-            android:id="@+id/minusImageButton"
+        <Button
+            android:id="@+id/minusButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/minus"
-            android:contentDescription="@string/minusButton" />
+            android:layout_marginLeft="@dimen/minusPaddingLeft"
+            android:background="@drawable/minus" />
 
         <EditText
             android:id="@+id/dateEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.89"
+            android:layout_weight="0.58"
             android:ems="10"
             android:enabled="false"
             android:gravity="center_vertical|center_horizontal"
@@ -53,12 +53,11 @@
             <requestFocus />
         </EditText>
 
-        <ImageButton
-            android:id="@+id/plusImageButton"
+        <Button
+            android:id="@+id/plusButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/plus"
-            android:contentDescription="@string/plusButton" />
+            android:background="@drawable/plus" />
     </LinearLayout>
 
     <LinearLayout

@@ -19,7 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
 	/** Gets a new Datasource instance for dealing with the database tables */
 	private TimestampDataSource timeDS = new TimestampDataSource(this);
 	/** Prepares buttons and EditText for use */
-	public ImageButton minusButton, plusButton;
+	public Button minusButton, plusButton;
 	public EditText dateEditText;
 	
     @Override
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
         /**
          * Implements the Minus Button with OnCLickListener and
          * calls the minusButtonHandler if called */
-        minusButton = (ImageButton)findViewById(R.id.minusImageButton);
+        minusButton = (Button)findViewById(R.id.minusButton);
         minusButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				minusButtonHandler();
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
         /**
          * Implements the Plus Button with OnCLickListener and
          * calls the plusButtonHandler if called */
-        plusButton = (ImageButton)findViewById(R.id.plusImageButton);
+        plusButton = (Button)findViewById(R.id.plusButton);
         plusButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				plusButtonHandler();

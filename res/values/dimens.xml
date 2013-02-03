@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="minusPaddingLeft">10px</dimen>
+    <dimen name="deletePaddingRight">10dp</dimen>
+</resources>

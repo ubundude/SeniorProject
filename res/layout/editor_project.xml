@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/projectEditor"
+        android:text="@string/projectEditor" 
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -19,18 +19,6 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/projectEditorTitleTextView1"
         android:text="@string/shortCode" />
-
-    <EditText
-        android:id="@+id/shortCodeEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/projectEditorTitleTextView1"
-        android:layout_toRightOf="@+id/shortCodeTextView"
-        android:ems="10"
-        android:inputType="text" >
-
-        <requestFocus />
-    </EditText>
 
     <TextView
         android:id="@+id/fullNameTextView"
@@ -58,15 +46,6 @@
         android:layout_below="@+id/fullNameEditText"
         android:text="@string/rate" />
 
-    <EditText
-        android:id="@+id/rateEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/rateTextView"
-        android:layout_toRightOf="@+id/rateTextView"
-        android:ems="10"
-        android:inputType="numberDecimal" />
-
     <TextView
         android:id="@+id/descriptionTextView"
         android:layout_width="wrap_content"
@@ -86,11 +65,12 @@
         android:inputType="textMultiLine" />
 
     <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/descriptionEditText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/descriptionEditText"
         android:layout_centerVertical="true" >
 
         <Button
@@ -98,17 +78,44 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:text="@string/save" 
-            android:onClick="saveHandler" />
+            android:onClick="saveHandler"
+            android:text="@string/save" />
 
         <Button
             android:id="@+id/cancelProjectButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:text="@string/cancel" 
-            android:onClick="cancelHandler" />
-
+            android:onClick="cancelButtonHandler"
+            android:text="@string/cancel" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/projectDeleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/shortCodeEditText"
+        android:layout_marginRight="@dimen/deletePaddingRight"
+        android:background="@drawable/delete"
+        android:onClick="projectDeleteHandler" />
+
+    <EditText
+        android:id="@+id/rateEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/rateTextView"
+        android:ems="10"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/shortCodeEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/shortCodeTextView"
+        android:ems="10"
+        android:inputType="text" />
 
 </RelativeLayout>

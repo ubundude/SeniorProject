@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 
 /*
- * TODO Need Delete button
+ * TODO Need way to call and load project passed by Intent
  */
 
 /** 
@@ -76,5 +76,9 @@ public class ProjectEditorActivity extends Activity {
 	 */
 	public void cancelButtonHandler(View v){
 		finish();
+	}
+	
+	public void projectDeleteHandler(View v) {
+		//TODO Write me
 	}
 }

@@ -3,6 +3,7 @@ CHANGELOG
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
 1.0.ALPHA_008
+-Date and Time buttons work on TimestampEditorActivity!
 
 1.0.ALPHA_007
 -Plus and Minus button logic started
