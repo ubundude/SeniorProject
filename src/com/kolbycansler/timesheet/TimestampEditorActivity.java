@@ -108,14 +108,14 @@ public class TimestampEditorActivity extends Activity {
 		timeInButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				fromWhere = "timeIn";
-				showTimePickerDialog(this);
+				//showTimePickerDialog(this);
 			}
 		});
 		
 		timeOutButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				fromWhere = "timeOut";
-				showTimePickerDialog(this);
+				//showTimePickerDialog(this);
 				
 			}
 		});
@@ -176,6 +176,7 @@ public class TimestampEditorActivity extends Activity {
        		finish();
        	}
        	
+       	/*
        	@SuppressLint("NewApi")
 		public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
        		
@@ -208,6 +209,7 @@ public class TimestampEditorActivity extends Activity {
        		DialogFragment newFragment = new TimePickerFragment();
        		newFragment.show(getFragmentManager(), "timePicker");
        	}
+       	*/
        
        //TODO Fix spinner loading data
        
