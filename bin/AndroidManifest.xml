@@ -2,11 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kolbycansler.timesheet"
     android:versionCode="1"
-    android:versionName="1.0.ALPHA_008" >
+    android:versionName="1.0.ALPHA_009" >
 
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"

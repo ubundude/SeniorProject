@@ -7,6 +7,8 @@
 
 package com.kolbycansler.timesheet;
 
+import com.bugsense.trace.BugSenseHandler;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -46,10 +48,12 @@ public class MainActivity extends Activity {
 	/** Prepares buttons and EditText for use */
 	public Button minusButton, plusButton;
 	public EditText dateEditText;
+	public TextView debugTV;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
         setContentView(R.layout.activity_main);
         
         /** Open the database table for reading and writing */
@@ -64,6 +68,10 @@ public class MainActivity extends Activity {
     	/** Sets the text in the dateEditText to the current date */
         dateEditText = (EditText)findViewById(R.id.dateEditText);
         dateEditText.setText(dateView, TextView.BufferType.NORMAL);
+        
+        //Debugging Line
+        debugTV = (TextView)findViewById(R.id.debugTextView);
+        debugTV.setText(date);
     	
         /** Database table function to return all timestamps for a given date */
         List<Timestamp> values = timeDS.getAllTimestamps(date); 

@@ -9,7 +9,7 @@ public class TimesheetDatabaseHelper extends SQLiteOpenHelper {
 	
 	/* Create Global Variables for Database Name and Version */
 	private static final String DATABASE_NAME = "timesheet.db";
-	private static final int DATABASE_VERSION = 6;
+	private static final int DATABASE_VERSION = 2;
 	
 	/* Sets the context of the database */
 	public TimesheetDatabaseHelper(Context context) {

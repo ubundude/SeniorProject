@@ -2,8 +2,15 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_009
+STATE: Still Spinner issues, crashes on trying to save timestamp to database. Not opening database correctly?
+-Added Bugsense for Integrated Bug Tracking
+-not much else
+
 1.0.ALPHA_008
+STATE: Spinner Issues. Not pulling from database maybe?
 -Date and Time buttons work on TimestampEditorActivity!
+-Delete buttons added to tiemstamp and project editors
 
 1.0.ALPHA_007
 -Plus and Minus button logic started
