@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
 	final Calendar c = Calendar.getInstance();
 	/** Strings for formatting the date's for use */
 	public String dateViewForm = "EEE\nMM/dd/yyyy";
-	public String dateForm = "M/dd/yyyy";
+	public String dateForm = "MM/dd/yyyy";
 	/** Strings to store formated calendar outputs */
 	public String date, dateView;
 	/** Gets a new Datasource instance for dealing with the database tables */
@@ -56,31 +56,13 @@ public class MainActivity extends Activity {
         BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
         setContentView(R.layout.activity_main);
         
-        /** Open the database table for reading and writing */
-        timeDS.open();
+        /** Method to get todays date and display it in the proper places */
+        initialDates();
         
-        /** Format the current date for use and store it in the date variables */
-        SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
-        SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
-        dateView = formDateView.format(c.getTime());
-    	date = formDate.format(c.getTime());
+        //getDailyTimestamps();
         
-    	/** Sets the text in the dateEditText to the current date */
-        dateEditText = (EditText)findViewById(R.id.dateEditText);
-        dateEditText.setText(dateView, TextView.BufferType.NORMAL);
         
-        //Debugging Line
-        debugTV = (TextView)findViewById(R.id.debugTextView);
-        debugTV.setText(date);
-    	
-        /** Database table function to return all timestamps for a given date */
-        List<Timestamp> values = timeDS.getAllTimestamps(date); 
-        
-        /** 
-         * Calls the custom ListView timestampListView and displays 
-         * Timestamps to the main screen */
-        ListView listView = (ListView)findViewById(R.id.timestampListView);
-        listView.setAdapter(new TimestampAdapter(this, values));
+       
        
         /**
          * Implements the Minus Button with OnCLickListener and
@@ -103,7 +85,41 @@ public class MainActivity extends Activity {
 		});
     }
     
-    /** Gets the next day and displays to dateEditText */
+    private void getDailyTimestamps() {
+    	 /** Open the database table for reading and writing */
+        timeDS.open();
+    	
+        /** Database table function to return all timestamps for a given date */
+        List<Timestamp> values = timeDS.getAllTimestamps(date); 
+        
+        /** 
+         * Calls the custom ListView timestampListView and displays 
+         * Timestamps to the main screen */
+        ListView listView = (ListView)findViewById(R.id.timestampListView);
+        listView.setAdapter(new TimestampAdapter(this, values));
+        
+        timeDS.close();
+		
+	}
+
+	private void initialDates() {
+		/** Format the current date for use and store it in the date variables */
+        SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
+        SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
+        dateView = formDateView.format(c.getTime());
+    	date = formDate.format(c.getTime());
+        
+    	/** Sets the text in the dateEditText to the current date */
+        dateEditText = (EditText)findViewById(R.id.dateEditText);
+        dateEditText.setText(dateView, TextView.BufferType.NORMAL);
+        
+        //Debugging Line
+        debugTV = (TextView)findViewById(R.id.debugTextView);
+        debugTV.setText(date);
+		
+	}
+
+	/** Gets the next day and displays to dateEditText */
     protected void plusButtonHandler() {
     	// TODO Finish Logic here
     	// use add(c.Date, num to add);0

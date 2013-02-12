@@ -2,6 +2,10 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_010
+STATE:
+-
+
 1.0.ALPHA_009
 STATE: Still Spinner issues, crashes on trying to save timestamp to database. Not opening database correctly?
 -Added Bugsense for Integrated Bug Tracking

@@ -3,6 +3,7 @@ package com.kolbycansler.timesheet;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentValues;
 //import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -39,35 +40,26 @@ public class TimestampDataSource {
 	
 	/* Method to create new Timestamp entry */
 	public Timestamp createTimestamp(String dateIn, String timeIn, String dateOut, String timeOut, String comments, int project) {
-		/*ContentValues values = new ContentValues();
+		long insertId;
+		ContentValues values = new ContentValues();
 		values.put(TimestampTable.COLUMN_TIME_IN, dateIn);
 		values.put(TimestampTable.COLUMN_DATE_IN, timeIn);
 		values.put(TimestampTable.COLUMN_TIME_OUT, dateOut);
 		values.put(TimestampTable.COLUMN_DATE_OUT, timeOut);
 		values.put(TimestampTable.COLUMN_COMMENTS, comments);
 		values.put(TimestampTable.COLUMN_PROJECT, project);
-
-		long insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, null, values);
+		
+		
+		insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, null, values);
 		
 		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, 
 				TimestampTable.COLUMN_TIMESTAMP_ID + " = " + insertId, null, 
-				null, null, null); */
-    	
-		String sql = "INSERT INTO " + TimestampTable.TABLE_TIMESTAMP + " VALUES(null, '" + dateIn +
-				"', '" + timeIn + "', '" + dateOut + "', '" + timeOut + "', '" + comments +
-				"', " + project + ")";
+				null, null, null); 
 		
-		try {
-		database.execSQL(sql);
-		} catch(Exception ex) {
-			Log.d("dbexecfail", ex.getMessage(), ex.fillInStackTrace());
-		}
-		return null;
-		
-		/* cursor.moveToFirst();
+		cursor.moveToFirst();
 		Timestamp newTimestamp = cursorToTimestamp(cursor);
-		cursor.close(); */
-		//return newTimestamp;
+		cursor.close(); 
+		return newTimestamp;
 	
 	}
 	

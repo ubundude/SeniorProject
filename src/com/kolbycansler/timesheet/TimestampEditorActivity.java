@@ -16,19 +16,18 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 /* 
@@ -45,10 +44,10 @@ import android.widget.TimePicker;
  * with the editor to add a new timestamp to the database.
  */
 public class TimestampEditorActivity extends Activity {
-	private SQLiteDatabase db;
+	SQLiteDatabase db;
 	private SQLiteOpenHelper dbHelp;
 	/** Datasources to get objects for using database tables */
-	private TimestampDataSource timeDS;
+	private TimestampDataSource timeDS = new TimestampDataSource(this);
 	/** Gets a valid calendar instance */
 	final Calendar c = Calendar.getInstance();
 	/** Strings for correctly formating the date and time */
@@ -67,8 +66,6 @@ public class TimestampEditorActivity extends Activity {
 	static Button saveButton;
 	static Spinner projectSpinner;
 	EditText commentsEditText;
-	TextView dbDateInTV, dbDateOutTV, dbTimeInTV, dbTimeOutTV, dbCommentsTV, dbProjectTV;
-	
 	/** Variable to store the value of the button calling the picker */
 	private int fromWhere = 0;
 	/** Gets a new TimePickerDialog and sets the calendar time to value picked */
@@ -96,36 +93,18 @@ public class TimestampEditorActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BugSenseHandler.initAndStartSession(TimestampEditorActivity.this, "8b04fe90");
+        //BugSenseHandler.initAndStartSession(TimestampEditorActivity.this, "8b04fe90");
         setContentView(R.layout.editor_timestamp);
         
-    	/** Initialize buttons so that they can be set to the proper date */
-		dateInButton = (Button)findViewById(R.id.dateInButton);
-	    timeInButton = (Button)findViewById(R.id.timeInButton);
-	    dateOutButton = (Button)findViewById(R.id.dateOutButton);
-	    timeOutButton = (Button)findViewById(R.id.timeOutButton);
-	    commentsEditText = (EditText)findViewById(R.id.commentsEditText);
-	    saveButton = (Button)findViewById(R.id.saveTimestampButton);
-
-		/** Get current date and time and store into proper variables */
-		SimpleDateFormat dateFormer = new SimpleDateFormat(dateForm, Locale.US);
-		SimpleDateFormat timeFormer = new SimpleDateFormat(timeForm, Locale.US);
-		timeIn = timeFormer.format(c.getTime());
-		timeOut = timeIn;
-		dateIn = dateFormer.format(c.getTime());
-		dateOut = dateIn;
-
-		/** Set buttons to current time and date */
-		dateInButton.setText(dateIn);
-		dateOutButton.setText(dateOut);
-		timeInButton.setText(timeIn);
-		timeOutButton.setText(timeOut);
+        initializeButtons();
         
-		try {
-        loadSpinnerData();
-		} catch (Exception ex){
-			Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
-		}
+    	
+        
+		//try {
+       // loadSpinnerData();
+		//} catch (Exception ex){
+		//	Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
+		//}
 		
 		/**
 		 * Logic to handle clicking the Time In button
@@ -208,37 +187,37 @@ public class TimestampEditorActivity extends Activity {
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//saveHandler();
-				String timeIn, dateIn, timeOut, dateOut, comments;
-	        	int project;
-
-	        	/** Get and store form element values*/
-	        	dateIn = dateInButton.getText().toString();
-	        	timeIn = timeInButton.getText().toString();
-	        	dateOut = dateOutButton.getText().toString();
-	        	timeOut = timeOutButton.getText().toString();
-	        	comments = commentsEditText.getText().toString();
-	        	//TODO Implement spinners and get the id of the selected project
-	        	project = 1;
-
-	        	/** Open the timestamp table for writing */
-	        	try {
-	        	timeDS.open();
-	        	} catch (Exception ex) {
-	        		Log.d("openFail", ex.getMessage(), ex.fillInStackTrace());
-	        	}
-	        	
-	        		/** Call method to insert values into timestamp table */        
-	        	timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, project);
-	        
-		        /** Close the database and return to the previous context */
-		       timeDS.close();
-		        finish();
+				saveHandler(v);
 			}
 		});
         
 	}
 	
+	private void initializeButtons() {
+		/** Initialize buttons so that they can be set to the proper date */
+		dateInButton = (Button)findViewById(R.id.dateInButton);
+	    timeInButton = (Button)findViewById(R.id.timeInButton);
+	    dateOutButton = (Button)findViewById(R.id.dateOutButton);
+	    timeOutButton = (Button)findViewById(R.id.timeOutButton);
+	    commentsEditText = (EditText)findViewById(R.id.commentsEditText);
+	    saveButton = (Button)findViewById(R.id.saveTimestampButton);
+
+		/** Get current date and time and store into proper variables */
+		SimpleDateFormat dateFormer = new SimpleDateFormat(dateForm, Locale.US);
+		SimpleDateFormat timeFormer = new SimpleDateFormat(timeForm, Locale.US);
+		timeIn = timeFormer.format(c.getTime());
+		timeOut = timeIn;
+		dateIn = dateFormer.format(c.getTime());
+		dateOut = dateIn;
+
+		/** Set buttons to current time and date */
+		dateInButton.setText(dateIn);
+		dateOutButton.setText(dateOut);
+		timeInButton.setText(timeIn);
+		timeOutButton.setText(timeOut);
+		
+	}
+
 	/** Method to set the value of the button used to the date or time picked */
 	public void updateLabel() {
 		SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
@@ -259,40 +238,58 @@ public class TimestampEditorActivity extends Activity {
 			break;
 		}
 	}
+	
+	public void open() throws SQLException {
+		db = dbHelp.getWritableDatabase();
+	}
 
 		/**
 		 * Handler to save the data entered in the form to the database
 		 * 
 		 * @param view The current activity context
 		 */
-		/*public void saveHandler(View v) {
+		public void saveHandler(View v) {
 			/** Initialize variables to store information from the form elements */
-			/*String timeIn, dateIn, timeOut, dateOut, comments;
+			String timeIn, dateIn, timeOut, dateOut, comments;
         	int project;
 
         	/** Get and store form element values*/
-        	/*dateIn = dateInButton.getText().toString();
+        	dateIn = dateInButton.getText().toString();
         	timeIn = timeInButton.getText().toString();
         	dateOut = dateOutButton.getText().toString();
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
         	//TODO Implement spinners and get the id of the selected project
         	project = 1;
-
+        	
+        	/*ContentValues val = new ContentValues();
+        	val.put("date_in", dateIn);
+        	val.put("time_in", timeIn);
+        	val.put("date_out", dateOut);
+        	val.put("time_out", timeOut);
+        	val.put("comments", comments);
+        	val.put("project", project);
+*/
         	/** Open the timestamp table for writing */
+        	/*try {
+        	timeDS.open();
+        	} catch (Exception e) {
+        		Log.d("openFail", e.getLocalizedMessage(), e.getCause());
+        	}*/
         	
-        	/*timeDS.open();
-        	
-        	
-        		/** Call method to insert values into timestamp table */        
-        	/*timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, project);
-        
+        	/** Call method to insert values into timestamp table */        
+        	//String sql = "INSERT INTO timestamp (date_in, time_in, date_out, time_out, " +
+        	//"comments, project) VALUES('" + dateIn + "', '" + timeIn + "', '" + dateOut +
+        	//"', '" + timeOut + "', '" + comments + "', " + project + ")";
+    		
+    		timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, project);
+
 	        /** Close the database and return to the previous context */
-	       /*timeDS.close();
+	        timeDS.close();
 	        finish();
             
         	
-        }*/
+        }
 
    		/**
    		 * Intent to move to project editor for editing currently selected project in the spinner
@@ -318,7 +315,7 @@ public class TimestampEditorActivity extends Activity {
        		// TODO Write method
        	}
        
-       	public Cursor fetchAllProjects() {
+      /* 	public Cursor fetchAllProjects() {
        		
        		dbHelp.getWritableDatabase();
 			return db.rawQuery("SELECT _id, name FROM projects", null);
@@ -342,7 +339,7 @@ public class TimestampEditorActivity extends Activity {
     	   projectSpinner.setAdapter(adapter);
     	   dbHelp.close();
     	   
-       }
+       }*/
        
        
 }
