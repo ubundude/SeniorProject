@@ -7,22 +7,17 @@
 
 package com.kolbycansler.timesheet;
 
-import com.bugsense.trace.BugSenseHandler;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -32,8 +27,8 @@ import android.widget.TimePicker;
 
 /* 
  * TODO Need way to populate from database
- * TODO Buttons should display current date or date loaded from database
- * TODO Hours TextView should update to total time calulated from timeIn - timeOut
+ * TODO Buttons should display current date or DATE LOADED FROM DATABASE
+ * TODO Hours TextView should update to total time calculated from timeIn - timeOut
  * TODO Figure out the spinner
  */
 
@@ -44,10 +39,9 @@ import android.widget.TimePicker;
  * with the editor to add a new timestamp to the database.
  */
 public class TimestampEditorActivity extends Activity {
-	SQLiteDatabase db;
-	private SQLiteOpenHelper dbHelp;
 	/** Datasources to get objects for using database tables */
 	private TimestampDataSource timeDS = new TimestampDataSource(this);
+	private ProjectsDataSource proDS = new ProjectsDataSource(this);
 	/** Gets a valid calendar instance */
 	final Calendar c = Calendar.getInstance();
 	/** Strings for correctly formating the date and time */
@@ -93,15 +87,12 @@ public class TimestampEditorActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //BugSenseHandler.initAndStartSession(TimestampEditorActivity.this, "8b04fe90");
         setContentView(R.layout.editor_timestamp);
         
         initializeButtons();
         
-    	
-        
 		//try {
-       // loadSpinnerData();
+       	//	loadSpinnerData();
 		//} catch (Exception ex){
 		//	Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
 		//}
@@ -238,10 +229,6 @@ public class TimestampEditorActivity extends Activity {
 			break;
 		}
 	}
-	
-	public void open() throws SQLException {
-		db = dbHelp.getWritableDatabase();
-	}
 
 		/**
 		 * Handler to save the data entered in the form to the database
@@ -261,34 +248,16 @@ public class TimestampEditorActivity extends Activity {
         	comments = commentsEditText.getText().toString();
         	//TODO Implement spinners and get the id of the selected project
         	project = 1;
-        	
-        	/*ContentValues val = new ContentValues();
-        	val.put("date_in", dateIn);
-        	val.put("time_in", timeIn);
-        	val.put("date_out", dateOut);
-        	val.put("time_out", timeOut);
-        	val.put("comments", comments);
-        	val.put("project", project);
-*/
+  
         	/** Open the timestamp table for writing */
-        	/*try {
         	timeDS.open();
-        	} catch (Exception e) {
-        		Log.d("openFail", e.getLocalizedMessage(), e.getCause());
-        	}*/
         	
         	/** Call method to insert values into timestamp table */        
-        	//String sql = "INSERT INTO timestamp (date_in, time_in, date_out, time_out, " +
-        	//"comments, project) VALUES('" + dateIn + "', '" + timeIn + "', '" + dateOut +
-        	//"', '" + timeOut + "', '" + comments + "', " + project + ")";
-    		
     		timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, project);
 
 	        /** Close the database and return to the previous context */
 	        timeDS.close();
 	        finish();
-            
-        	
         }
 
    		/**
@@ -307,18 +276,17 @@ public class TimestampEditorActivity extends Activity {
     	 * @param v 
     	 */
        	public void cancelHandler(View v) {
-       		BugSenseHandler.closeSession(TimestampEditorActivity.this);
        		finish();
        	}
        	
        	public void timestampDeleteHandler(View v) {
        		// TODO Write method
        	}
-       
-      /* 	public Cursor fetchAllProjects() {
+       /*
+      	public List<Project> fetchAllProjects() {
        		
-       		dbHelp.getWritableDatabase();
-			return db.rawQuery("SELECT _id, name FROM projects", null);
+       		proDS.open();
+			return proDS.getAllProjects();
        	}
        	
        //TODO Fix spinner loading data

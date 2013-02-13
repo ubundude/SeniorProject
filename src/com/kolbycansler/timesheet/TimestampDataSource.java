@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentValues;
-//import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class TimestampDataSource {
 	
@@ -40,17 +38,16 @@ public class TimestampDataSource {
 	
 	/* Method to create new Timestamp entry */
 	public Timestamp createTimestamp(String dateIn, String timeIn, String dateOut, String timeOut, String comments, int project) {
-		long insertId;
 		ContentValues values = new ContentValues();
-		values.put(TimestampTable.COLUMN_TIME_IN, dateIn);
-		values.put(TimestampTable.COLUMN_DATE_IN, timeIn);
-		values.put(TimestampTable.COLUMN_TIME_OUT, dateOut);
-		values.put(TimestampTable.COLUMN_DATE_OUT, timeOut);
+		values.put(TimestampTable.COLUMN_DATE_IN, dateIn);
+		values.put(TimestampTable.COLUMN_TIME_IN, timeIn);
+		values.put(TimestampTable.COLUMN_DATE_OUT, dateOut);
+		values.put(TimestampTable.COLUMN_TIME_OUT, timeOut);
 		values.put(TimestampTable.COLUMN_COMMENTS, comments);
 		values.put(TimestampTable.COLUMN_PROJECT, project);
 		
 		
-		insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, null, values);
+		long insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, TimestampTable.COLUMN_COMMENTS, values);
 		
 		Cursor cursor = database.query(TimestampTable.TABLE_TIMESTAMP, allColumns, 
 				TimestampTable.COLUMN_TIMESTAMP_ID + " = " + insertId, null, 

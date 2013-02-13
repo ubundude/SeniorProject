@@ -44,7 +44,9 @@ public class ProjectsDataSource {
 		values.put(ProjectsTable.COLUMN_SHORTCODE, shortCode); // Put Project Short Code into values array
 		values.put(ProjectsTable.COLUMN_RATE, rate); // Put Project Rate into values array
 		values.put(ProjectsTable.COLUMN_DESC, desc); // Put Project Description into values array
+		
 		long insertId = database.insert(ProjectsTable.TABLE_PROJECTS, null, values); 
+		
 		Cursor cursor = database.query(ProjectsTable.TABLE_PROJECTS, allColumns, // Query table Projects, columns allColumns
 				ProjectsTable.COLUMN_PROJECT_ID + " = " + insertId, null, null, null, null); 
 		cursor.moveToFirst();

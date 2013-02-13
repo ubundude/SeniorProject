@@ -26,7 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /*
- * TODO Fix timestamps not displaying - test the date format being passed
+ * TODO Fix timestamps not displaying - Date ok, need to check adapter
  * TODO Figure out what else needs done :p
  */
 
@@ -59,11 +59,8 @@ public class MainActivity extends Activity {
         /** Method to get todays date and display it in the proper places */
         initialDates();
         
-        //getDailyTimestamps();
+        getDailyTimestamps();
         
-        
-       
-       
         /**
          * Implements the Minus Button with OnCLickListener and
          * calls the minusButtonHandler if called */
