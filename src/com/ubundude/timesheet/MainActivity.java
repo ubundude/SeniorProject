@@ -5,7 +5,7 @@
  * Implements the Main layout class.
  */
 
-package com.kolbycansler.timesheet;
+package com.ubundude.timesheet;
 
 import com.bugsense.trace.BugSenseHandler;
 

@@ -1,4 +1,4 @@
-package com.kolbycansler.timesheet;
+package com.ubundude.timesheet;
 
 public class Project {
 	private long id;

@@ -5,7 +5,7 @@
  *  Creates the Project Editor page
  */
 
-package com.kolbycansler.timesheet;
+package com.ubundude.timesheet;
 
 import android.app.Activity;
 import android.os.Bundle;

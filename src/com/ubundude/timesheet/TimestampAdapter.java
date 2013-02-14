@@ -5,7 +5,7 @@
  * Builds a custom adapter to 
  */
 
-package com.kolbycansler.timesheet;
+package com.ubundude.timesheet;
 
 import java.util.List;
 

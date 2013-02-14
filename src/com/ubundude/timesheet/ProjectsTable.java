@@ -1,4 +1,4 @@
-package com.kolbycansler.timesheet;
+package com.ubundude.timesheet;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
