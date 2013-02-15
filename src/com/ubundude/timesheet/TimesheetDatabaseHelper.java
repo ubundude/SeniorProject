@@ -9,7 +9,7 @@ public class TimesheetDatabaseHelper extends SQLiteOpenHelper {
 	
 	/* Create Global Variables for Database Name and Version */
 	private static final String DATABASE_NAME = "timesheet.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 4;
 	
 	/* Sets the context of the database */
 	public TimesheetDatabaseHelper(Context context) {
@@ -21,7 +21,6 @@ public class TimesheetDatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase database) {
 		ProjectsTable.onCreate(database);
 		TimestampTable.onCreate(database);
-		
 	}
 
 	/* Method called during an upgrade of the database

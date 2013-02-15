@@ -16,9 +16,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -29,7 +30,6 @@ import android.widget.TimePicker;
  * TODO Need way to populate from database
  * TODO Buttons should display current date or DATE LOADED FROM DATABASE
  * TODO Hours TextView should update to total time calculated from timeIn - timeOut
- * TODO Figure out the spinner
  */
 
 /**
@@ -90,12 +90,13 @@ public class TimestampEditorActivity extends Activity {
         setContentView(R.layout.editor_timestamp);
         
         initializeButtons();
+        projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
         
-		//try {
-       	//	loadSpinnerData();
-		//} catch (Exception ex){
-		//	Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
-		//}
+		try {
+       		loadSpinnerData();
+		} catch (Exception ex){
+			Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
+		}
 		
 		/**
 		 * Logic to handle clicking the Time In button
@@ -246,8 +247,8 @@ public class TimestampEditorActivity extends Activity {
         	dateOut = dateOutButton.getText().toString();
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
-        	//TODO Implement spinners and get the id of the selected project
-        	project = 1;
+        	project = projectSpinner.getSelectedItemPosition() + 1;
+        	
   
         	/** Open the timestamp table for writing */
         	timeDS.open();
@@ -266,7 +267,10 @@ public class TimestampEditorActivity extends Activity {
    		 * @param v Gets the current activity context to return to
    		 */
        	public void editHandler(View v) {
+       		long project = projectSpinner.getSelectedItemId();
+       		int pro = (int) project;
        		Intent intent = new Intent(this, ProjectEditorActivity.class);
+       		intent.putExtra("PROJECT", pro);
        		startActivity(intent);
        	}
 
@@ -282,32 +286,16 @@ public class TimestampEditorActivity extends Activity {
        	public void timestampDeleteHandler(View v) {
        		// TODO Write method
        	}
-       /*
-      	public List<Project> fetchAllProjects() {
+       
+       	public void loadSpinnerData() {
+       		List<String> projects = proDS.getAllProjects();
        		
-       		proDS.open();
-			return proDS.getAllProjects();
+       		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+       				android.R.layout.simple_spinner_item, projects);
+       		
+       		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+       		
+       		projectSpinner.setAdapter(dataAdapter);
        	}
-       	
-       //TODO Fix spinner loading data
-       
-       @SuppressWarnings("deprecation")
-       private void loadSpinnerData() {
-    	   Cursor c = fetchAllProjects();
-    	   startManagingCursor(c);
-    	   
-    	   String[] from = new String[]{"name"};
-    	   int[] to = new int[]{android.R.id.text1};
-    	   SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item,
-    			   c, from, to, 0);
-    	   
-    	   adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    	   
-    	   projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
-    	   projectSpinner.setAdapter(adapter);
-    	   dbHelp.close();
-    	   
-       }*/
-       
        
 }

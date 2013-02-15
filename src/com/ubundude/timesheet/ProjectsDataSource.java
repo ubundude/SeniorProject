@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class ProjectsDataSource {
 
 	/* Create variables for use in accessing Projects table  */
-	private SQLiteDatabase database;
+	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelper;
 		/* Creates an array of the column names that can be used in place of 
 		 * writing out all column names in a query
@@ -27,17 +27,17 @@ public class ProjectsDataSource {
 		dbHelper = new TimesheetDatabaseHelper(context);
 	}
 	
-	/* Open the database to write to it */
+	/* Open the db to write to it */
 	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
+		db = dbHelper.getWritableDatabase();
 	}
 	
-	/* Close the database when done using it */
+	/* Close the db when done using it */
 	public void close() {
 		dbHelper.close();
 	}
 	
-	/* Create a new database entry */
+	/* Create a new db entry */
 	public Project createProject(String name, String shortCode, String rate, String desc) {
 		ContentValues values = new ContentValues(); // Set a new values array to store column values
 		values.put(ProjectsTable.COLUMN_NAME, name); // Put Project Name into values array
@@ -45,9 +45,9 @@ public class ProjectsDataSource {
 		values.put(ProjectsTable.COLUMN_RATE, rate); // Put Project Rate into values array
 		values.put(ProjectsTable.COLUMN_DESC, desc); // Put Project Description into values array
 		
-		long insertId = database.insert(ProjectsTable.TABLE_PROJECTS, null, values); 
+		long insertId = db.insert(ProjectsTable.TABLE_PROJECTS, null, values); 
 		
-		Cursor cursor = database.query(ProjectsTable.TABLE_PROJECTS, allColumns, // Query table Projects, columns allColumns
+		Cursor cursor = db.query(ProjectsTable.TABLE_PROJECTS, allColumns, // Query table Projects, columns allColumns
 				ProjectsTable.COLUMN_PROJECT_ID + " = " + insertId, null, null, null, null); 
 		cursor.moveToFirst();
 		Project newProject = cursorToProject(cursor);
@@ -59,24 +59,29 @@ public class ProjectsDataSource {
 	public void deleteProject(Project project) {
 		long id = project.getId();
 		System.out.println("Project deleted with id: " + id);
-		database.delete(ProjectsTable.TABLE_PROJECTS, ProjectsTable.COLUMN_PROJECT_ID 
+		db.delete(ProjectsTable.TABLE_PROJECTS, ProjectsTable.COLUMN_PROJECT_ID 
 				+ " = " + id, null);
 	}
 
 	/* Put all projects into a list */
-	public List<Project> getAllProjects() {
-		List<Project> projects = new ArrayList<Project>();
+	public List<String> getAllProjects() {
+		List<String> projects = new ArrayList<String>();
 		
-		Cursor cursor = database.query(ProjectsTable.TABLE_PROJECTS, allColumns, null,
-				null, null, null, null);
+		String selectQuery = "select * from projects";
 		
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Project project = cursorToProject(cursor);
-			projects.add(project);
-			cursor.moveToNext();
+		this.open();
+		
+		Cursor cu = db.rawQuery(selectQuery, null);
+
+		if (cu.moveToFirst()) {
+			do {
+				projects.add(cu.getString(1));
+			} while(cu.moveToNext());
 		}
-		cursor.close();
+		
+		cu.close();
+		this.close();
+		
 		return projects;
 	}
 	

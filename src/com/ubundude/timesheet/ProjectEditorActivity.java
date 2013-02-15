@@ -1,6 +1,6 @@
 /**
  * @author Kolby Canlser
- * @version 1.0.ALPHA_008
+ * @version 1.0.ALPHA_010
  * 
  *  Creates the Project Editor page
  */
@@ -8,13 +8,16 @@
 package com.ubundude.timesheet;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 /*
- * TODO Need way to call and load project passed by Intent
+ * TODO Spinner should load project ID i
+ * TODO If project loaded from database, should update, not insert new
  */
 
 /** 
@@ -25,14 +28,27 @@ import android.widget.EditText;
  */
 public class ProjectEditorActivity extends Activity {
 	/** Get an instance of the Projects Data Source */
-	ProjectsDataSource proDS = new ProjectsDataSource(this);
-	public EditText shortCodeEdit, fullNameEdit, rateEdit, descEdit;
+	private ProjectsDataSource proDS = new ProjectsDataSource(this);
+	private SQLiteDatabase db;
+	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(this);
+	private EditText shortCodeEdit, fullNameEdit, rateEdit, descEdit;
+	private int project;
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editor_project);
         
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+        	project = extras.getInt("PROJECT");
+        }
         
+        //Log.d("Project Is", "Project is" + project);
+        if (project != 1) {
+        	loadProject(project);
+        }
+        
+
 	}
 	
 	/**
@@ -41,14 +57,14 @@ public class ProjectEditorActivity extends Activity {
 	 * @param v Gets the current veiw
 	 */
 	public void saveHandler(View v) {
-		/** Variables to store form elements into for insertion to databae */
-		final String shortCode, fullName, rate, description;
-
-		/** Initializes the edit text fields for use */
+		 /** Initializes the edit text fields for use */
 		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
 		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
 		rateEdit = (EditText)findViewById(R.id.rateEditText);
 		descEdit = (EditText)findViewById(R.id.descriptionEditText);
+		
+		/** Variables to store form elements into for insertion to databae */
+		final String shortCode, fullName, rate, description;
 		
 		/** Get the text from the EditTexts, convert to strings, and store the values */
 		shortCode = shortCodeEdit.getText().toString();
@@ -67,6 +83,34 @@ public class ProjectEditorActivity extends Activity {
 		
 		/** Return to the previous activity */
 		finish();
+	}
+	
+	/**
+	 * Method called to load project from database when ID is passed by intent
+	 * 
+	 * @param project The ID of the project selected from the spinner
+	 */
+	public void loadProject(int project) {
+		 /** Initializes the edit text fields for use */
+		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
+		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
+		rateEdit = (EditText)findViewById(R.id.rateEditText);
+		descEdit = (EditText)findViewById(R.id.descriptionEditText);
+		
+		Log.d("Project Is", "Project is" + project);
+		
+		String selectProject = "select * from projects where _id = " + project;
+		db = dbHelp.getReadableDatabase();
+		Cursor cu = db.rawQuery(selectProject, null);
+		
+		cu.moveToFirst();
+		shortCodeEdit.setText(cu.getString(2));
+		fullNameEdit.setText(cu.getString(1));
+		rateEdit.setText(cu.getString(3));
+		descEdit.setText(cu.getString(4));
+		
+		cu.close();
+		db.close();
 	}
 
 	/**

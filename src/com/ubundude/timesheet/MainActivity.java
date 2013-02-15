@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         /** Method to get todays date and display it in the proper places */
         initialDates();
         
-        getDailyTimestamps();
+       // getDailyTimestamps();
         
         /**
          * Implements the Minus Button with OnCLickListener and

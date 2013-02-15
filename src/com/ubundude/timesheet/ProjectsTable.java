@@ -1,5 +1,6 @@
 package com.ubundude.timesheet;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -20,13 +21,17 @@ public class ProjectsTable {
 			+ COLUMN_PROJECT_ID + " integer primary key autoincrement, "
 			+ COLUMN_NAME + " text not null, "
 			+ COLUMN_SHORTCODE + " text not null, "
-			+ COLUMN_RATE + " text not null, "
-			+ COLUMN_DESC + " text not null"
+			+ COLUMN_RATE + " text, "
+			+ COLUMN_DESC + " text"
 			+ ");";
 	
 	/* Create the Database Table Projects */
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_NAME, "<NEW>");
+		values.put(COLUMN_SHORTCODE, "NEW");
+		database.insert(TABLE_PROJECTS, null, values);
 	}
 	
 	/* Update to the new Database Version */
