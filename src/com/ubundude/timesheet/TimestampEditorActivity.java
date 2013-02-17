@@ -311,7 +311,7 @@ public class TimestampEditorActivity extends Activity {
        	}
        
        	public void loadSpinnerData() {
-       		List<String> projects = proDS.getAllProjects();
+       		List<String> projects = proDS.getAllProjects(); //FIXME Migrate to natively handled, no DS
        		
        		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
        				android.R.layout.simple_spinner_item, projects);

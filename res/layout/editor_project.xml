@@ -19,6 +19,24 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/projectEditorTitleTextView1"
         android:text="@string/shortCode" />
+    
+    <EditText
+        android:id="@+id/shortCodeEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/shortCodeTextView"
+        android:ems="10"
+        android:inputType="text" />
+    
+     <Button
+        android:id="@+id/projectDeleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/shortCodeEditText"
+        android:layout_marginRight="@dimen/deletePaddingRight"
+        android:background="@drawable/delete" />
 
     <TextView
         android:id="@+id/fullNameTextView"
@@ -45,6 +63,15 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/fullNameEditText"
         android:text="@string/rate" />
+    
+    <EditText
+        android:id="@+id/rateEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/rateTextView"
+        android:ems="10"
+        android:inputType="numberDecimal" />
 
     <TextView
         android:id="@+id/descriptionTextView"
@@ -78,7 +105,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:onClick="saveHandler"
             android:text="@string/save" />
 
         <Button
@@ -86,36 +112,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:onClick="cancelButtonHandler"
             android:text="@string/cancel" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/projectDeleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/shortCodeEditText"
-        android:layout_marginRight="@dimen/deletePaddingRight"
-        android:background="@drawable/delete"
-        android:onClick="projectDeleteHandler" />
-
-    <EditText
-        android:id="@+id/rateEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/rateTextView"
-        android:ems="10"
-        android:inputType="numberDecimal" />
-
-    <EditText
-        android:id="@+id/shortCodeEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/shortCodeTextView"
-        android:ems="10"
-        android:inputType="text" />
 
 </RelativeLayout>

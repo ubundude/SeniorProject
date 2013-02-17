@@ -1,24 +1,26 @@
 /**
  * @author Kolby Canlser
- * @version 1.0.ALPHA_010
+ * @version 1.0.ALPHA_012
  * 
  *  Creates the Project Editor page
+ */
+
+/*
+ * TODO Need JavaDocing for this entire class: ProjectEditor
  */
 
 package com.ubundude.timesheet;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-
-/*
- * TODO Spinner should load project ID i
- * TODO If project loaded from database, should update, not insert new
- */
+import android.widget.Toast;
 
 /** 
  * ProjectEditorActivity class
@@ -27,12 +29,12 @@ import android.widget.EditText;
  * and deleting projects in the projects table.
  */
 public class ProjectEditorActivity extends Activity {
-	/** Get an instance of the Projects Data Source */
-	private ProjectsDataSource proDS = new ProjectsDataSource(this);
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(this);
 	private EditText shortCodeEdit, fullNameEdit, rateEdit, descEdit;
 	private String project;
+	private Button saveButton, cancelButton, deleteButton;
+	private int projectId;
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,45 +45,42 @@ public class ProjectEditorActivity extends Activity {
         	project = extras.getString("PROJECT_NAME");
         }
         
+        saveButton = (Button)findViewById(R.id.saveProjectButton);
+        cancelButton = (Button)findViewById(R.id.cancelProjectButton);
+        deleteButton = (Button)findViewById(R.id.projectDeleteButton);
+        
         Log.d("Project Is", "Project is" + project);
         if (!project.equals("<NEW>")) {
-        	Log.d("Load Called", "Project loaded with id: " + project);
-        	loadProject(project);
+        	projectId = loadProject(project);
+        } else {
+        	projectId = 1;
         }
-	}
-	
-	/**
-	 * Method that is called when the Save Button is pressed
-	 * 
-	 * @param v Gets the current veiw
-	 */
-	public void saveHandler(View v) {
-		 /** Initializes the edit text fields for use */
-		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
-		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
-		rateEdit = (EditText)findViewById(R.id.rateEditText);
-		descEdit = (EditText)findViewById(R.id.descriptionEditText);
-		
-		/** Variables to store form elements into for insertion to databae */
-		final String shortCode, fullName, rate, description;
-		
-		/** Get the text from the EditTexts, convert to strings, and store the values */
-		shortCode = shortCodeEdit.getText().toString();
-		fullName = fullNameEdit.getText().toString();
-		rate = rateEdit.getText().toString();
-		description = descEdit.getText().toString();
-	
-		/** Open the datasource, insert the values, and close the datasouce */
-		proDS.open();
-		try {
-			proDS.createProject(fullName, shortCode, rate, description);
-		} catch (Exception ex) {
-			Log.d("projectSaveFail", ex.getMessage(), ex.fillInStackTrace());
-		}
-		proDS.close();
-		
-		/** Return to the previous activity */
-		finish();
+        
+        saveButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(projectId != 1) {
+					updateProject(projectId);
+				} else {
+					insertNewProject(v);
+				}
+				
+			}
+		});
+        
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				cancelButtonHandler(v);
+			}
+		});
+        
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				projectDeleteHandler(v, projectId);
+			}
+		});
 	}
 	
 	/**
@@ -89,20 +88,20 @@ public class ProjectEditorActivity extends Activity {
 	 * 
 	 * @param project The ID of the project selected from the spinner
 	 */
-	public void loadProject(String project) {
-		 /** Initializes the edit text fields for use */
+	public int loadProject(String project) {
+		/** Initializes the edit text fields for use */
 		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
 		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
 		rateEdit = (EditText)findViewById(R.id.rateEditText);
 		descEdit = (EditText)findViewById(R.id.descriptionEditText);
-		
-		Log.d("Project Is", "Project is" + project);
+		int id;
 		
 		String selectProject = "select * from projects where name = '" + project + "'";
 		db = dbHelp.getReadableDatabase();
 		Cursor cu = db.rawQuery(selectProject, null);
 		
 		cu.moveToFirst();
+		id = cu.getInt(0);
 		shortCodeEdit.setText(cu.getString(2));
 		fullNameEdit.setText(cu.getString(1));
 		rateEdit.setText(cu.getString(3));
@@ -110,6 +109,86 @@ public class ProjectEditorActivity extends Activity {
 		
 		cu.close();
 		db.close();
+		
+		return id;
+	}
+	
+	public void updateProject(int projectId) {
+		/** Initializes the edit text fields for use */
+		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
+		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
+		rateEdit = (EditText)findViewById(R.id.rateEditText);
+		descEdit = (EditText)findViewById(R.id.descriptionEditText);
+		
+		/** Variables to store form elements into for insertion to database */
+		final String shortCode, fullName, rate, description;
+		
+		/** Get the text from the EditTexts, convert to strings, and store the values */
+		shortCode = shortCodeEdit.getText().toString();
+		fullName = fullNameEdit.getText().toString();
+		rate = rateEdit.getText().toString();
+		description = descEdit.getText().toString();
+		
+		String updateSQL = "update projects " +
+				"set name='" + fullName + "', shortcode='" + shortCode + "', rate='" +
+				rate + "', description='" +
+				description + "' " +
+				"where _id = " + projectId;
+		
+		db = dbHelp.getWritableDatabase();
+		db.execSQL(updateSQL);
+		db.close();
+		
+		finish();
+		
+	}
+	
+	/**
+	 * Method that is called when the Save Button is pressed
+	 * <p>
+	 * Only called if a new project needs to be inserted. 
+	 * Otherwise, project gets updated via updateProject()
+	 */
+	public void insertNewProject(View v) {
+		 /** Initializes the edit text fields for use */
+		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
+		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
+		rateEdit = (EditText)findViewById(R.id.rateEditText);
+		descEdit = (EditText)findViewById(R.id.descriptionEditText);
+		
+		/** Variables to store form elements into for insertion to database */
+		final String shortCode, fullName, rate, description;
+		
+		/** Get the text from the EditTexts, convert to strings, and store the values */
+		shortCode = shortCodeEdit.getText().toString();
+		fullName = fullNameEdit.getText().toString();
+		rate = rateEdit.getText().toString();
+		description = descEdit.getText().toString();
+		
+		if (fullName.equals("") && shortCode.equals("")) {
+			Context context = getApplicationContext();
+			String toastTest = "Project Is Empty";
+			int duration = Toast.LENGTH_LONG;
+			
+			Toast toast = Toast.makeText(context, toastTest, duration);
+			toast.show();
+		} else {
+			String insertString = "insert into projects (name, shortcode, rate, description) " +
+					"values('" + fullName + "', '" + shortCode + "', '" + rate +
+					"', '" + description + "')";
+		
+			/** Open the datasource, insert the values, and close the datasouce */
+			db = dbHelp.getWritableDatabase();
+			try {
+				db.execSQL(insertString);
+			} catch (Exception ex) {
+				Log.d("projectSaveFail", ex.getMessage(), ex.fillInStackTrace());
+			}
+			db.close();
+			
+			/** Return to the previous activity */
+			finish();
+		}
 	}
 
 	/**
@@ -121,7 +200,21 @@ public class ProjectEditorActivity extends Activity {
 		finish();
 	}
 	
-	public void projectDeleteHandler(View v) {
-		//TODO Write me
+	public void projectDeleteHandler(View v, int projectId) {
+		String deleteSQL = "delete from projects where _id = " + projectId;
+		if(projectId != 1) {
+			db = dbHelp.getWritableDatabase();
+			db.execSQL(deleteSQL);
+			db.close();
+			finish();
+		} else {
+			Context context = getApplicationContext();
+			String toastTest = "Cannot Delete Empty Project";
+			int duration = Toast.LENGTH_LONG;
+			
+			Toast toast = Toast.makeText(context, toastTest, duration);
+			toast.show();
+		}
 	}
+	
 }

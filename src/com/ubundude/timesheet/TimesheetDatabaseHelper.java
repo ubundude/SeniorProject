@@ -1,15 +1,25 @@
+/**
+ * @author Kolby Cansler
+ * @version 1.0.ALPHA_012
+ * 
+ * Class for handling creation and updating of database
+ * Also called to open new database instances
+ */
+
 package com.ubundude.timesheet;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+// TODO Need Javadoc's: TimesheetDatabase Helper
+
 public class TimesheetDatabaseHelper extends SQLiteOpenHelper {
 	/*  */
 	
 	/* Create Global Variables for Database Name and Version */
 	private static final String DATABASE_NAME = "timesheet.db";
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 1;
 	
 	/* Sets the context of the database */
 	public TimesheetDatabaseHelper(Context context) {

@@ -2,6 +2,12 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_012
+STATE: Projects page finished.
+- Projects loaded from database update
+- Projects can be deleted
+- Empty projects cannot be saved
+
 1.0.ALPHA_011
 STATE: Projects can be saved and loaded for editing via the spinner
 - Fixed projects not loading in editor from spinner

@@ -19,7 +19,7 @@ public class ProjectsTable {
 			+ TABLE_PROJECTS
 			+ "("
 			+ COLUMN_PROJECT_ID + " integer primary key autoincrement, "
-			+ COLUMN_NAME + " text not null, "
+			+ COLUMN_NAME + " text not null unique, "
 			+ COLUMN_SHORTCODE + " text not null, "
 			+ COLUMN_RATE + " text, "
 			+ COLUMN_DESC + " text"
