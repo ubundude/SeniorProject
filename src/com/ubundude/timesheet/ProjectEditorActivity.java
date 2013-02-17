@@ -32,7 +32,7 @@ public class ProjectEditorActivity extends Activity {
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(this);
 	private EditText shortCodeEdit, fullNameEdit, rateEdit, descEdit;
-	private int project;
+	private String project;
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +40,14 @@ public class ProjectEditorActivity extends Activity {
         
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
-        	project = extras.getInt("PROJECT");
+        	project = extras.getString("PROJECT_NAME");
         }
         
-        //Log.d("Project Is", "Project is" + project);
-        if (project != 1) {
+        Log.d("Project Is", "Project is" + project);
+        if (!project.equals("<NEW>")) {
+        	Log.d("Load Called", "Project loaded with id: " + project);
         	loadProject(project);
         }
-        
-
 	}
 	
 	/**
@@ -90,7 +89,7 @@ public class ProjectEditorActivity extends Activity {
 	 * 
 	 * @param project The ID of the project selected from the spinner
 	 */
-	public void loadProject(int project) {
+	public void loadProject(String project) {
 		 /** Initializes the edit text fields for use */
 		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
 		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
@@ -99,7 +98,7 @@ public class ProjectEditorActivity extends Activity {
 		
 		Log.d("Project Is", "Project is" + project);
 		
-		String selectProject = "select * from projects where _id = " + project;
+		String selectProject = "select * from projects where name = '" + project + "'";
 		db = dbHelp.getReadableDatabase();
 		Cursor cu = db.rawQuery(selectProject, null);
 		

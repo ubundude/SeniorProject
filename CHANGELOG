@@ -2,6 +2,12 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_011
+STATE: Projects can be saved and loaded for editing via the spinner
+- Fixed projects not loading in editor from spinner
+- Timestamps save with valid project id
+
+
 1.0.ALPHA_010
 STATE: Timestamps save, don't display on main page. Projects don't load by id to the Editor form the spinner
 - Fixed Timestamps not saving to database

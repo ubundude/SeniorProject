@@ -16,6 +16,8 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +44,8 @@ public class TimestampEditorActivity extends Activity {
 	/** Datasources to get objects for using database tables */
 	private TimestampDataSource timeDS = new TimestampDataSource(this);
 	private ProjectsDataSource proDS = new ProjectsDataSource(this);
+	private TimesheetDatabaseHelper helper;
+	private SQLiteDatabase db;
 	/** Gets a valid calendar instance */
 	final Calendar c = Calendar.getInstance();
 	/** Strings for correctly formating the date and time */
@@ -88,6 +92,8 @@ public class TimestampEditorActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editor_timestamp);
+        
+        helper = new TimesheetDatabaseHelper(this);
         
         initializeButtons();
         projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
@@ -239,7 +245,8 @@ public class TimestampEditorActivity extends Activity {
 		public void saveHandler(View v) {
 			/** Initialize variables to store information from the form elements */
 			String timeIn, dateIn, timeOut, dateOut, comments;
-        	int project;
+        	String projectName;
+			int project;
 
         	/** Get and store form element values*/
         	dateIn = dateInButton.getText().toString();
@@ -247,8 +254,8 @@ public class TimestampEditorActivity extends Activity {
         	dateOut = dateOutButton.getText().toString();
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
-        	project = projectSpinner.getSelectedItemPosition() + 1;
-        	
+        	projectName = (String) projectSpinner.getSelectedItem();
+        	project = getProjectId(projectName);
   
         	/** Open the timestamp table for writing */
         	timeDS.open();
@@ -261,16 +268,32 @@ public class TimestampEditorActivity extends Activity {
 	        finish();
         }
 
-   		/**
+   		private int getProjectId(String projectName) {
+   			String idSelect;
+   			int projectId;
+   			idSelect = "select _id from projects where name = '" + projectName + "'";
+   			
+   			db = helper.getReadableDatabase();
+   			
+   			Cursor cu = db.rawQuery(idSelect, null);
+   			cu.moveToFirst();
+   			
+   			projectId = cu.getInt(0);
+   			
+   			cu.close();
+   		
+			return projectId;
+		}
+
+		/**
    		 * Intent to move to project editor for editing currently selected project in the spinner
    		 * 
    		 * @param v Gets the current activity context to return to
    		 */
        	public void editHandler(View v) {
-       		long project = projectSpinner.getSelectedItemId();
-       		int pro = (int) project;
+       		String project = (String) projectSpinner.getSelectedItem();
        		Intent intent = new Intent(this, ProjectEditorActivity.class);
-       		intent.putExtra("PROJECT", pro);
+       		intent.putExtra("PROJECT_NAME", project);
        		startActivity(intent);
        	}
 

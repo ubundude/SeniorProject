@@ -7,7 +7,7 @@ public class TimestampTable {
 
 	/* Define Database Constants */
 	public static final String TABLE_TIMESTAMP = "timestamp";
-	public static final String TABLE_PROJECTS = "ProjectsTable";
+	public static final String TABLE_PROJECTS = "projects";
 	public static final String PROJECT_ID = "COLUMN_PROJECT_ID";
 	public static final String COLUMN_TIMESTAMP_ID = "_id";
 	public static final String COLUMN_TIME_IN = "time_in";
