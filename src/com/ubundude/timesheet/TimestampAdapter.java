@@ -7,7 +7,8 @@
 
 package com.ubundude.timesheet;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,25 +16,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class TimestampAdapter extends BaseAdapter {
-	Context context;
-	private List<Timestamp> list;
+	private Activity activity;
+	private ArrayList<HashMap<String, String>> data;
+	private static LayoutInflater inflater = null;
 	
-	public TimestampAdapter(Context c, List<Timestamp> values) {
-		c = context;
-		list = values;
+	public TimestampAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
+		activity = a;
+		data = d;
+		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	public int getCount() {
-		return list.size();
+		return data.size();
 	}
 
 	public Object getItem(int position) {
-		return list.get(position);
+		return data.get(position);
 	}
 
 	public long getItemId(int position) {
@@ -42,34 +45,31 @@ public class TimestampAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View row = convertView;
-		TimestampHolder holder = null;
-		
-		if(row == null) {
-			LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-			row = inflater.inflate(R.layout.listview_timestamp, parent, false);
+		View vi = convertView;
+		if(convertView==null)
+			vi = inflater.inflate(R.layout.listview_timestamp, null);
 			
-			holder = new TimestampHolder();
-			holder.projectShortTextView = (TextView)row.findViewById(R.id.projectShortTextView);
-			holder.fullNameTextView = (TextView)row.findViewById(R.id.fullNameTextView);
-			holder.minusImageButton = (ImageButton)row.findViewById(R.id.minusImageButton);
-			holder.hoursEditText = (EditText)row.findViewById(R.id.hoursEditText);
-			holder.plusImageButton = (ImageButton)row.findViewById(R.id.plusImageButton);
-			
-			row.setTag(holder);
-		} else {
-			holder = (TimestampHolder)row.getTag();
-		}
+		TextView projectShort = (TextView)vi.findViewById(R.id.projectShortTextView);
+		TextView projectFull = (TextView)vi.findViewById(R.id.projectFullTextView);
+		TextView stampId = (TextView)vi.findViewById(R.id.listviewId);
+		Button editButton = (Button)vi.findViewById(R.id.listviewEditButton);
+		TextView hoursEdit = (TextView)vi.findViewById(R.id.listviewHoursTV);
 		
-		return row;
+		HashMap<String, String> timestamp = new HashMap<String, String>();
+		timestamp = data.get(position);
+		
+		projectShort.setText(timestamp.get(MainActivity.KEY_SHORT));
+		projectFull.setText(timestamp.get(MainActivity.KEY_FULL));
+		stampId.setText(timestamp.get(MainActivity.KEY_ID));
+		hoursEdit.setText(timestamp.get(MainActivity.KEY_HOURS));
+		editButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				MainActivity.editClicked();
+			}
+		});
+	
+	return vi;
 	}
 	
-	static class TimestampHolder {
-
-		ImageButton plusImageButton;
-		EditText hoursEditText;
-		ImageButton minusImageButton;
-		TextView fullNameTextView;
-		TextView projectShortTextView;
-	}
 }

@@ -7,6 +7,7 @@
     <string name="comments">Comments:</string>
     <string name="day">Day</string>
     <string name="defaultDate">mm/dd/yy</string>
+    <string name="defaultInt">0</string>
     <string name="defaultText">default</string>
     <string name="defaultTime">0.00 h</string>
     <string name="description">Description:</string>

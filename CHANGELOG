@@ -2,6 +2,13 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.Alpha_013
+STATE: Compiles, but fails on timestamp add
+- Revamped most of the TimestampAdapter
+- Added hours field to Timestamp Table
+- Added TODO file to keep track of immediate todo items
+- Added custom icons
+
 1.0.ALPHA_012
 STATE: Projects page finished.
 - Projects loaded from database update

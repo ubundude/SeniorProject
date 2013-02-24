@@ -16,6 +16,7 @@ public class TimestampTable {
 	public static final String COLUMN_DATE_OUT = "date_out";
 	public static final String COLUMN_COMMENTS = "comments";
 	public static final String COLUMN_PROJECT = "project";
+	public static final String COLUMN_HOURS = "hours";
 
 	/* Database Creation SQL Statement */
 	private static final String DATABASE_CREATE = "create table "
@@ -27,6 +28,7 @@ public class TimestampTable {
 			+ COLUMN_DATE_OUT + " text not null, "
 			+ COLUMN_TIME_OUT + " text not null, "
 			+ COLUMN_COMMENTS + " text, "
+			+ COLUMN_HOURS + " text not null, "
 			+ COLUMN_PROJECT + " integer,"
 			+ " FOREIGN KEY (" + COLUMN_PROJECT + ") REFERENCES "
 			+ TABLE_PROJECTS + "(" + PROJECT_ID + "));";

@@ -32,6 +32,7 @@ import android.widget.TimePicker;
  * TODO Need way to populate from database
  * TODO Buttons should display current date or DATE LOADED FROM DATABASE
  * TODO Hours TextView should update to total time calculated from timeIn - timeOut
+ * TODO Should reload spinner on return from Project Editor
  */
 
 /**
@@ -41,6 +42,7 @@ import android.widget.TimePicker;
  * with the editor to add a new timestamp to the database.
  */
 public class TimestampEditorActivity extends Activity {
+	static final int SHOULD_RELOAD = 0;
 	/** Datasources to get objects for using database tables */
 	private TimestampDataSource timeDS = new TimestampDataSource(this);
 	private ProjectsDataSource proDS = new ProjectsDataSource(this);
@@ -294,7 +296,11 @@ public class TimestampEditorActivity extends Activity {
        		String project = (String) projectSpinner.getSelectedItem();
        		Intent intent = new Intent(this, ProjectEditorActivity.class);
        		intent.putExtra("PROJECT_NAME", project);
-       		startActivity(intent);
+       		startActivityForResult(intent, SHOULD_RELOAD);
+       	}
+       	
+       	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       		//TODO Fix somehow
        	}
 
     	/**
