@@ -19,7 +19,8 @@ public class TimestampDataSource {
 		 */
 	private String[] allColumns = { TimestampTable.COLUMN_TIMESTAMP_ID,
 			TimestampTable.COLUMN_TIME_IN, TimestampTable.COLUMN_DATE_IN, 
-			TimestampTable.COLUMN_TIME_OUT, TimestampTable.COLUMN_DATE_OUT, TimestampTable.COLUMN_PROJECT };
+			TimestampTable.COLUMN_TIME_OUT, TimestampTable.COLUMN_DATE_OUT,
+			TimestampTable.COLUMN_HOURS, TimestampTable.COLUMN_PROJECT };
 	
 	/*  */
 	public TimestampDataSource(Context context) {
@@ -37,15 +38,15 @@ public class TimestampDataSource {
 	}
 	
 	/* Method to create new Timestamp entry */
-	public Timestamp createTimestamp(String dateIn, String timeIn, String dateOut, String timeOut, String comments, int project) {
+	public Timestamp createTimestamp(String dateIn, String timeIn, String dateOut, String timeOut, String comments, String hours, int project) {
 		ContentValues values = new ContentValues();
 		values.put(TimestampTable.COLUMN_DATE_IN, dateIn);
 		values.put(TimestampTable.COLUMN_TIME_IN, timeIn);
 		values.put(TimestampTable.COLUMN_DATE_OUT, dateOut);
 		values.put(TimestampTable.COLUMN_TIME_OUT, timeOut);
 		values.put(TimestampTable.COLUMN_COMMENTS, comments);
-		values.put(TimestampTable.COLUMN_PROJECT, project);
-		
+		values.put(TimestampTable.COLUMN_HOURS, hours);
+		values.put(TimestampTable.COLUMN_PROJECT, project);	
 		
 		long insertId = database.insert(TimestampTable.TABLE_TIMESTAMP, TimestampTable.COLUMN_COMMENTS, values);
 		

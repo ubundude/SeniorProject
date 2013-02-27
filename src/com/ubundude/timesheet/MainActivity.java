@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -39,10 +38,10 @@ import android.widget.TextView;
  * Implements the main page layout and logic for the elements of the page
  */
 public class MainActivity extends Activity {
-	public static final String KEY_ID = "id";
-	public static final String KEY_SHORT = "short_code";
-	public static final String KEY_FULL = "full_name";
-	public static final String KEY_HOURS = "hours";
+	public static final String KEY_ID = "listviewId";
+	public static final String KEY_SHORT = "projectShortTextView";
+	public static final String KEY_FULL = "projectFullTextView";
+	public static final String KEY_HOURS = "listviewHoursTV";
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(this);
 	/** Gets a valid calendar instance for use */
@@ -115,6 +114,7 @@ public class MainActivity extends Activity {
 			stampList.add(map);
 			
 			cu.moveToNext();
+			iter++;
 		}
 		
 		cu.close();
@@ -216,12 +216,5 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	public static double timeCalc(String dateIn, String timeIn, String dateOut, String timeOut) {
-		double hours = 0.00;
-		
-		
-		
-		return hours;
-	}
     
 }

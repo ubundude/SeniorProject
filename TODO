@@ -1,6 +1,3 @@
-Add hours field to timestamp table. 
 Field should be found via calc time method. 
 
 Update mainactivity getall sql to get project items as well. Should join the tables. 
-
-timestamp editor need to add an hours field

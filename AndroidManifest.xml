@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ubundude.timesheet"
     android:versionCode="1"
-    android:versionName="1.0.ALPHA_013" >
+    android:versionName="1.0.ALPHA_014" >
 
     <uses-sdk
         android:minSdkVersion="8"

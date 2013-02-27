@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class TimestampAdapter extends BaseAdapter {
@@ -49,25 +48,25 @@ public class TimestampAdapter extends BaseAdapter {
 		if(convertView==null)
 			vi = inflater.inflate(R.layout.listview_timestamp, null);
 			
-		TextView projectShort = (TextView)vi.findViewById(R.id.projectShortTextView);
-		TextView projectFull = (TextView)vi.findViewById(R.id.projectFullTextView);
+		//TextView projectShort = (TextView)vi.findViewById(R.id.projectShortTextView);
+		//TextView projectFull = (TextView)vi.findViewById(R.id.projectFullTextView);
 		TextView stampId = (TextView)vi.findViewById(R.id.listviewId);
-		Button editButton = (Button)vi.findViewById(R.id.listviewEditButton);
+		//Button editButton = (Button)vi.findViewById(R.id.listviewEditButton);
 		TextView hoursEdit = (TextView)vi.findViewById(R.id.listviewHoursTV);
 		
 		HashMap<String, String> timestamp = new HashMap<String, String>();
 		timestamp = data.get(position);
 		
-		projectShort.setText(timestamp.get(MainActivity.KEY_SHORT));
-		projectFull.setText(timestamp.get(MainActivity.KEY_FULL));
 		stampId.setText(timestamp.get(MainActivity.KEY_ID));
+		//projectShort.setText(timestamp.get(MainActivity.KEY_SHORT));
+		//projectFull.setText(timestamp.get(MainActivity.KEY_FULL));
 		hoursEdit.setText(timestamp.get(MainActivity.KEY_HOURS));
-		editButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				MainActivity.editClicked();
-			}
-		});
+		//editButton.setOnClickListener(new View.OnClickListener() {
+		//	@Override
+		//	public void onClick(View v) {
+		//		MainActivity.editClicked();
+		//	}
+		//});
 	
 	return vi;
 	}

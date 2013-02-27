@@ -7,8 +7,10 @@
 
 package com.ubundude.timesheet;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -226,6 +228,7 @@ public class TimestampEditorActivity extends Activity {
 		switch (fromWhere) {
 		case 1:
 			timeInButton.setText(formTime.format(c.getTime()));
+			
 			break;
 		case 2:
 			timeOutButton.setText(formTime.format(c.getTime()));
@@ -245,8 +248,9 @@ public class TimestampEditorActivity extends Activity {
 		 * @param view The current activity context
 		 */
 		public void saveHandler(View v) {
+			//FIXME FUCK THE DATASOURCE
 			/** Initialize variables to store information from the form elements */
-			String timeIn, dateIn, timeOut, dateOut, comments;
+			String timeIn, dateIn, timeOut, dateOut, comments, hours;
         	String projectName;
 			int project;
 
@@ -256,6 +260,7 @@ public class TimestampEditorActivity extends Activity {
         	dateOut = dateOutButton.getText().toString();
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
+        	hours = timeCalc(dateIn, timeIn, dateOut, timeOut);
         	projectName = (String) projectSpinner.getSelectedItem();
         	project = getProjectId(projectName);
   
@@ -263,7 +268,7 @@ public class TimestampEditorActivity extends Activity {
         	timeDS.open();
         	
         	/** Call method to insert values into timestamp table */        
-    		timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, project);
+    		timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, hours, project);
 
 	        /** Close the database and return to the previous context */
 	        timeDS.close();
@@ -326,5 +331,34 @@ public class TimestampEditorActivity extends Activity {
        		
        		projectSpinner.setAdapter(dataAdapter);
        	}
+       	
+       	public static String timeCalc(String dateIn, String timeIn, String dateOut, String timeOut) {
+    		String hours = "0.00";
+    		String hr, min;
+    		long hrb, minb;
+    		String in = dateIn + " " + timeIn;
+    		String out = dateOut + " " + timeOut;
+    		Date inTime, outTime;
+    		SimpleDateFormat dateForm = new SimpleDateFormat("MM/dd/yyy HH:mm", Locale.US);
+    		
+    		
+				try {
+					inTime = dateForm.parse(in);
+				outTime = dateForm.parse(out);
+				long diff = outTime.getTime() - inTime.getTime();
+				hrb = diff/ (1000 * 60 * 60 );
+				minb = diff / (1000 * 60);
+				minb = minb - 60 * hrb;
+				hr = String.valueOf(hrb);
+				min = String.valueOf(minb);
+				hours = hr + "." + min;
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		
+    		return hours;
+				
+    	}
        
 }

@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/projectShortTextView" 
-            android:text="@string/defaultInt" />"
+            android:text="@string/defaultInt" />
 
          <Button
             android:id="@+id/listviewEditButton"
