@@ -2,6 +2,10 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_015
+STATE: Timestamps are displaying to the listview,I just need to make them clickable. 
+- Fixed timestamps not displaying.
+
 1.0.ALPHA_014
 STATE: Timestamps not displaying on main
 - Added method to calculate and store the hours worked for a given timestamp

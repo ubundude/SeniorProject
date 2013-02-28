@@ -84,19 +84,12 @@
             android:text="@string/addNew" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/debugTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout2"
-        android:text="@string/defaultDate" />
-
     <ListView
         android:id="@+id/timestampListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/debugTextView" >
+        android:layout_below="@+id/linearLayout2" >
     </ListView>
 
 </RelativeLayout>

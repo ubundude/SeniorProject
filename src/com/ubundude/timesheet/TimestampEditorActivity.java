@@ -1,6 +1,6 @@
 /**
  * @author Kolby Cansler <golfguy90@gmail.com>
- * @version 1.0.ALPHA_008
+ * @version 1.0.ALPHA_015
  * 
  * Creates the Timestamp Editor Page
  */
@@ -17,6 +17,7 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,6 +30,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 /* 
  * TODO Need way to populate from database
@@ -195,6 +197,18 @@ public class TimestampEditorActivity extends Activity {
         
 	}
 	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		 projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
+	        
+			try {
+	       		loadSpinnerData();
+			} catch (Exception ex){
+				Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
+			}
+	}
+	
 	private void initializeButtons() {
 		/** Initialize buttons so that they can be set to the proper date */
 		dateInButton = (Button)findViewById(R.id.dateInButton);
@@ -263,16 +277,25 @@ public class TimestampEditorActivity extends Activity {
         	hours = timeCalc(dateIn, timeIn, dateOut, timeOut);
         	projectName = (String) projectSpinner.getSelectedItem();
         	project = getProjectId(projectName);
-  
-        	/** Open the timestamp table for writing */
-        	timeDS.open();
         	
-        	/** Call method to insert values into timestamp table */        
-    		timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, hours, project);
-
-	        /** Close the database and return to the previous context */
-	        timeDS.close();
-	        finish();
+        	if(project == 1) {
+        		Context context = getApplicationContext();
+    			String toastTest = "Please select a project.";
+    			int duration = Toast.LENGTH_LONG;
+    			
+    			Toast toast = Toast.makeText(context, toastTest, duration);
+    			toast.show();
+        	} else {
+	        	/** Open the timestamp table for writing */
+	        	timeDS.open();
+	        	
+	        	/** Call method to insert values into timestamp table */        
+	    		timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, hours, project);
+	
+		        /** Close the database and return to the previous context */
+		        timeDS.close();
+		        finish();
+        	}
         }
 
    		private int getProjectId(String projectName) {

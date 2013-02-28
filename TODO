@@ -1,3 +1,4 @@
-Field should be found via calc time method. 
+Create intent to move to timestamp editor on click from main page listview and
+load the selected timestamp into the editor. 
 
-Update mainactivity getall sql to get project items as well. Should join the tables. 
+Probably more, but I can't think ahead anymore. 

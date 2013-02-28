@@ -1,6 +1,6 @@
 /**
  * @author Kolby Cansler <golfguy90@gmail.com>
- * @version 1.0.ALPHA_008
+ * @version 1.0.ALPHA_015
  * 
  * Implements the Main layout class.
  */
@@ -22,13 +22,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 /*
- * TODO Fix timestamps not displaying - Date ok, need to check adapter
  * TODO Figure out what else needs done :p
  */
 
@@ -54,7 +55,6 @@ public class MainActivity extends Activity {
 	/** Prepares buttons and EditText for use */
 	public Button minusButton, plusButton;
 	public EditText dateEditText;
-	public TextView debugTV;
 	public ListView list;
 	TimestampAdapter adapter;
 	
@@ -90,6 +90,12 @@ public class MainActivity extends Activity {
 		});
     }
     
+    @Override 
+    protected void onResume() {
+    	super.onResume();
+    	getDailyTimestamps(date);
+    }
+    
     private void getDailyTimestamps(String date) {
     	int count;
     	int iter = 0;
@@ -99,23 +105,29 @@ public class MainActivity extends Activity {
     	/** Open the database table for reading and writing */
         db = dbHelp.getReadableDatabase();
         
-        String getTimestamps = "select _id, hours from timestamp where date_in = " + date;
+        String getTimestamps = "select ti._id, pr.name, pr.shortcode, ti.hours "
+        		+ "from timestamp ti inner join projects pr "
+        		+ "where ti.project = pr._id and ti.date_in = '" + date + "'";
     	
         Cursor cu = db.rawQuery(getTimestamps, null);
-        count = cu.getCount();
-		cu.moveToFirst();
-		while (iter != count) {
-			HashMap<String, String> map = new HashMap<String, String>();
-			map.put(KEY_ID, Integer.toString(cu.getInt(0)));
-			map.put(KEY_SHORT, cu.getString(2));
-			map.put(KEY_FULL, cu.getString(3));
-			map.put(KEY_HOURS, cu.getString(1));
+        
+        if(cu != null && cu.getCount() > 0){
+	        count = cu.getCount();
+			cu.moveToFirst();
 			
-			stampList.add(map);
-			
-			cu.moveToNext();
-			iter++;
-		}
+			while (iter != count) {
+				HashMap<String, String> map = new HashMap<String, String>();
+				map.put(KEY_ID, Integer.toString(cu.getInt(0)));
+				map.put(KEY_SHORT, cu.getString(1));
+				map.put(KEY_FULL, cu.getString(2));
+				map.put(KEY_HOURS, cu.getString(3));
+				
+				stampList.add(map);
+				
+				cu.moveToNext();
+				iter++;
+			}
+        }
 		
 		cu.close();
 		db.close();
@@ -124,6 +136,15 @@ public class MainActivity extends Activity {
         
         adapter = new TimestampAdapter(this, stampList);
         list.setAdapter(adapter);
+        
+        list.setOnItemClickListener(new OnItemClickListener() {
+        	 
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+ 
+            }
+        });
   
 		
 	}
@@ -138,10 +159,6 @@ public class MainActivity extends Activity {
     	/** Sets the text in the dateEditText to the current date */
         dateEditText = (EditText)findViewById(R.id.dateEditText);
         dateEditText.setText(dateView, TextView.BufferType.NORMAL);
-        
-        //Debugging Line
-        debugTV = (TextView)findViewById(R.id.debugTextView);
-        debugTV.setText(date);
 
 		return date;
 	}
@@ -192,7 +209,6 @@ public class MainActivity extends Activity {
     	timeDS.close();
     }
     */
-
     
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,16 +221,5 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		
 	}
-
-	public static void plusClicked() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public static void minusClicked() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-    
+	 
 }
