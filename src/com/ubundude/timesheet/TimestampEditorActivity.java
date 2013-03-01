@@ -1,6 +1,6 @@
 /**
  * @author Kolby Cansler <golfguy90@gmail.com>
- * @version 1.0.ALPHA_015
+ * @version 1.0.ALPHA_016
  * 
  * Creates the Timestamp Editor Page
  */
@@ -9,6 +9,7 @@ package com.ubundude.timesheet;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -46,11 +47,8 @@ import android.widget.Toast;
  * with the editor to add a new timestamp to the database.
  */
 public class TimestampEditorActivity extends Activity {
-	static final int SHOULD_RELOAD = 0;
 	/** Datasources to get objects for using database tables */
-	private TimestampDataSource timeDS = new TimestampDataSource(this);
-	private ProjectsDataSource proDS = new ProjectsDataSource(this);
-	private TimesheetDatabaseHelper helper;
+	private TimesheetDatabaseHelper dbHelp;
 	private SQLiteDatabase db;
 	/** Gets a valid calendar instance */
 	final Calendar c = Calendar.getInstance();
@@ -99,7 +97,7 @@ public class TimestampEditorActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editor_timestamp);
         
-        helper = new TimesheetDatabaseHelper(this);
+        dbHelp = new TimesheetDatabaseHelper(this);
         
         initializeButtons();
         projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
@@ -262,7 +260,6 @@ public class TimestampEditorActivity extends Activity {
 		 * @param view The current activity context
 		 */
 		public void saveHandler(View v) {
-			//FIXME FUCK THE DATASOURCE
 			/** Initialize variables to store information from the form elements */
 			String timeIn, dateIn, timeOut, dateOut, comments, hours;
         	String projectName;
@@ -286,14 +283,17 @@ public class TimestampEditorActivity extends Activity {
     			Toast toast = Toast.makeText(context, toastTest, duration);
     			toast.show();
         	} else {
+        		String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, comments, hours, project) " +
+					"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
+					"', '" + timeOut + "', '" + comments + "', '" + hours + "', '" + project + "')";
 	        	/** Open the timestamp table for writing */
-	        	timeDS.open();
-	        	
-	        	/** Call method to insert values into timestamp table */        
-	    		timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comments, hours, project);
-	
+        		
+        		db = dbHelp.getReadableDatabase();
+        		
+        		db.execSQL(insertSQL);
+	     
 		        /** Close the database and return to the previous context */
-		        timeDS.close();
+		        db.close();
 		        finish();
         	}
         }
@@ -303,7 +303,7 @@ public class TimestampEditorActivity extends Activity {
    			int projectId;
    			idSelect = "select _id from projects where name = '" + projectName + "'";
    			
-   			db = helper.getReadableDatabase();
+   			db = dbHelp.getReadableDatabase();
    			
    			Cursor cu = db.rawQuery(idSelect, null);
    			cu.moveToFirst();
@@ -324,11 +324,6 @@ public class TimestampEditorActivity extends Activity {
        		String project = (String) projectSpinner.getSelectedItem();
        		Intent intent = new Intent(this, ProjectEditorActivity.class);
        		intent.putExtra("PROJECT_NAME", project);
-       		startActivityForResult(intent, SHOULD_RELOAD);
-       	}
-       	
-       	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-       		//TODO Fix somehow
        	}
 
     	/**
@@ -345,7 +340,22 @@ public class TimestampEditorActivity extends Activity {
        	}
        
        	public void loadSpinnerData() {
-       		List<String> projects = proDS.getAllProjects(); //FIXME Migrate to natively handled, no DS
+       		List<String> projects = new ArrayList<String>();
+    		
+    		String selectQuery = "select * from projects";
+    		
+    		db = dbHelp.getReadableDatabase();
+    		
+    		Cursor cu = db.rawQuery(selectQuery, null);
+
+    		if (cu.moveToFirst()) {
+    			do {
+    				projects.add(cu.getString(1));
+    			} while(cu.moveToNext());
+    		}
+    		
+    		cu.close();
+    		db.close();
        		
        		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
        				android.R.layout.simple_spinner_item, projects);
@@ -376,7 +386,6 @@ public class TimestampEditorActivity extends Activity {
 				min = String.valueOf(minb);
 				hours = hr + "." + min;
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
     		

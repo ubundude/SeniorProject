@@ -9,6 +9,11 @@ package com.ubundude.timesheet;
 
 import com.bugsense.trace.BugSenseHandler;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,8 +22,14 @@ import java.util.Locale;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.View;
@@ -48,15 +59,19 @@ public class MainActivity extends Activity {
 	/** Gets a valid calendar instance for use */
 	final Calendar c = Calendar.getInstance();
 	/** Strings for formatting the date's for use */
-	public String dateViewForm = "EEE\nMM/dd/yyyy";
+	public String dateViewForm = "EEE MM/dd/yyyy";
 	public String dateForm = "MM/dd/yyyy";
+	public String timeForm = "HH:mm";
 	/** Strings to store formated calendar outputs */
 	public String date, dateView;
 	/** Prepares buttons and EditText for use */
-	public Button minusButton, plusButton;
+	public Button minusButton, plusButton, quickAdd;
 	public EditText dateEditText;
 	public ListView list;
 	TimestampAdapter adapter;
+	SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
+    SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
+    SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +79,13 @@ public class MainActivity extends Activity {
         BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
         setContentView(R.layout.activity_main);
       
+        try {
+			updateCheck();
+		} catch (NameNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
         /** Method to get todays date and display it in the proper places */
         date = initialDates();
         
@@ -75,7 +97,13 @@ public class MainActivity extends Activity {
         minusButton = (Button)findViewById(R.id.minusButton);
         minusButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				minusButtonHandler();
+				try {
+					date = minusButtonHandler();
+					getDailyTimestamps(date);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
         
@@ -85,12 +113,61 @@ public class MainActivity extends Activity {
         plusButton = (Button)findViewById(R.id.plusButton);
         plusButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				plusButtonHandler();
+				try {
+					date = plusButtonHandler();
+					getDailyTimestamps(date);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 			}
 		});
+        
+        quickAdd = (Button)findViewById(R.id.quickAddButton);
+        quickAdd.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View v) {
+        		quickAddHandler(v);
+        		getDailyTimestamps(date);
+        	}
+        });
     }
     
-    @Override 
+    private void updateCheck() throws NameNotFoundException, IOException {
+		/* TODO Create method to check for an updated version of the app. 
+    	 * Method should display an alert dialog if new version availible
+    	 */
+    	/*
+    	URL url = new URL("https://dl.dropbox.com/u/20328438/version.txt");
+    	URL downUrl = new URL("https://dl.dropbox.com/u/20328438/timesheet.apk");
+    	String urlVersion;
+    	BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+			
+    	urlVersion = in.readLine();
+		in.close();
+		
+    	
+    	PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+		String packageVersion = pInfo.versionName;
+		
+		if (!urlVersion.equals(packageVersion)) {
+			AlertDialog.Builder build = new AlertDialog.Builder(this);
+			build.setMessage("You're version is out of date. Would you like to update?")
+				.setTitle("Version Check");
+			build.setPositiveButton("Download", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					//TODO Write Me
+				}
+			});
+			build.setNegativeButton("Later", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					//TODO write me
+				}
+			});
+			AlertDialog dialog = build.create();
+		}
+		*/
+	}
+
+	@Override 
     protected void onResume() {
     	super.onResume();
     	getDailyTimestamps(date);
@@ -150,9 +227,6 @@ public class MainActivity extends Activity {
 	}
 
 	private String initialDates() {
-		/** Format the current date for use and store it in the date variables */
-        SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
-        SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
         dateView = formDateView.format(c.getTime());
     	date = formDate.format(c.getTime());
         
@@ -163,17 +237,38 @@ public class MainActivity extends Activity {
 		return date;
 	}
 
-	/** Gets the next day and displays to dateEditText */
-    protected void plusButtonHandler() {
+	/** Gets the next day and displays to dateEditText 
+	 * @throws ParseException */
+    private String plusButtonHandler() throws ParseException {
+    	
+    	c.setTime(formDateView.parse(dateView));
+    	c.add(Calendar.DAY_OF_MONTH, 1);
+    	
+    	dateView = formDateView.format(c.getTime());
+    	date = formDate.format(c.getTime());
+    	
+    	dateEditText = (EditText)findViewById(R.id.dateEditText);
+        dateEditText.setText(dateView, TextView.BufferType.NORMAL);
+    	
     	// TODO Finish Logic here
-    	// use add(c.Date, num to add);0
+    	// use add(c.Date, num to add);
+    	return date;
 	}
 
-    /** Gets the previous day and displays to dateEditText */
-	protected void minusButtonHandler() {
+    /** Gets the previous day and displays to dateEditText 
+     * @throws ParseException */
+	private String minusButtonHandler() throws ParseException {
 		// TODO Finish Logic here
-		
-		
+		c.setTime(formDateView.parse(dateView));
+    	c.add(Calendar.DAY_OF_MONTH, -1);
+    	
+    	dateView = formDateView.format(c.getTime());
+    	date = formDate.format(c.getTime());
+    	
+    	dateEditText = (EditText)findViewById(R.id.dateEditText);
+        dateEditText.setText(dateView, TextView.BufferType.NORMAL);
+        
+		return date;
 	}
 
 	/**
@@ -190,25 +285,25 @@ public class MainActivity extends Activity {
 	 * Get current date and time and place them into Timestamp table as generic entry
 	 * 
 	 * @param view
+	 * @throws SQLException
 	 */
-   /* public void quickAddHandler(View view) {
-    	String timeIn, timeOut, dateIn, dateOut, comment;
-    	int project = 0;
-    	comment = null;
-    	timeIn = Integer.toString(Calendar.HOUR_OF_DAY) + ":" + Integer.toString(Calendar.MINUTE);
+   public void quickAddHandler(View view) throws SQLException {
+    	String timeIn, timeOut, dateIn, dateOut;
+    	int project = 1; //Will get from Default project in settings
+    	timeIn = formDate.format(c.getTime());
     	timeOut = timeIn;
-    	dateIn = Integer.toString(Calendar.MONTH) + "/" + Integer.toString(Calendar.DAY_OF_MONTH) + "/" + Integer.toString(Calendar.YEAR);
+    	dateIn = formTime.format(c.getTime());
     	dateOut = dateIn;
+    	db = dbHelp.getWritableDatabase();
+    	String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, hours, project) " +
+				"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
+				"', '" + timeOut + "', 0, '" + project + "')";
+    
+    	db.execSQL(insertSQL);
     	
-    	timeDS.open();
-    	try {
-    	timeDS.createTimestamp(dateIn, timeIn, dateOut, timeOut, comment, project);
-    	} catch (Exception ex) {
-    		Log.d("QuickAddFail", ex.getMessage(), ex.fillInStackTrace());
-    	}
-    	timeDS.close();
+    	db.close();
     }
-    */
+    
     
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {

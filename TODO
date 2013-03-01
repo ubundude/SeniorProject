@@ -1,4 +1,9 @@
 Create intent to move to timestamp editor on click from main page listview and
 load the selected timestamp into the editor. 
 
+Finish update check method. Should be a handler to download the apk
+
 Probably more, but I can't think ahead anymore. 
+
+Need to set a default project in the settings. Not right now. will be done later
+

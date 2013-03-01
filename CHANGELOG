@@ -2,6 +2,12 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_016
+STATE: Quick Add not working, Need to debug
+- Got rid of datasource usage in TimestampEditor
+- Plus and minus buttons on MainActivity work
+- Started work on the update check method. Need to finish
+
 1.0.ALPHA_015
 STATE: Timestamps are displaying to the listview,I just need to make them clickable. 
 - Fixed timestamps not displaying.
