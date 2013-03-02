@@ -67,9 +67,10 @@ public class TimestampEditorActivity extends Activity {
 	static Button timeOutButton;
 	static Button saveButton;
 	static Spinner projectSpinner;
-	EditText commentsEditText;
+	EditText commentsEditText, timeEditText;
 	/** Variable to store the value of the button calling the picker */
 	private int fromWhere = 0;
+	private int timeId;
 	/** Gets a new TimePickerDialog and sets the calendar time to value picked */
 	TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
 		@Override
@@ -96,10 +97,13 @@ public class TimestampEditorActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editor_timestamp);
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+        	timeId = extras.getInt("TIMESTAMP_ID");
+        } else {
+        	timeId = 0;
+        }
         
-        dbHelp = new TimesheetDatabaseHelper(this);
-        
-        initializeButtons();
         projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
         
 		try {
@@ -107,6 +111,13 @@ public class TimestampEditorActivity extends Activity {
 		} catch (Exception ex){
 			Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
 		}
+        dbHelp = new TimesheetDatabaseHelper(this);
+        
+        if(timeId != 0) {
+        	getTimestamp(timeId);
+        } else {
+        	initializeButtons();
+        }
 		
 		/**
 		 * Logic to handle clicking the Time In button
@@ -324,6 +335,7 @@ public class TimestampEditorActivity extends Activity {
        		String project = (String) projectSpinner.getSelectedItem();
        		Intent intent = new Intent(this, ProjectEditorActivity.class);
        		intent.putExtra("PROJECT_NAME", project);
+       		startActivity(intent);
        	}
 
     	/**
@@ -363,6 +375,34 @@ public class TimestampEditorActivity extends Activity {
        		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
        		
        		projectSpinner.setAdapter(dataAdapter);
+       	}
+       	
+       	private int getTimestamp(int timeId) {
+       		int id = timeId;
+       		String selectTimestamp =" select * from timestamps where _id = " + id;
+       		timeEditText = (EditText)findViewById(R.id.timeEditText);
+       		projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
+       		dateInButton = (Button)findViewById(R.id.dateInButton);
+	       	timeInButton = (Button)findViewById(R.id.timeInButton);
+	 	    dateOutButton = (Button)findViewById(R.id.dateOutButton);
+	 	    timeOutButton = (Button)findViewById(R.id.timeOutButton);
+	 	    commentsEditText = (EditText)findViewById(R.id.commentsEditText);
+	       		
+       		db = dbHelp.getReadableDatabase();
+       		Cursor cu = db.rawQuery(selectTimestamp, null);
+       		
+       		cu.moveToFirst();
+       		timeEditText.setText(cu.getString(6));
+       		dateInButton.setText(cu.getString(1));
+       		timeInButton.setText(cu.getString(2));
+       		dateOutButton.setText(cu.getString(3));
+       		timeOutButton.setText(cu.getString(4));
+       		commentsEditText.setText(cu.getString(5));
+       		
+       		db.close();
+       		cu.close();
+       		
+       		return id;
        	}
        	
        	public static String timeCalc(String dateIn, String timeIn, String dateOut, String timeOut) {

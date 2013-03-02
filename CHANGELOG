@@ -2,6 +2,10 @@ CHANGELOG
 =========
 NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_017
+STATE: Update Check Works. Listview Items still not clickable.
+- Fixed Update Check
+
 1.0.ALPHA_016
 STATE: Quick Add not working, Need to debug
 - Got rid of datasource usage in TimestampEditor

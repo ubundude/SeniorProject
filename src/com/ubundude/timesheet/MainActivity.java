@@ -10,8 +10,13 @@ package com.ubundude.timesheet;
 import com.bugsense.trace.BugSenseHandler;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -31,6 +37,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,6 +46,7 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /*
  * TODO Figure out what else needs done :p
@@ -85,6 +93,12 @@ public class MainActivity extends Activity {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
         /** Method to get todays date and display it in the proper places */
         date = initialDates();
@@ -131,40 +145,37 @@ public class MainActivity extends Activity {
         });
     }
     
-    private void updateCheck() throws NameNotFoundException, IOException {
+    @SuppressWarnings("deprecation")
+	private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException {
 		/* TODO Create method to check for an updated version of the app. 
     	 * Method should display an alert dialog if new version availible
     	 */
-    	/*
-    	URL url = new URL("https://dl.dropbox.com/u/20328438/version.txt");
-    	URL downUrl = new URL("https://dl.dropbox.com/u/20328438/timesheet.apk");
+    	Log.d("Checking for updates", "true");
     	String urlVersion;
-    	BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-			
-    	urlVersion = in.readLine();
-		in.close();
-		
+    	UpdateCheck check = new UpdateCheck();
+    	urlVersion = check.execute().get();
+    	
+		Log.d("urlVerion", urlVersion);
     	
     	PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 		String packageVersion = pInfo.versionName;
 		
+		Log.d("Package Version", packageVersion);
+		
 		if (!urlVersion.equals(packageVersion)) {
-			AlertDialog.Builder build = new AlertDialog.Builder(this);
-			build.setMessage("You're version is out of date. Would you like to update?")
-				.setTitle("Version Check");
-			build.setPositiveButton("Download", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					//TODO Write Me
-				}
-			});
-			build.setNegativeButton("Later", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					//TODO write me
-				}
-			});
-			AlertDialog dialog = build.create();
+			AlertDialog alert = new AlertDialog.Builder(this).create();
+			alert.setTitle("Version Check");
+			alert.setMessage("You're version is out of date. Please visit " 
+					+ "www.ubundude.com/p/beta.html to update to the latest version.");
+			
+			alert.setButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                // Write your code here to execute after dialog closed
+                	Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
+                }
+        });
+			alert.show();
 		}
-		*/
 	}
 
 	@Override 
@@ -219,11 +230,13 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
- 
+            	TextView idTV = (TextView)findViewById(R.id.listviewId);
+            	int timeId = Integer.parseInt(idTV.getText().toString());
+            	Intent intent = new Intent(MainActivity.this, TimestampEditorActivity.class);
+            	intent.putExtra("TIMESTAMP_ID", timeId);
+            	startActivity(intent);
             }
         });
-  
-		
 	}
 
 	private String initialDates() {
@@ -249,16 +262,13 @@ public class MainActivity extends Activity {
     	
     	dateEditText = (EditText)findViewById(R.id.dateEditText);
         dateEditText.setText(dateView, TextView.BufferType.NORMAL);
-    	
-    	// TODO Finish Logic here
-    	// use add(c.Date, num to add);
+
     	return date;
 	}
 
     /** Gets the previous day and displays to dateEditText 
      * @throws ParseException */
 	private String minusButtonHandler() throws ParseException {
-		// TODO Finish Logic here
 		c.setTime(formDateView.parse(dateView));
     	c.add(Calendar.DAY_OF_MONTH, -1);
     	
@@ -290,17 +300,19 @@ public class MainActivity extends Activity {
    public void quickAddHandler(View view) throws SQLException {
     	String timeIn, timeOut, dateIn, dateOut;
     	int project = 1; //Will get from Default project in settings
-    	timeIn = formDate.format(c.getTime());
+    	timeIn = formTime.format(c.getTime());
     	timeOut = timeIn;
-    	dateIn = formTime.format(c.getTime());
+    	dateIn = formDate.format(c.getTime());
     	dateOut = dateIn;
     	db = dbHelp.getWritableDatabase();
     	String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, hours, project) " +
 				"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
 				"', '" + timeOut + "', 0, '" + project + "')";
-    
-    	db.execSQL(insertSQL);
-    	
+    	try {
+    		db.execSQL(insertSQL);
+    	} catch(Exception e) {
+    		Log.d("save Fail", e.getLocalizedMessage(), e.fillInStackTrace());
+    	}
     	db.close();
     }
     
@@ -312,9 +324,10 @@ public class MainActivity extends Activity {
         return true;
     }
 
+	
+	
 	public static void editClicked() {
-		// TODO Auto-generated method stub
-		
+		//TODO fix this motherfucker
 	}
 	 
 }
