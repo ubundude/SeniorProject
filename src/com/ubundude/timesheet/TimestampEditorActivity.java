@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -65,7 +66,7 @@ public class TimestampEditorActivity extends Activity {
 	static Button timeInButton;
 	static Button dateOutButton;
 	static Button timeOutButton;
-	static Button saveButton;
+	static Button saveButton, cancelButton, deleteButton;
 	static Spinner projectSpinner;
 	EditText commentsEditText, timeEditText;
 	/** Variable to store the value of the button calling the picker */
@@ -105,19 +106,23 @@ public class TimestampEditorActivity extends Activity {
         }
         
         projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
+        dbHelp = new TimesheetDatabaseHelper(this);
         
 		try {
        		loadSpinnerData();
 		} catch (Exception ex){
 			Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
 		}
-        dbHelp = new TimesheetDatabaseHelper(this);
         
-        if(timeId != 0) {
-        	getTimestamp(timeId);
-        } else {
-        	initializeButtons();
-        }
+	    try {
+	        if(timeId != 0) {
+	        	getTimestamp(timeId);
+	        } else {
+	        	initializeButtons();
+	        }
+	    }catch (Exception e) {
+	    	Log.d("Timestamps Fail", e.getLocalizedMessage(), e.fillInStackTrace());
+	    }
 		
 		/**
 		 * Logic to handle clicking the Time In button
@@ -200,10 +205,28 @@ public class TimestampEditorActivity extends Activity {
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				saveHandler(v);
+				if(timeId == 0) {
+					saveHandler(v);
+				} else {
+					updateHandler(v, timeId);
+				}
+				
 			}
 		});
-        
+		
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v){
+				finish();
+			}
+		});
+		
+		deleteButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				deleteHandler(v, timeId);
+			}
+		});
 	}
 	
 	@Override
@@ -226,6 +249,8 @@ public class TimestampEditorActivity extends Activity {
 	    timeOutButton = (Button)findViewById(R.id.timeOutButton);
 	    commentsEditText = (EditText)findViewById(R.id.commentsEditText);
 	    saveButton = (Button)findViewById(R.id.saveTimestampButton);
+	    cancelButton = (Button)findViewById(R.id.cancelTimestampButton);
+	    deleteButton = (Button)findViewById(R.id.timestampDeleteButton);
 
 		/** Get current date and time and store into proper variables */
 		SimpleDateFormat dateFormer = new SimpleDateFormat(dateForm, Locale.US);
@@ -308,6 +333,33 @@ public class TimestampEditorActivity extends Activity {
 		        finish();
         	}
         }
+		
+		private void updateHandler(View v, int timeId) {
+			String timeIn, dateIn, timeOut, dateOut, comments, hours;
+        	String projectName;
+			int project;
+
+        	/** Get and store form element values*/
+        	dateIn = dateInButton.getText().toString();
+        	timeIn = timeInButton.getText().toString();
+        	dateOut = dateOutButton.getText().toString();
+        	timeOut = timeOutButton.getText().toString();
+        	comments = commentsEditText.getText().toString();
+        	hours = timeCalc(dateIn, timeIn, dateOut, timeOut);
+        	projectName = (String) projectSpinner.getSelectedItem();
+        	project = getProjectId(projectName);
+        	
+        	String updateSQL = "update timestamp " +
+        			"set date_in='" + dateIn + "', time_in='" + timeIn
+        			+ "', date_out='" + dateOut + "', time_out='" + timeOut
+        			+ "', comments='" + comments + "', hours='" + hours 
+        			+ "', project=" + project + ", where _id = " + timeId;
+        	
+        	db = dbHelp.getWritableDatabase();
+        	db.execSQL(updateSQL);
+        	db.close();
+        	finish();
+		}
 
    		private int getProjectId(String projectName) {
    			String idSelect;
@@ -337,18 +389,13 @@ public class TimestampEditorActivity extends Activity {
        		intent.putExtra("PROJECT_NAME", project);
        		startActivity(intent);
        	}
-
-    	/**
-    	 * Method to cancel adding new timestamp and return to the previous activity
-    	 * 
-    	 * @param v 
-    	 */
-       	public void cancelHandler(View v) {
-       		finish();
-       	}
        	
-       	public void timestampDeleteHandler(View v) {
-       		// TODO Write method
+       	public void deleteHandler(View v, int timeId) {
+       		String deleteSQL = "delete from timestamp where _id = " + timeId;
+       		db = dbHelp.getWritableDatabase();
+       		db.execSQL(deleteSQL);
+       		db.close();
+       		finish();
        	}
        
        	public void loadSpinnerData() {
@@ -377,27 +424,30 @@ public class TimestampEditorActivity extends Activity {
        		projectSpinner.setAdapter(dataAdapter);
        	}
        	
-       	private int getTimestamp(int timeId) {
+       	private int getTimestamp(int timeId) throws NullPointerException {
        		int id = timeId;
-       		String selectTimestamp =" select * from timestamps where _id = " + id;
+       		String selectTimestamp =" select * from timestamp where _id = " + id;
        		timeEditText = (EditText)findViewById(R.id.timeEditText);
-       		projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
        		dateInButton = (Button)findViewById(R.id.dateInButton);
 	       	timeInButton = (Button)findViewById(R.id.timeInButton);
 	 	    dateOutButton = (Button)findViewById(R.id.dateOutButton);
 	 	    timeOutButton = (Button)findViewById(R.id.timeOutButton);
 	 	    commentsEditText = (EditText)findViewById(R.id.commentsEditText);
+	 	    saveButton = (Button)findViewById(R.id.saveTimestampButton);
+	 	    cancelButton = (Button)findViewById(R.id.cancelTimestampButton);
+		    deleteButton = (Button)findViewById(R.id.timestampDeleteButton);
 	       		
        		db = dbHelp.getReadableDatabase();
        		Cursor cu = db.rawQuery(selectTimestamp, null);
-       		
        		cu.moveToFirst();
-       		timeEditText.setText(cu.getString(6));
+       		
+       		
        		dateInButton.setText(cu.getString(1));
        		timeInButton.setText(cu.getString(2));
        		dateOutButton.setText(cu.getString(3));
        		timeOutButton.setText(cu.getString(4));
        		commentsEditText.setText(cu.getString(5));
+       		timeEditText.setText(cu.getString(6));
        		
        		db.close();
        		cu.close();

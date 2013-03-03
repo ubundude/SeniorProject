@@ -32,6 +32,7 @@ public class UpdateCheck extends AsyncTask<URL, Void, String> {
 	
 	@Override 
 	protected void onPostExecute(String urlVersion) {
+		@SuppressWarnings("unused")
 		String ver = urlVersion;
 	}
 

@@ -9,15 +9,8 @@ package com.ubundude.timesheet;
 
 import com.bugsense.trace.BugSenseHandler;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,7 +23,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -94,12 +86,12 @@ public class MainActivity extends Activity {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
         /** Method to get todays date and display it in the proper places */
         date = initialDates();
         
@@ -147,9 +139,6 @@ public class MainActivity extends Activity {
     
     @SuppressWarnings("deprecation")
 	private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException {
-		/* TODO Create method to check for an updated version of the app. 
-    	 * Method should display an alert dialog if new version availible
-    	 */
     	Log.d("Checking for updates", "true");
     	String urlVersion;
     	UpdateCheck check = new UpdateCheck();
@@ -170,8 +159,6 @@ public class MainActivity extends Activity {
 			
 			alert.setButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                // Write your code here to execute after dialog closed
-                	Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
                 }
         });
 			alert.show();

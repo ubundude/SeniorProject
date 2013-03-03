@@ -30,12 +30,13 @@
             android:text="@string/defaultInt" />
 
          <Button
-            android:id="@+id/listviewEditButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/listviewId"
-            android:background="@drawable/edit" />
+             android:id="@+id/listviewEditButton"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_centerVertical="true"
+             android:layout_toRightOf="@+id/listviewId"
+             android:background="@drawable/edit"
+             android:focusable="false" />
 
          <TextView
              android:id="@+id/listviewHoursTV"

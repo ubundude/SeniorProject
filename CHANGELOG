@@ -1,6 +1,13 @@
 CHANGELOG
 =========
-NOTE: Alphas are changed each time I finish coding for the evening, so that I can keep track of what I did when
+NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
+
+1.0.ALPHA_018
+STATE: Timestamps load into editor, minus project. Need to build custom adapter for spinner
+- Listview Loads into editor(almost
+- Loaded timestamp can be edited and deleted(almost)
+- Added Custom Spinner item and drop down layouts
+- Fixed Listview not clickable
 
 1.0.ALPHA_017
 STATE: Update Check Works. Listview Items still not clickable.

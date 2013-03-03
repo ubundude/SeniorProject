@@ -168,7 +168,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:onClick="cancelHandler"
             android:text="@string/cancel" />
     </LinearLayout>
 
@@ -179,7 +178,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/timeEditText"
         android:layout_marginRight="@dimen/deletePaddingRight"
-        android:background="@drawable/delete"
-        android:onClick="timestampDeleteHandler" />
+        android:background="@drawable/delete" />
 
 </RelativeLayout>

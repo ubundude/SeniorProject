@@ -1,7 +1,4 @@
-Create intent to move to timestamp editor on click from main page listview and
-load the selected timestamp into the editor. 
-
-Finish update check method. Should be a handler to download the apk
+Need spinner listview and adapter
 
 Probably more, but I can't think ahead anymore. 
 
