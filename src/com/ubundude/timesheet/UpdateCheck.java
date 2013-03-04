@@ -15,7 +15,6 @@ public class UpdateCheck extends AsyncTask<URL, Void, String> {
 
 	@Override
 	protected String doInBackground(URL... params) {
-		// TODO Auto-generated method stub
 		String urlVersion = null;
 		try {
 		URL url = new URL("https://dl.dropbox.com/u/20328438/version.txt");

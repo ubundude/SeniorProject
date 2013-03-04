@@ -2,6 +2,13 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.ALPHA_019
+STATE: Everythings fine, see todo 
+- Updated bugsense
+- Custom Adapter for spinner built
+- Projects load using id instead of name
+
+
 1.0.ALPHA_018
 STATE: Timestamps load into editor, minus project. Need to build custom adapter for spinner
 - Listview Loads into editor(almost

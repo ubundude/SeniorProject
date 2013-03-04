@@ -32,9 +32,8 @@ public class ProjectEditorActivity extends Activity {
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(this);
 	private EditText shortCodeEdit, fullNameEdit, rateEdit, descEdit;
-	private String project;
+	private int project;
 	private Button saveButton, cancelButton, deleteButton;
-	private int projectId;
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,25 +41,22 @@ public class ProjectEditorActivity extends Activity {
         
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
-        	project = extras.getString("PROJECT_NAME");
+        	project = extras.getInt("PROJECT_NAME");
         }
         
         saveButton = (Button)findViewById(R.id.saveProjectButton);
         cancelButton = (Button)findViewById(R.id.cancelProjectButton);
         deleteButton = (Button)findViewById(R.id.projectDeleteButton);
         
-        Log.d("Project Is", "Project is" + project);
-        if (!project.equals("<NEW>")) {
-        	projectId = loadProject(project);
-        } else {
-        	projectId = 1;
-        }
+        if (project != 0) {
+        	loadProject(project);
+        } 
         
         saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(projectId != 1) {
-					updateProject(projectId);
+				if(project != 1) {
+					updateProject(project);
 				} else {
 					insertNewProject(v);
 				}
@@ -78,7 +74,7 @@ public class ProjectEditorActivity extends Activity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				projectDeleteHandler(v, projectId);
+				projectDeleteHandler(v, project);
 			}
 		});
 	}
@@ -88,29 +84,23 @@ public class ProjectEditorActivity extends Activity {
 	 * 
 	 * @param project The ID of the project selected from the spinner
 	 */
-	public int loadProject(String project) {
+	public void loadProject(int project) {
 		/** Initializes the edit text fields for use */
 		shortCodeEdit = (EditText)findViewById(R.id.shortCodeEditText);
 		fullNameEdit = (EditText)findViewById(R.id.fullNameEditText);
 		rateEdit = (EditText)findViewById(R.id.rateEditText);
 		descEdit = (EditText)findViewById(R.id.descriptionEditText);
-		int id;
 		
-		String selectProject = "select * from projects where name = '" + project + "'";
+		String selectProject = "select * from projects where _id = " + project;
 		db = dbHelp.getReadableDatabase();
 		Cursor cu = db.rawQuery(selectProject, null);
-		
 		cu.moveToFirst();
-		id = cu.getInt(0);
 		shortCodeEdit.setText(cu.getString(2));
 		fullNameEdit.setText(cu.getString(1));
 		rateEdit.setText(cu.getString(3));
 		descEdit.setText(cu.getString(4));
-		
 		cu.close();
 		db.close();
-		
-		return id;
 	}
 	
 	public void updateProject(int projectId) {
@@ -177,7 +167,6 @@ public class ProjectEditorActivity extends Activity {
 					"values('" + fullName + "', '" + shortCode + "', '" + rate +
 					"', '" + description + "')";
 		
-			/** Open the datasource, insert the values, and close the datasouce */
 			db = dbHelp.getWritableDatabase();
 			try {
 				db.execSQL(insertString);

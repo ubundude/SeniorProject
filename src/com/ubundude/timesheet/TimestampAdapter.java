@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class TimestampAdapter extends BaseAdapter {
@@ -53,7 +52,6 @@ public class TimestampAdapter extends BaseAdapter {
 		TextView projectShort = (TextView)vi.findViewById(R.id.projectShortTextView);
 		TextView projectFull = (TextView)vi.findViewById(R.id.projectFullTextView);
 		TextView stampId = (TextView)vi.findViewById(R.id.listviewId);
-		Button editButton = (Button)vi.findViewById(R.id.listviewEditButton);
 		TextView hoursEdit = (TextView)vi.findViewById(R.id.listviewHoursTV);
 		
 		HashMap<String, String> timestamp = new HashMap<String, String>();
@@ -63,12 +61,6 @@ public class TimestampAdapter extends BaseAdapter {
 		projectShort.setText(timestamp.get(MainActivity.KEY_SHORT));
 		projectFull.setText(timestamp.get(MainActivity.KEY_FULL));
 		hoursEdit.setText(timestamp.get(MainActivity.KEY_HOURS) + " hrs");
-		editButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				MainActivity.editClicked();
-			}
-		});
 
 	return vi;
 	}

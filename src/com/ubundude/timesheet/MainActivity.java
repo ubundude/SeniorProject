@@ -38,7 +38,6 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /*
  * TODO Figure out what else needs done :p
@@ -107,7 +106,6 @@ public class MainActivity extends Activity {
 					date = minusButtonHandler();
 					getDailyTimestamps(date);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -172,8 +170,7 @@ public class MainActivity extends Activity {
     }
     
     private void getDailyTimestamps(String date) {
-    	int count;
-    	int iter = 0;
+    	
     	
     	ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
     	
@@ -187,10 +184,9 @@ public class MainActivity extends Activity {
         Cursor cu = db.rawQuery(getTimestamps, null);
         
         if(cu != null && cu.getCount() > 0){
-	        count = cu.getCount();
 			cu.moveToFirst();
 			
-			while (iter != count) {
+			do {
 				HashMap<String, String> map = new HashMap<String, String>();
 				map.put(KEY_ID, Integer.toString(cu.getInt(0)));
 				map.put(KEY_SHORT, cu.getString(1));
@@ -199,9 +195,7 @@ public class MainActivity extends Activity {
 				
 				stampList.add(map);
 				
-				cu.moveToNext();
-				iter++;
-			}
+			} while(cu.moveToNext());
         }
 		
 		cu.close();
@@ -310,11 +304,5 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-
-	
-	
-	public static void editClicked() {
-		//TODO fix this motherfucker
-	}
 	 
 }

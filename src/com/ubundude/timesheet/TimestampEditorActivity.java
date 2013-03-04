@@ -1,6 +1,6 @@
 /**
  * @author Kolby Cansler <golfguy90@gmail.com>
- * @version 1.0.ALPHA_016
+ * @version 1.0.ALPHA_019
  * 
  * Creates the Timestamp Editor Page
  */
@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -22,23 +22,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 /* 
- * TODO Need way to populate from database
- * TODO Buttons should display current date or DATE LOADED FROM DATABASE
  * TODO Hours TextView should update to total time calculated from timeIn - timeOut
- * TODO Should reload spinner on return from Project Editor
  */
 
 /**
@@ -48,6 +44,8 @@ import android.widget.Toast;
  * with the editor to add a new timestamp to the database.
  */
 public class TimestampEditorActivity extends Activity {
+	public static final String KEY_NAME = "projectName";
+	public static final String KEY_ID = "projectId";
 	/** Datasources to get objects for using database tables */
 	private TimesheetDatabaseHelper dbHelp;
 	private SQLiteDatabase db;
@@ -69,6 +67,7 @@ public class TimestampEditorActivity extends Activity {
 	static Button saveButton, cancelButton, deleteButton;
 	static Spinner projectSpinner;
 	EditText commentsEditText, timeEditText;
+	SpinnerAdapter adapter;
 	/** Variable to store the value of the button calling the picker */
 	private int fromWhere = 0;
 	private int timeId;
@@ -105,7 +104,6 @@ public class TimestampEditorActivity extends Activity {
         	timeId = 0;
         }
         
-        projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
         dbHelp = new TimesheetDatabaseHelper(this);
         
 		try {
@@ -232,8 +230,7 @@ public class TimestampEditorActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		 projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
-	        
+
 			try {
 	       		loadSpinnerData();
 			} catch (Exception ex){
@@ -298,8 +295,7 @@ public class TimestampEditorActivity extends Activity {
 		public void saveHandler(View v) {
 			/** Initialize variables to store information from the form elements */
 			String timeIn, dateIn, timeOut, dateOut, comments, hours;
-        	String projectName;
-			int project;
+        	
 
         	/** Get and store form element values*/
         	dateIn = dateInButton.getText().toString();
@@ -308,10 +304,10 @@ public class TimestampEditorActivity extends Activity {
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
         	hours = timeCalc(dateIn, timeIn, dateOut, timeOut);
-        	projectName = (String) projectSpinner.getSelectedItem();
-        	project = getProjectId(projectName);
+        	TextView idTv = (TextView)findViewById(R.id.proIdTV);
+       		int proId = Integer.parseInt(idTv.getText().toString());
         	
-        	if(project == 1) {
+        	if(proId == 1) {
         		Context context = getApplicationContext();
     			String toastTest = "Please select a project.";
     			int duration = Toast.LENGTH_LONG;
@@ -321,7 +317,7 @@ public class TimestampEditorActivity extends Activity {
         	} else {
         		String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, comments, hours, project) " +
 					"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
-					"', '" + timeOut + "', '" + comments + "', '" + hours + "', '" + project + "')";
+					"', '" + timeOut + "', '" + comments + "', '" + hours + "', '" + proId + "')";
 	        	/** Open the timestamp table for writing */
         		
         		db = dbHelp.getReadableDatabase();
@@ -336,8 +332,6 @@ public class TimestampEditorActivity extends Activity {
 		
 		private void updateHandler(View v, int timeId) {
 			String timeIn, dateIn, timeOut, dateOut, comments, hours;
-        	String projectName;
-			int project;
 
         	/** Get and store form element values*/
         	dateIn = dateInButton.getText().toString();
@@ -346,36 +340,19 @@ public class TimestampEditorActivity extends Activity {
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
         	hours = timeCalc(dateIn, timeIn, dateOut, timeOut);
-        	projectName = (String) projectSpinner.getSelectedItem();
-        	project = getProjectId(projectName);
+        	TextView idTv = (TextView)findViewById(R.id.proIdTV);
+       		int proId = Integer.parseInt(idTv.getText().toString());
         	
         	String updateSQL = "update timestamp " +
         			"set date_in='" + dateIn + "', time_in='" + timeIn
         			+ "', date_out='" + dateOut + "', time_out='" + timeOut
         			+ "', comments='" + comments + "', hours='" + hours 
-        			+ "', project=" + project + ", where _id = " + timeId;
+        			+ "', project=" + proId + ", where _id = " + timeId;
         	
         	db = dbHelp.getWritableDatabase();
         	db.execSQL(updateSQL);
         	db.close();
         	finish();
-		}
-
-   		private int getProjectId(String projectName) {
-   			String idSelect;
-   			int projectId;
-   			idSelect = "select _id from projects where name = '" + projectName + "'";
-   			
-   			db = dbHelp.getReadableDatabase();
-   			
-   			Cursor cu = db.rawQuery(idSelect, null);
-   			cu.moveToFirst();
-   			
-   			projectId = cu.getInt(0);
-   			
-   			cu.close();
-   		
-			return projectId;
 		}
 
 		/**
@@ -384,9 +361,10 @@ public class TimestampEditorActivity extends Activity {
    		 * @param v Gets the current activity context to return to
    		 */
        	public void editHandler(View v) {
-       		String project = (String) projectSpinner.getSelectedItem();
+       		TextView idTv = (TextView)findViewById(R.id.proIdTV);
+       		int proId = Integer.parseInt(idTv.getText().toString());
        		Intent intent = new Intent(this, ProjectEditorActivity.class);
-       		intent.putExtra("PROJECT_NAME", project);
+       		intent.putExtra("PROJECT_NAME", proId);
        		startActivity(intent);
        	}
        	
@@ -399,29 +377,34 @@ public class TimestampEditorActivity extends Activity {
        	}
        
        	public void loadSpinnerData() {
-       		List<String> projects = new ArrayList<String>();
+       		ArrayList<HashMap<String, String>> projects = new ArrayList<HashMap<String, String>>();
     		
-    		String selectQuery = "select * from projects";
+    		String selectQuery = "select _id, name from projects";
     		
     		db = dbHelp.getReadableDatabase();
     		
     		Cursor cu = db.rawQuery(selectQuery, null);
 
-    		if (cu.moveToFirst()) {
+    		if (cu != null && cu.getCount() > 0) {
+    			cu.moveToFirst();
     			do {
-    				projects.add(cu.getString(1));
+    				HashMap<String, String> map = new HashMap<String, String>();
+    				map.put(KEY_NAME, cu.getString(1));
+    				map.put(KEY_ID, Integer.toString(cu.getInt(0)));
+    				
+    				projects.add(map);
+    				
     			} while(cu.moveToNext());
-    		}
+    			}
     		
     		cu.close();
     		db.close();
        		
-       		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-       				android.R.layout.simple_spinner_item, projects);
+    		projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
+    		
+       		adapter = new SpinnerAdapter(this, projects);
        		
-       		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-       		
-       		projectSpinner.setAdapter(dataAdapter);
+       		projectSpinner.setAdapter(adapter);
        	}
        	
        	private int getTimestamp(int timeId) throws NullPointerException {
