@@ -48,7 +48,7 @@ public class ProjectEditorActivity extends Activity {
         cancelButton = (Button)findViewById(R.id.cancelProjectButton);
         deleteButton = (Button)findViewById(R.id.projectDeleteButton);
         
-        if (project != 0) {
+        if (project != 1) {
         	loadProject(project);
         } 
         

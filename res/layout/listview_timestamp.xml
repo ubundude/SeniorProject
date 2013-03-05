@@ -47,4 +47,13 @@
              android:text="@string/defaultTime"
              android:textAppearance="?android:attr/textAppearanceMedium" />
 
+         <TextView
+             android:id="@+id/projectIdTV"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_above="@+id/projectFullTextView"
+             android:layout_toRightOf="@+id/listviewId"
+             android:text="@string/defaultInt"
+             android:visibility="invisible" />
+
 </RelativeLayout>

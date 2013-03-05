@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
 	public static final String KEY_SHORT = "projectShortTextView";
 	public static final String KEY_FULL = "projectFullTextView";
 	public static final String KEY_HOURS = "listviewHoursTV";
+	public static final String KEY_PROID = "projectIdTV";
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(this);
 	/** Gets a valid calendar instance for use */
@@ -170,14 +171,12 @@ public class MainActivity extends Activity {
     }
     
     private void getDailyTimestamps(String date) {
-    	
-    	
     	ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
     	
     	/** Open the database table for reading and writing */
         db = dbHelp.getReadableDatabase();
         
-        String getTimestamps = "select ti._id, pr.name, pr.shortcode, ti.hours "
+        String getTimestamps = "select ti._id, pr.name, pr.shortcode, ti.hours, ti.project "
         		+ "from timestamp ti inner join projects pr "
         		+ "where ti.project = pr._id and ti.date_in = '" + date + "'";
     	
@@ -192,6 +191,7 @@ public class MainActivity extends Activity {
 				map.put(KEY_SHORT, cu.getString(1));
 				map.put(KEY_FULL, cu.getString(2));
 				map.put(KEY_HOURS, cu.getString(3));
+				map.put(KEY_PROID, Integer.toString(cu.getInt(4)));
 				
 				stampList.add(map);
 				
@@ -212,9 +212,12 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
             	TextView idTV = (TextView)findViewById(R.id.listviewId);
+            	TextView proIdTV = (TextView)findViewById(R.id.projectIdTV);
             	int timeId = Integer.parseInt(idTV.getText().toString());
+            	int proId = Integer.parseInt(proIdTV.getText().toString());
             	Intent intent = new Intent(MainActivity.this, TimestampEditorActivity.class);
             	intent.putExtra("TIMESTAMP_ID", timeId);
+            	intent.putExtra("PROJECT_ID", proId);
             	startActivity(intent);
             }
         });

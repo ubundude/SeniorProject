@@ -70,14 +70,19 @@ public class TimestampEditorActivity extends Activity {
 	SpinnerAdapter adapter;
 	/** Variable to store the value of the button calling the picker */
 	private int fromWhere = 0;
-	private int timeId;
+	private int timeId, proId;
 	/** Gets a new TimePickerDialog and sets the calendar time to value picked */
 	TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {		
 			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			c.set(Calendar.MINUTE, minute);
-			updateLabel();
+			try {
+				updateLabel();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	};
 	/** Gets a new DatePickerDialog and sets the calendar time to the value picked */
@@ -88,7 +93,12 @@ public class TimestampEditorActivity extends Activity {
 			c.set(Calendar.YEAR, year);
 			c.set(Calendar.MONTH, month);
 			c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-			updateLabel();
+			try {
+				updateLabel();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	};
 	
@@ -100,23 +110,21 @@ public class TimestampEditorActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
         	timeId = extras.getInt("TIMESTAMP_ID");
+        	proId = extras.getInt("PROJECT_ID");
         } else {
         	timeId = 0;
+        	proId = 1;
         }
         
         dbHelp = new TimesheetDatabaseHelper(this);
         
-		try {
-       		loadSpinnerData();
-		} catch (Exception ex){
-			Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
-		}
-        
 	    try {
 	        if(timeId != 0) {
 	        	getTimestamp(timeId);
+	        	loadSpinnerData(proId);
 	        } else {
 	        	initializeButtons();
+	        	loadSpinnerData(proId);
 	        }
 	    }catch (Exception e) {
 	    	Log.d("Timestamps Fail", e.getLocalizedMessage(), e.fillInStackTrace());
@@ -204,9 +212,17 @@ public class TimestampEditorActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(timeId == 0) {
-					saveHandler(v);
+					try {
+						saveHandler(v);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 				} else {
-					updateHandler(v, timeId);
+					try {
+						updateHandler(v, timeId);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 				}
 				
 			}
@@ -232,7 +248,7 @@ public class TimestampEditorActivity extends Activity {
 		super.onResume();
 
 			try {
-	       		loadSpinnerData();
+	       		loadSpinnerData(proId);
 			} catch (Exception ex){
 				Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
 			}
@@ -265,24 +281,32 @@ public class TimestampEditorActivity extends Activity {
 		
 	}
 
-	/** Method to set the value of the button used to the date or time picked */
-	public void updateLabel() {
+	/** Method to set the value of the button used to the date or time picked 
+	 * @throws ParseException */
+	public void updateLabel() throws ParseException {
 		SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
 		SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
 		
 		switch (fromWhere) {
 		case 1:
 			timeInButton.setText(formTime.format(c.getTime()));
-			
+			timeEditText = (EditText)findViewById(R.id.timeEditText);
+			timeEditText.setText(timeCalc() + " h");
 			break;
 		case 2:
 			timeOutButton.setText(formTime.format(c.getTime()));
+			timeEditText = (EditText)findViewById(R.id.timeEditText);
+			timeEditText.setText(timeCalc() + " h");
 			break;
 		case 3: 
 			dateInButton.setText(formDate.format(c.getTime()));
+			timeEditText = (EditText)findViewById(R.id.timeEditText);
+			timeEditText.setText(timeCalc() + " h");
 			break;
 		case 4:
 			dateOutButton.setText(formDate.format(c.getTime()));
+			timeEditText = (EditText)findViewById(R.id.timeEditText);
+			timeEditText.setText(timeCalc() + " h");
 			break;
 		}
 	}
@@ -291,11 +315,11 @@ public class TimestampEditorActivity extends Activity {
 		 * Handler to save the data entered in the form to the database
 		 * 
 		 * @param view The current activity context
+		 * @throws ParseException 
 		 */
-		public void saveHandler(View v) {
+		public void saveHandler(View v) throws ParseException {
 			/** Initialize variables to store information from the form elements */
 			String timeIn, dateIn, timeOut, dateOut, comments, hours;
-        	
 
         	/** Get and store form element values*/
         	dateIn = dateInButton.getText().toString();
@@ -303,7 +327,8 @@ public class TimestampEditorActivity extends Activity {
         	dateOut = dateOutButton.getText().toString();
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
-        	hours = timeCalc(dateIn, timeIn, dateOut, timeOut);
+        	hours = timeCalc();
+        	
         	TextView idTv = (TextView)findViewById(R.id.proIdTV);
        		int proId = Integer.parseInt(idTv.getText().toString());
         	
@@ -318,7 +343,6 @@ public class TimestampEditorActivity extends Activity {
         		String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, comments, hours, project) " +
 					"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
 					"', '" + timeOut + "', '" + comments + "', '" + hours + "', '" + proId + "')";
-	        	/** Open the timestamp table for writing */
         		
         		db = dbHelp.getReadableDatabase();
         		
@@ -330,16 +354,16 @@ public class TimestampEditorActivity extends Activity {
         	}
         }
 		
-		private void updateHandler(View v, int timeId) {
+		private void updateHandler(View v, int timeId) throws ParseException {
 			String timeIn, dateIn, timeOut, dateOut, comments, hours;
-
+			
         	/** Get and store form element values*/
         	dateIn = dateInButton.getText().toString();
         	timeIn = timeInButton.getText().toString();
         	dateOut = dateOutButton.getText().toString();
         	timeOut = timeOutButton.getText().toString();
         	comments = commentsEditText.getText().toString();
-        	hours = timeCalc(dateIn, timeIn, dateOut, timeOut);
+        	hours = timeCalc();
         	TextView idTv = (TextView)findViewById(R.id.proIdTV);
        		int proId = Integer.parseInt(idTv.getText().toString());
         	
@@ -347,7 +371,7 @@ public class TimestampEditorActivity extends Activity {
         			"set date_in='" + dateIn + "', time_in='" + timeIn
         			+ "', date_out='" + dateOut + "', time_out='" + timeOut
         			+ "', comments='" + comments + "', hours='" + hours 
-        			+ "', project=" + proId + ", where _id = " + timeId;
+        			+ "', project=" + proId + " where _id = " + timeId;
         	
         	db = dbHelp.getWritableDatabase();
         	db.execSQL(updateSQL);
@@ -376,7 +400,9 @@ public class TimestampEditorActivity extends Activity {
        		finish();
        	}
        
-       	public void loadSpinnerData() {
+       	public void loadSpinnerData(int proId) {
+       		int pos = 0;
+       		
        		ArrayList<HashMap<String, String>> projects = new ArrayList<HashMap<String, String>>();
     		
     		String selectQuery = "select _id, name from projects";
@@ -391,11 +417,13 @@ public class TimestampEditorActivity extends Activity {
     				HashMap<String, String> map = new HashMap<String, String>();
     				map.put(KEY_NAME, cu.getString(1));
     				map.put(KEY_ID, Integer.toString(cu.getInt(0)));
-    				
+    				if (cu.getInt(0) == proId) {
+    					pos = cu.getPosition();
+    				}
     				projects.add(map);
     				
     			} while(cu.moveToNext());
-    			}
+    		}
     		
     		cu.close();
     		db.close();
@@ -405,11 +433,13 @@ public class TimestampEditorActivity extends Activity {
        		adapter = new SpinnerAdapter(this, projects);
        		
        		projectSpinner.setAdapter(adapter);
+       		projectSpinner.setSelection(pos);
        	}
        	
        	private int getTimestamp(int timeId) throws NullPointerException {
        		int id = timeId;
        		String selectTimestamp =" select * from timestamp where _id = " + id;
+       		projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
        		timeEditText = (EditText)findViewById(R.id.timeEditText);
        		dateInButton = (Button)findViewById(R.id.dateInButton);
 	       	timeInButton = (Button)findViewById(R.id.timeInButton);
@@ -423,8 +453,7 @@ public class TimestampEditorActivity extends Activity {
        		db = dbHelp.getReadableDatabase();
        		Cursor cu = db.rawQuery(selectTimestamp, null);
        		cu.moveToFirst();
-       		
-       		
+       		 
        		dateInButton.setText(cu.getString(1));
        		timeInButton.setText(cu.getString(2));
        		dateOutButton.setText(cu.getString(3));
@@ -438,31 +467,33 @@ public class TimestampEditorActivity extends Activity {
        		return id;
        	}
        	
-       	public static String timeCalc(String dateIn, String timeIn, String dateOut, String timeOut) {
-    		String hours = "0.00";
-    		String hr, min;
-    		long hrb, minb;
-    		String in = dateIn + " " + timeIn;
-    		String out = dateOut + " " + timeOut;
+       	public static String timeCalc() throws ParseException { //TODO Update to get values inside
+       		String cdateIn, ctimeIn, cdateOut, ctimeOut;
+       		
+       		//dateInButton = (Button)findViewById(R.id.dateInButton);
+	       //	timeInButton = (Button)findViewById(R.id.timeInButton);
+	 	   // dateOutButton = (Button)findViewById(R.id.dateOutButton);
+	 	   // timeOutButton = (Button)findViewById(R.id.timeOutButton);
+	 	  
+	 	    cdateIn = dateInButton.getText().toString();
+	 	    ctimeIn = timeInButton.getText().toString();
+	 	    cdateOut = dateOutButton.getText().toString();
+       		ctimeOut = timeOutButton.getText().toString();
+	 	    
+    		double hr;
+    		double diff;
+    		String in = cdateIn + " " + ctimeIn;
+    		String out = cdateOut + " " + ctimeOut;
     		Date inTime, outTime;
     		SimpleDateFormat dateForm = new SimpleDateFormat("MM/dd/yyy HH:mm", Locale.US);
     		
-    		
-				try {
-					inTime = dateForm.parse(in);
-				outTime = dateForm.parse(out);
-				long diff = outTime.getTime() - inTime.getTime();
-				hrb = diff/ (1000 * 60 * 60 );
-				minb = diff / (1000 * 60);
-				minb = minb - 60 * hrb;
-				hr = String.valueOf(hrb);
-				min = String.valueOf(minb);
-				hours = hr + "." + min;
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-    		
-    		return hours;
+			inTime = dateForm.parse(in);
+			outTime = dateForm.parse(out);
+			long dif = outTime.getTime() - inTime.getTime();
+			diff = (double)dif;
+			hr = diff/ (1000 * 60 * 60 );
+			String hour = String.format(Locale.US, "%.2f", hr);
+    		return hour;
 				
     	}
        

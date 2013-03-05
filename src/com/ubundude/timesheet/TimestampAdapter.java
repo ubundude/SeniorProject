@@ -53,6 +53,7 @@ public class TimestampAdapter extends BaseAdapter {
 		TextView projectFull = (TextView)vi.findViewById(R.id.projectFullTextView);
 		TextView stampId = (TextView)vi.findViewById(R.id.listviewId);
 		TextView hoursEdit = (TextView)vi.findViewById(R.id.listviewHoursTV);
+		TextView projectId = (TextView)vi.findViewById(R.id.projectIdTV);
 		
 		HashMap<String, String> timestamp = new HashMap<String, String>();
 		timestamp = data.get(position);
@@ -61,6 +62,7 @@ public class TimestampAdapter extends BaseAdapter {
 		projectShort.setText(timestamp.get(MainActivity.KEY_SHORT));
 		projectFull.setText(timestamp.get(MainActivity.KEY_FULL));
 		hoursEdit.setText(timestamp.get(MainActivity.KEY_HOURS) + " hrs");
+		projectId.setText(timestamp.get(MainActivity.KEY_PROID));
 
 	return vi;
 	}
