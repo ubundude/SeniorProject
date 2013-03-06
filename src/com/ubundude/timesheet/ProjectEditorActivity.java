@@ -1,6 +1,6 @@
 /**
  * @author Kolby Canlser
- * @version 1.0.ALPHA_012
+ * @version 1.0.BETA_02
  * 
  *  Creates the Project Editor page
  */

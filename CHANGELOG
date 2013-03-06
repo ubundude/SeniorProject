@@ -2,6 +2,9 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.BETA_03
+- Javadoc's written for some classes
+
 1.0.BETA_02
 - Fixed only first timestamp loading into editor
 
