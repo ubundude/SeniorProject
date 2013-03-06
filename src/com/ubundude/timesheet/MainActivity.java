@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
     }
     
     private void getDailyTimestamps(String date) {
-    	ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
+    	final ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
     	
     	/** Open the database table for reading and writing */
         db = dbHelp.getReadableDatabase();
@@ -211,10 +211,13 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-            	TextView idTV = (TextView)findViewById(R.id.listviewId);
-            	TextView proIdTV = (TextView)findViewById(R.id.projectIdTV);
-            	int timeId = Integer.parseInt(idTV.getText().toString());
-            	int proId = Integer.parseInt(proIdTV.getText().toString());
+            	HashMap<String, String> test = new HashMap<String, String>();
+            	test = stampList.get(position);
+            	int proId = Integer.parseInt(test.get(KEY_PROID));
+            	int timeId = Integer.parseInt(test.get(KEY_ID));
+            	
+            	Log.d("ListView On Click", "Position: " + position);
+            	
             	Intent intent = new Intent(MainActivity.this, TimestampEditorActivity.class);
             	intent.putExtra("TIMESTAMP_ID", timeId);
             	intent.putExtra("PROJECT_ID", proId);
