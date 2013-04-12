@@ -178,6 +178,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/timeEditText"
         android:layout_marginRight="@dimen/deletePaddingRight"
-        android:background="@drawable/delete" />
+        android:background="@drawable/content_discard" />
 
 </RelativeLayout>

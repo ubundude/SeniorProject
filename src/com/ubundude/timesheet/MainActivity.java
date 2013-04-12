@@ -32,6 +32,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -39,6 +40,7 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /*
  * Hours textview should be updated with the total hours worked for a day
@@ -387,5 +389,15 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
+	
+	@Override 
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_defaults:
+			Toast.makeText(this, "Defaults button clicked", Toast.LENGTH_SHORT).show();
+			return(true);
+		}
+		return(super.onOptionsItemSelected(item));
+	}
 	 
 }

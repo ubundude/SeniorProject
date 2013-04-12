@@ -10,10 +10,12 @@
     <string name="defaultInt">0</string>
     <string name="defaultText">default</string>
     <string name="defaultTime">0.00 h</string>
+    <string name="delete_item">Delete Item</string>
     <string name="description">Description:</string>
     <string name="edit">Edit</string>
     <string name="fullName">Full Name:</string>
     <string name="hello_world">Hello world!</string>
+    <string name="menu_default">Set Defaults</string>
     <string name="menu_settings">Settings</string>
     <string name="minusButton">Minus Button</string>
     <string name="month">Month</string>

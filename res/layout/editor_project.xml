@@ -36,7 +36,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/shortCodeEditText"
         android:layout_marginRight="@dimen/deletePaddingRight"
-        android:background="@drawable/delete" />
+        android:background="@drawable/content_discard" />
 
     <TextView
         android:id="@+id/fullNameTextView"

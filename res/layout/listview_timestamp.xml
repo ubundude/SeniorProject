@@ -35,7 +35,7 @@
              android:layout_height="wrap_content"
              android:layout_centerVertical="true"
              android:layout_toLeftOf="@+id/listviewHoursTV"
-             android:background="@drawable/edit"
+             android:background="@drawable/content_edit"
              android:focusable="false" />
 
          <TextView
