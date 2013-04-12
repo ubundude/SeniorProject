@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:id="@+id/menu_defaults"
-        android:title="@string/menu_default"
+    <item android:id="@+id/editor_preferences"
+        android:title="@string/preferences"
         android:icon="@drawable/collections_view_as_list" />
     
     <item android:id="@+id/delete_item"

@@ -398,7 +398,7 @@ public class MainActivity extends Activity {
 	@Override 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_defaults:
+		case R.id.main_preferences:
 			Toast.makeText(this, "Defaults button clicked", Toast.LENGTH_SHORT).show();
 			return(true);
 		}

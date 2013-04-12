@@ -514,7 +514,7 @@ public class TimestampEditorActivity extends Activity {
     	@Override 
     	public boolean onOptionsItemSelected(MenuItem item) {
     		switch (item.getItemId()) {
-    		case R.id.menu_defaults:
+    		case R.id.editor_preferences:
     			Toast.makeText(this, "Implementing Soon", Toast.LENGTH_SHORT).show();
     			return(true);
     		case R.id.delete_item:
