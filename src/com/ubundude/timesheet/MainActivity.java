@@ -91,6 +91,7 @@ public class MainActivity extends Activity {
         /** Calls temporary method for checking updates
          * 
          *  Should be removed for acutal production app*/
+        /*
         try {
 			updateCheck();
 		} catch (NameNotFoundException e1) {
@@ -102,7 +103,7 @@ public class MainActivity extends Activity {
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		
+		*/
 		
         /** Method to get todays date and display it in the proper places */
         date = initialDates();

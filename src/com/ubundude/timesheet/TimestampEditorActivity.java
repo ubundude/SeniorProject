@@ -24,6 +24,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -34,7 +36,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 /* 
- * TODO Hours TextView should update to total time calculated from timeIn - timeOut
+ * TODO Spinner text color should be determined by device. Set in spinner_row.xml
  */
 
 /**
@@ -495,6 +497,27 @@ public class TimestampEditorActivity extends Activity {
 			String hour = String.format(Locale.US, "%.2f", hr);
     		return hour;
 				
+    	}
+       	
+       	@Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.editor_menu, menu);
+            return true;
+        }
+    	
+    	@Override 
+    	public boolean onOptionsItemSelected(MenuItem item) {
+    		switch (item.getItemId()) {
+    		case R.id.menu_defaults:
+    			Toast.makeText(this, "Implementing Soon", Toast.LENGTH_SHORT).show();
+    			return(true);
+    		case R.id.delete_item:
+    			View v = null;
+    			deleteHandler(v, timeId);
+    			return(true);
+    		}
+    		return(super.onOptionsItemSelected(item));
     	}
        
 }
