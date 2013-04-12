@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ubundude.timesheet"
     android:versionCode="1"
-    android:versionName="1.0.1.a1" >
+    android:versionName="1.0.1.B_1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -10,13 +10,17 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <supports-screens android:anyDensity="true" android:xlargeScreens="true" android:largeScreens="true" android:normalScreens="true" android:smallScreens="true"/>
+    <supports-screens android:anyDensity="true" 
+        android:xlargeScreens="true" 
+        android:largeScreens="true" 
+        android:normalScreens="true" 
+        android:smallScreens="true"/>
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:uiOptions="splitActionBarWhenNarrow">w
+        android:uiOptions="splitActionBarWhenNarrow">
         <activity
             android:name="com.ubundude.timesheet.MainActivity"
             android:label="@string/app_name" >

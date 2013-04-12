@@ -1,6 +1,6 @@
 /**
  * @author Kolby Cansler <golfguy90@gmail.com>
- * @version 1.0.BETA_02
+ * @version 1.0.1.B_2
  * 
  * Implements the Main layout class and all 
  * methods and views associated with it.
@@ -10,23 +10,22 @@ package com.ubundude.timesheet;
 
 import com.bugsense.trace.BugSenseHandler;
 
-//import java.io.IOException;
-
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
-//import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutionException;
 
 import android.os.Bundle;
 import android.app.Activity;
-//import android.app.AlertDialog;
-//import android.content.DialogInterface;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-//import android.content.pm.PackageInfo;
-//import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -90,8 +89,8 @@ public class MainActivity extends Activity {
       
         /** Calls temporary method for checking updates
          * 
-         *  Should be removed for acutal production app*/
-        /*
+         *  Should be removed for actual production app*/
+        
         try {
 			updateCheck();
 		} catch (NameNotFoundException e1) {
@@ -103,7 +102,7 @@ public class MainActivity extends Activity {
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		*/
+		
 		
         /** Method to get todays date and display it in the proper places */
         date = initialDates();
@@ -172,14 +171,14 @@ public class MainActivity extends Activity {
      * @throws ExecutionException
      */
     
-    //@SuppressWarnings("deprecation")
-	//private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException { 
+    @SuppressWarnings("deprecation")
+	private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException { 
   	/** String to store the version from the url */
-    //String urlVersion;
+		String urlVersion;
     /** Get instance of UpdateCheck.java and get the version returned from it */
-    /**	
-    UpdateCheck check = new UpdateCheck();
-    urlVersion = check.execute().get();
+    
+     UpdateCheck check = new UpdateCheck();
+     urlVersion = check.execute().get();
     	
     	PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 		String packageVersion = pInfo.versionName;
@@ -199,7 +198,7 @@ public class MainActivity extends Activity {
 			alert.show();
 		}
 	}
-*/
+
 
 
     /** 

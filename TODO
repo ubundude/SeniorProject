@@ -1,4 +1,4 @@
-Dropdown needs a bit of padding
+Spinner colors need adjusted for API specific implementations. 
 
-Need to set a default project in the settings. Not right now. will be done later
+Need to set default preferences, including default project.
 
