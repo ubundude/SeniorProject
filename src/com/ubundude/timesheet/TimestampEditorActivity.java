@@ -236,13 +236,18 @@ public class TimestampEditorActivity extends Activity {
 				finish();
 			}
 		});
-		
-		deleteButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				deleteHandler(v, timeId);
-			}
-		});
+			
+		if(android.os.Build.VERSION.RELEASE.startsWith("3.") ||
+				android.os.Build.VERSION.RELEASE.startsWith("4.")) {
+			deleteButton.setVisibility(View.GONE);
+		} else {
+			deleteButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					deleteHandler(v, timeId);
+				}
+			});
+		}
 	}
 	
 	@Override
