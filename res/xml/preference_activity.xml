@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="@string/perfGeneral"
+        android:key="@string/perfGeneralKey">
+	    <ListPreference
+	        android:key="@string/perfProjectKey"
+	        android:title="@string/perfProject"
+	        android:summary="@string/perfProjectSummary" />
+	    <ListPreference 
+	        android:key="@string/perfDOWKey"
+	        android:title="@string/perfDOW"
+	        android:summary="@string/perfDOWSummary"
+	        android:dialogTitle="@string/perfDOW"
+	        android:entries="@array/days"
+	        android:entryValues="@array/daysVals" />
+    </PreferenceCategory>
+    
+</PreferenceScreen>
