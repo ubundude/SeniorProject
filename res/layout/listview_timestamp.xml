@@ -36,7 +36,8 @@
              android:layout_centerVertical="true"
              android:layout_toLeftOf="@+id/listviewHoursTV"
              android:background="@drawable/content_edit"
-             android:focusable="false" />
+             android:focusable="false"
+             android:clickable="false"/>"
 
          <TextView
              android:id="@+id/listviewHoursTV"

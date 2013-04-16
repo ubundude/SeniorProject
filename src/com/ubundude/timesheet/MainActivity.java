@@ -23,6 +23,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -33,8 +35,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
@@ -42,7 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /*
- * Hours textview should be updated with the total hours worked for a day
+ * TODO Hours textview should be updated with the total hours worked for a day
  */
 
 /**
@@ -78,6 +82,21 @@ public class MainActivity extends Activity {
 	SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
     SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
     SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
+    /** Gets a new DatePickerDialog and sets the calendar time to the value picked */
+	DatePickerDialog.OnDateSetListener d = new DatePickerDialog.OnDateSetListener() {
+		@Override
+		public void onDateSet(DatePicker view, int year, int month,
+				int dayOfMonth) {
+			c.set(Calendar.YEAR, year);
+			c.set(Calendar.MONTH, month);
+			c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+			try {
+				updateLabel();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+	};
 	
     /** The method for creating the Main Activity */
     @Override
@@ -157,6 +176,26 @@ public class MainActivity extends Activity {
         		getDailyTimestamps(date);
         	}
         });
+        
+        /**
+		 * Logic to handle clicking the Date Edit Text
+		 * 
+		 * Gets current time from the button to pass to the Time Picker
+		 * and then calls a new Date PickerDialog to set the button
+		 * to a new time
+		 */
+		dateEditText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int year, month, dayOfMonth;
+				year = Integer.valueOf(dateEditText.getText().toString().substring(11));
+				month = Integer.valueOf(dateEditText.getText().toString().substring(3, 5)) - 1;
+				dayOfMonth = Integer.valueOf(dateEditText.getText().toString().substring(7, 9));
+				new DatePickerDialog(MainActivity.this, d,
+						year, month, dayOfMonth).show();
+				Log.d("Test Date", "Month: " + month + ", Day: " + dayOfMonth + ", Year: " + year);
+			}
+		});
     }
     
     /** 
@@ -288,13 +327,14 @@ public class MainActivity extends Activity {
             	startActivity(intent);
             }
         });
+        
 	}
 
     /** 
      * Method to get the current date form
      * 
      * Displays the formatted dates in the proper places 
-     * and makes them availible for usage elsewhere.
+     * and makes them available for usage elsewhere.
      * 
      * @return date The current date formatted for SQL queries.
      */
@@ -305,7 +345,7 @@ public class MainActivity extends Activity {
     	/** Sets the text in the dateEditText to the current date */
         dateEditText = (EditText)findViewById(R.id.dateEditText);
         dateEditText.setText(dateView, TextView.BufferType.NORMAL);
-
+        
 		return date;
 	}
 
@@ -385,6 +425,10 @@ public class MainActivity extends Activity {
 	   /** Close the Database */
 	   db.close();
     }
+   
+   public void updateLabel() throws ParseException {
+		dateEditText.setText(formDateView.format(c.getTime()));
+   }
     
     
 	@Override
@@ -398,7 +442,7 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.main_preferences:
-			Toast.makeText(this, "Defaults button clicked", Toast.LENGTH_SHORT).show();
+			startActivity(new Intent(this, EditPreferences.class));
 			return(true);
 		}
 		return(super.onOptionsItemSelected(item));

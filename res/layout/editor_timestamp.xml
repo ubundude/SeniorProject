@@ -29,7 +29,8 @@
         android:ems="10"
         android:enabled="false"
         android:inputType="numberDecimal"
-        android:text="@string/defaultTime" >
+        android:text="@string/defaultTime"
+        android:textColor="@color/spinner_font" >
 
         <requestFocus />
     </EditText>

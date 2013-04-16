@@ -5,6 +5,19 @@ NOTE: Alpha's are changed each time I finish coding for the evening, so that I c
 1.0.1.B_1
 -Merged in new menus and theme
 
+1.0.1.A2
+- Updated Bugsense API
+- Added in Preferences: can now set default project and starting day of week
+
+1.0.1.A2
+- Added API specific colors for the spinner font color
+- Added official Android nav icons
+- Added Date Picker to Main Edit text - not clickable, need to fix
+- Edit button in main ListView is now clickable
+
+1.0.1.B_1
+-Merged in new menus and theme
+
 1.0.BETA_03
 - Javadoc's written for some classes
 

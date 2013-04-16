@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/defaultText"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/Black"
+        android:textColor="@color/spinner_font"
         android:textColorHint="@color/Black" />
 
     <TextView

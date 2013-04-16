@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/minusPaddingLeft"
-            android:background="@drawable/minus" />
+            android:background="@drawable/navigation_previous_item" />
 
         <EditText
             android:id="@+id/dateEditText"
@@ -48,7 +48,7 @@
             android:id="@+id/plusButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/plus" />
+            android:background="@drawable/navigation_next_item" />
     </LinearLayout>
 
     <LinearLayout
