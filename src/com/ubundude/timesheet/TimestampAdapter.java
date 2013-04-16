@@ -14,13 +14,10 @@ import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class TimestampAdapter extends BaseAdapter {
@@ -57,7 +54,6 @@ public class TimestampAdapter extends BaseAdapter {
 		TextView stampId = (TextView)vi.findViewById(R.id.listviewId);
 		TextView hoursEdit = (TextView)vi.findViewById(R.id.listviewHoursTV);
 		TextView projectId = (TextView)vi.findViewById(R.id.projectIdTV);
-		Button editButton = (Button)vi.findViewById(R.id.listviewEditButton);
 		
 		HashMap<String, String> timestamp = new HashMap<String, String>();
 		timestamp = data.get(position);

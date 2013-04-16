@@ -20,11 +20,12 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -35,7 +36,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
@@ -43,7 +43,6 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /*
  * TODO Hours textview should be updated with the total hours worked for a day
@@ -78,6 +77,11 @@ public class MainActivity extends Activity {
 	public ListView list;
 	/** Gets the custom adapter for the listview */
 	TimestampAdapter adapter;
+	/** Gets the shared preferences to load defaults. */
+	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+	//String defaultProject = sharedPerfs.getString("perf_default_project", "");
+	//int defProject = Integer.parseInt(defaultProject);
 	/** Formatters for the dates */
 	SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
     SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
