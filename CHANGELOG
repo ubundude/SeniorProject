@@ -6,9 +6,6 @@ NOTE: Alpha's are changed each time I finish coding for the evening, so that I c
 Changelog got a little screwey in the merge
 - Merged 1.A's into release
 
-1.0.1.B_1
--Merged in new menus and theme
-
 1.0.1.A2
 - Updated Bugsense API
 - Added in Preferences: can now set default project and starting day of week
