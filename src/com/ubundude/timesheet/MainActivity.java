@@ -35,7 +35,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
@@ -78,7 +80,7 @@ public class MainActivity extends Activity {
 	/** Gets the custom adapter for the listview */
 	TimestampAdapter adapter;
 	/** Gets the shared preferences to load defaults. */
-	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+	//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 	//String defaultProject = sharedPerfs.getString("perf_default_project", "");
 	//int defProject = Integer.parseInt(defaultProject);
@@ -188,18 +190,23 @@ public class MainActivity extends Activity {
 		 * and then calls a new Date PickerDialog to set the button
 		 * to a new time
 		 */
-		dateEditText.setOnClickListener(new View.OnClickListener() {
+		dateEditText.setOnTouchListener(new OnTouchListener() { 
+
 			@Override
-			public void onClick(View v) {
-				int year, month, dayOfMonth;
-				year = Integer.valueOf(dateEditText.getText().toString().substring(11));
-				month = Integer.valueOf(dateEditText.getText().toString().substring(3, 5)) - 1;
-				dayOfMonth = Integer.valueOf(dateEditText.getText().toString().substring(7, 9));
-				new DatePickerDialog(MainActivity.this, d,
-						year, month, dayOfMonth).show();
-				Log.d("Test Date", "Month: " + month + ", Day: " + dayOfMonth + ", Year: " + year);
+			public boolean onTouch(View v, MotionEvent event) {
+				if(v == dateEditText) {
+						int year, month, dayOfMonth;
+						year = Integer.valueOf(dateEditText.getText().toString().substring(11));
+						month = Integer.valueOf(dateEditText.getText().toString().substring(3, 5)) - 1;
+						dayOfMonth = Integer.valueOf(dateEditText.getText().toString().substring(7, 9));
+						new DatePickerDialog(MainActivity.this, d,
+								year, month, dayOfMonth).show();
+						Log.d("Test Date", "Month: " + month + ", Day: " + dayOfMonth + ", Year: " + year);
+				}
+				return false;
 			}
 		});
+		
     }
     
     /** 
