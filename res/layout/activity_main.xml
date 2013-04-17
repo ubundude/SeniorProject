@@ -37,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.58"
             android:ems="10"
-            android:enabled="false"
+            android:focusable="false"
+            android:clickable="true"
             android:gravity="center_vertical|center_horizontal"
             android:inputType="date" >
 

@@ -4,6 +4,7 @@ NOTE: Alpha's are changed each time I finish coding for the evening, so that I c
 
 1.0.2.A1
 - Created Testing branch for all further new features
+- Added DatePicker to dateEditText in main activity
 
 1.0.1.B1
 Changelog got a little screwey in the merge

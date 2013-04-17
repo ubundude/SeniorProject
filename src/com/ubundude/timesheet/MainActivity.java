@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
 	//String defaultProject = sharedPerfs.getString("perf_default_project", "");
 	//int defProject = Integer.parseInt(defaultProject);
 	/** Formatters for the dates */
-	SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
+	//SimpleDateFormat formDateView = new SimpleDateFormat(dateViewForm, Locale.US);
     SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
     SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
     /** Gets a new DatePickerDialog and sets the calendar time to the value picked */
@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         /** Enables bugsense error reporting on the app */
-        BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
+        //BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
         setContentView(R.layout.activity_main);
       
         /** Calls temporary method for checking updates
@@ -183,29 +183,7 @@ public class MainActivity extends Activity {
         	}
         });
         
-        /**
-		 * Logic to handle clicking the Date Edit Text
-		 * 
-		 * Gets current time from the button to pass to the Time Picker
-		 * and then calls a new Date PickerDialog to set the button
-		 * to a new time
-		 */
-		dateEditText.setOnTouchListener(new OnTouchListener() { 
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if(v == dateEditText) {
-						int year, month, dayOfMonth;
-						year = Integer.valueOf(dateEditText.getText().toString().substring(11));
-						month = Integer.valueOf(dateEditText.getText().toString().substring(3, 5)) - 1;
-						dayOfMonth = Integer.valueOf(dateEditText.getText().toString().substring(7, 9));
-						new DatePickerDialog(MainActivity.this, d,
-								year, month, dayOfMonth).show();
-						Log.d("Test Date", "Month: " + month + ", Day: " + dayOfMonth + ", Year: " + year);
-				}
-				return false;
-			}
-		});
+        
 		
     }
     
@@ -350,12 +328,24 @@ public class MainActivity extends Activity {
      * @return date The current date formatted for SQL queries.
      */
 	private String initialDates() {
-        dateView = formDateView.format(c.getTime());
+        dateView = formDate.format(c.getTime());
     	date = formDate.format(c.getTime());
         
     	/** Sets the text in the dateEditText to the current date */
         dateEditText = (EditText)findViewById(R.id.dateEditText);
         dateEditText.setText(dateView, TextView.BufferType.NORMAL);
+        dateEditText.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				int year, month, dayOfMonth;
+				year = Integer.valueOf(dateEditText.getText().toString().substring(6));
+				month = Integer.valueOf(dateEditText.getText().toString().substring(0, 2)) - 1;
+				dayOfMonth = Integer.valueOf(dateEditText.getText().toString().substring(3, 5));
+				new DatePickerDialog(MainActivity.this, d,
+						year, month, dayOfMonth).show();
+			}
+		});
         
 		return date;
 	}
@@ -366,10 +356,10 @@ public class MainActivity extends Activity {
 	 */
     private String plusButtonHandler() throws ParseException {
     	
-    	c.setTime(formDateView.parse(dateView));
+    	c.setTime(formDate.parse(dateView));
     	c.add(Calendar.DAY_OF_MONTH, 1);
     	
-    	dateView = formDateView.format(c.getTime());
+    	dateView = formDate.format(c.getTime());
     	date = formDate.format(c.getTime());
     	
     	dateEditText = (EditText)findViewById(R.id.dateEditText);
@@ -383,10 +373,10 @@ public class MainActivity extends Activity {
      * @return date The current date formatted for SQL queries
      */
 	private String minusButtonHandler() throws ParseException {
-		c.setTime(formDateView.parse(dateView));
+		c.setTime(formDate.parse(dateView));
     	c.add(Calendar.DAY_OF_MONTH, -1);
     	
-    	dateView = formDateView.format(c.getTime());
+    	dateView = formDate.format(c.getTime());
     	date = formDate.format(c.getTime());
     	
     	dateEditText = (EditText)findViewById(R.id.dateEditText);
@@ -438,7 +428,7 @@ public class MainActivity extends Activity {
     }
    
    public void updateLabel() throws ParseException {
-		dateEditText.setText(formDateView.format(c.getTime()));
+		dateEditText.setText(formDate.format(c.getTime()));
    }
     
     
