@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
         /** Calls temporary method for checking updates
          * 
          *  Should be removed for actual production app*/
-        
+        /*
         try {
 			updateCheck();
 		} catch (NameNotFoundException e1) {
@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		
+		*/
 		
         /** Method to get todays date and display it in the proper places */
         date = initialDates();
@@ -199,17 +199,17 @@ public class MainActivity extends Activity {
      * @throws ExecutionException
      */
     
-    @SuppressWarnings("deprecation")
-	private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException { 
+   // @SuppressWarnings("deprecation")
+	//private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException { 
   	/** String to store the version from the url */
-		String urlVersion;
+	//	String urlVersion;
     /** Get instance of UpdateCheck.java and get the version returned from it */
-    
+    /*
      UpdateCheck check = new UpdateCheck();
      urlVersion = check.execute().get();
     	
     	PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-		String packageVersion = pInfo.versionName;
+    	String packageVersion = pInfo.versionName;
 		
 		Log.d("Package Version", packageVersion);
 		
@@ -225,7 +225,8 @@ public class MainActivity extends Activity {
         });
 			alert.show();
 		}
-	}
+    }
+    */
 
 
 
@@ -310,7 +311,7 @@ public class MainActivity extends Activity {
             	int timeId = Integer.parseInt(test.get(KEY_ID));
             	
             	/** Intent to move to TimestampEditorActivity and pass values to load */
-            	Intent intent = new Intent(MainActivity.this, TimestampEditorActivity.class);
+            	Intent intent = new Intent(MainActivity.this, EditorActivity.class);
             	intent.putExtra("TIMESTAMP_ID", timeId);
             	intent.putExtra("PROJECT_ID", proId);
             	startActivity(intent);
@@ -391,7 +392,7 @@ public class MainActivity extends Activity {
 	 *  @param view Gets the current view context to pass with the intent
 	 */
 	public void addNewHandler(View view) {
-    	Intent intent = new Intent(this, TimestampEditorActivity.class);
+    	Intent intent = new Intent(this, EditorActivity.class);
     	startActivity(intent);
     }
     

@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:id="@+id/editor_frame"
+    <fragment 
+        android:id="@+id/editorFragment"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </FrameLayout>
-
+        android:layout_height="0dp"
+        class="com.ubundude.timesheet.TimestampEditorFragment"></fragment>
+    
 </LinearLayout>

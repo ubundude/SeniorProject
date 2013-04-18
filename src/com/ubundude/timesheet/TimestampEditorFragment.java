@@ -232,10 +232,11 @@ public class TimestampEditorFragment extends Fragment {
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v){
-				Fragment frag = new TimestampEditorFragment();
-		   		FragmentTransaction trans = getFragmentManager().beginTransaction();
-		   		trans.replace(R.id.editor_frame, frag);
-		   		trans.commit();
+				//TODO This is wrong, Need to figure out how to fix
+				//Fragment frag = new TimestampEditorFragment();
+		   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
+		   		//trans.replace(R.id.editor_frame, frag);
+		   		//trans.commit();
 			}
 		});
 			
@@ -254,6 +255,12 @@ public class TimestampEditorFragment extends Fragment {
 		return v;
 	}
 	
+	public interface DataPullingInterface {
+		public Bundle getData();
+	}
+	
+	private DataPullingInterface mHostInterface;
+	
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -263,6 +270,18 @@ public class TimestampEditorFragment extends Fragment {
 			} catch (Exception ex){
 				Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
 			}
+	}
+	
+	@Override
+	public void onAttach(Activity act) {
+		Log.d("Running", "On Attach");
+		super.onAttach(act);
+		Bundle myBundle = mHostInterface.getData();
+		Log.d("Got", "The Bundle");
+		timeId = myBundle.getInt("TIME_ID");
+		Log.d("Time ID:", Integer.toString(timeId));
+		proId = myBundle.getInt("PRO_ID");
+		Log.d("Project ID:", Integer.toString(proId));
 	}
 	
 	public interface OnItemSelectedListener {
@@ -357,10 +376,11 @@ public class TimestampEditorFragment extends Fragment {
      
 	        /** Close the database and return to the previous context */
 	        db.close();
-	        Fragment frag = new TimestampEditorFragment();
-	   		FragmentTransaction trans = getFragmentManager().beginTransaction();
-	   		trans.replace(R.id.editor_frame, frag);
-	   		trans.commit();
+	      //TODO This is wrong, Need to figure out how to fix
+	        //Fragment frag = new TimestampEditorFragment();
+	   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
+	   		//trans.replace(R.id.editor_frame, frag);
+	   		//trans.commit();
     	}
     }
 	
@@ -386,10 +406,11 @@ public class TimestampEditorFragment extends Fragment {
     	db = dbHelp.getWritableDatabase();
     	db.execSQL(updateSQL);
     	db.close();
-    	Fragment frag = new TimestampEditorFragment();
-   		FragmentTransaction trans = getFragmentManager().beginTransaction();
-   		trans.replace(R.id.editor_frame, frag);
-   		trans.commit();
+    	//TODO This is wrong, Need to figure out how to fix
+    	//Fragment frag = new TimestampEditorFragment();
+   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
+   		//trans.replace(R.id.editor_frame, frag);
+   		//trans.commit();
 	}
 	
 	public void deleteHandler(View v, int timeId) {
@@ -397,10 +418,11 @@ public class TimestampEditorFragment extends Fragment {
    		db = dbHelp.getWritableDatabase();
    		db.execSQL(deleteSQL);
    		db.close();
-   		Fragment frag = new TimestampEditorFragment();
-   		FragmentTransaction trans = getFragmentManager().beginTransaction();
-   		trans.replace(R.id.editor_frame, frag);
-   		trans.commit();
+   	//TODO This is wrong, Need to figure out how to fix
+   		//Fragment frag = new TimestampEditorFragment();
+   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
+   		//trans.replace(R.id.editor_frame, frag);
+   		//trans.commit();
    	}
 	
 	public void loadSpinnerData(int proId) {

@@ -138,7 +138,8 @@ public class ProjectEditorFragment extends Fragment {
 		db.execSQL(updateSQL);
 		db.close();
 		
-		finish();
+		//TODO Figure this out
+		//finish();
 		
 	}
 	
@@ -180,7 +181,8 @@ public class ProjectEditorFragment extends Fragment {
 			db.close();
 			
 			/** Return to the previous activity */
-			finish();
+			//TODO Figure this out
+			//finish();
 		}
 	}
 	
@@ -190,7 +192,8 @@ public class ProjectEditorFragment extends Fragment {
 	 * @param v Gets the current View
 	 */
 	public void cancelButtonHandler(View v){
-		finish();
+		//TODO Figure this out
+		//finish();
 	}
 	
 	public void projectDeleteHandler(View v, int projectId) {
@@ -199,7 +202,8 @@ public class ProjectEditorFragment extends Fragment {
 			db = dbHelp.getWritableDatabase();
 			db.execSQL(deleteSQL);
 			db.close();
-			finish();
+			//TODO Figure this out
+			//finish();
 		} else {
 			Toast.makeText(getActivity(), "Cannot delete an empty project", Toast.LENGTH_LONG).show();
 		}

@@ -2,7 +2,16 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.3.A3
+- Not really much more. Gotta go to class....
+
+1.0.3.A2
+- Disabled update check
+- Began fragment testing - Its interesting
+
 1.0.3.A1
+- Started Converting Editors to fragments
+- Its going well
 
 1.0.2.B1
 - Merged Testing into Master
