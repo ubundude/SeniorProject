@@ -35,10 +35,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-/* 
- * TODO Spinner text color should be determined by device. Set in spinner_row.xml
- */
-
 /**
  * TimestampEditorActivity Class
  *
