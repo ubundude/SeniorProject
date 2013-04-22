@@ -58,11 +58,11 @@ public class TimestampAdapter extends BaseAdapter {
 		HashMap<String, String> timestamp = new HashMap<String, String>();
 		timestamp = data.get(position);
 		
-		stampId.setText(timestamp.get(MainActivity.KEY_ID));
-		projectShort.setText(timestamp.get(MainActivity.KEY_SHORT));
-		projectFull.setText(timestamp.get(MainActivity.KEY_FULL));
-		hoursEdit.setText(timestamp.get(MainActivity.KEY_HOURS) + " hrs");
-		projectId.setText(timestamp.get(MainActivity.KEY_PROID));
+		stampId.setText(timestamp.get(ActivityMain.KEY_ID));
+		projectShort.setText(timestamp.get(ActivityMain.KEY_SHORT));
+		projectFull.setText(timestamp.get(ActivityMain.KEY_FULL));
+		hoursEdit.setText(timestamp.get(ActivityMain.KEY_HOURS) + " hrs");
+		projectId.setText(timestamp.get(ActivityMain.KEY_PROID));
 		
 	return vi;
 	}

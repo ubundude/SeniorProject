@@ -2,6 +2,9 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.3.A4
+- Main Activity mostly moved to fragment style. Need to test listview now
+
 1.0.3.A3
 - Not really much more. Gotta go to class....
 
