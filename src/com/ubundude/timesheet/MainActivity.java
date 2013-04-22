@@ -6,14 +6,13 @@ package com.ubundude.timesheet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-/**
- * @author kolby
- *
- */
-public class ActivityMain extends FragmentActivity implements MainUIFragment.SelectedDateListener{
+public class MainActivity extends FragmentActivity 
+	implements MainUIFragment.OnDateSetListener, 
+	ListViewFragment.OnDateGetListener {
 	String lDate;
 	/** Keys for the HashMap used in the list view */
 	public static final String KEY_ID = "listviewId";
@@ -25,13 +24,9 @@ public class ActivityMain extends FragmentActivity implements MainUIFragment.Sel
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//TODO Reenable
 		//BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
 		setContentView(R.layout.activity_main);
-	}
-
-	@Override
-	public void selectedDateListener(String date) {
-		lDate = date;
 	}
 	
 	@Override
@@ -49,5 +44,18 @@ public class ActivityMain extends FragmentActivity implements MainUIFragment.Sel
 			return(true);
 		}
 		return(super.onOptionsItemSelected(item));
+	}
+
+	@Override
+	public void dateSetter(String date) {
+		lDate = date;
+		Log.d("dateSetter", "Date is: " + lDate);
+		dateGetter(lDate);
+	}
+
+	public void dateGetter(String date) {
+		Log.d("dateGetter", "Running Date Getter");
+		ListViewFragment listFrag = (ListViewFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_list);
+		listFrag.getDailyTimestamps(date);
 	}
 }

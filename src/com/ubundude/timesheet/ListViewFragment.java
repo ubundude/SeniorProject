@@ -4,37 +4,59 @@ import java.util.ArrayList;
 
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 //TODO Probably should add an onresume
 
 public class ListViewFragment extends Fragment {
+	OnDateGetListener mCallback;
 	/** Database instance and call to Timesheet OpenHelper */
 	private SQLiteDatabase db;
-	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(getActivity());
+	private TimesheetDatabaseHelper dbHelp;
 	public ListView list;
-	private OnItemSelectedListener listener;
 	/** Gets the custom adapter for the listview */
 	TimestampAdapter adapter;
+	
+	public interface OnDateGetListener {
+		public void dateGetter(String date);
+	}
+	
+	@Override
+	public void onAttach(Activity act) {
+		super.onAttach(act);
+		Log.d("ListViewFragment", "Is Attached to Activity: " + act.toString());
+		// This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+		try {
+			mCallback = (OnDateGetListener) act;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(act.toString()
+					+ " must implement OnDateGetListener");
+		}
+		dbHelp = new TimesheetDatabaseHelper(getActivity());
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_listview, container, false);
 	}
 	
-	public interface SetDateListener {
-		void setDateListener(String date);
+	@Override
+	public void onStart() {
+		super.onStart();
+		//getDailyTimestamps(date);
 	}
 	
 	/**
@@ -45,7 +67,7 @@ public class ListViewFragment extends Fragment {
 	 * 
 	 * @param date The date the user has selected
 	 */
-    private void getDailyTimestamps(String date) {
+    public void getDailyTimestamps(String date) {
     	final ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
     	
     	/** Open the database table for reading and writing */
@@ -71,11 +93,11 @@ public class ListViewFragment extends Fragment {
 			 */
 			do {
 				HashMap<String, String> map = new HashMap<String, String>();
-				map.put(ActivityMain.KEY_ID, Integer.toString(cu.getInt(0)));
-				map.put(ActivityMain.KEY_SHORT, cu.getString(1));
-				map.put(ActivityMain.KEY_FULL, cu.getString(2));
-				map.put(ActivityMain.KEY_HOURS, cu.getString(3));
-				map.put(ActivityMain.KEY_PROID, Integer.toString(cu.getInt(4)));
+				map.put(MainActivity.KEY_ID, Integer.toString(cu.getInt(0)));
+				map.put(MainActivity.KEY_SHORT, cu.getString(1));
+				map.put(MainActivity.KEY_FULL, cu.getString(2));
+				map.put(MainActivity.KEY_HOURS, cu.getString(3));
+				map.put(MainActivity.KEY_PROID, Integer.toString(cu.getInt(4)));
 				
 				stampList.add(map);
 				
@@ -103,8 +125,8 @@ public class ListViewFragment extends Fragment {
             	HashMap<String, String> test = new HashMap<String, String>();
             	test = stampList.get(position);
             	/** Store projectId and timestampId from the current HashMap */
-            	int proId = Integer.parseInt(test.get(ActivityMain.KEY_PROID));
-            	int timeId = Integer.parseInt(test.get(ActivityMain.KEY_ID));
+            	int proId = Integer.parseInt(test.get(MainActivity.KEY_PROID));
+            	int timeId = Integer.parseInt(test.get(MainActivity.KEY_ID));
             	
             	/** Intent to move to TimestampEditorActivity and pass values to load */
             	Intent intent = new Intent(getActivity(), EditorActivity.class);

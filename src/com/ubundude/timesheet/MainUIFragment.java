@@ -19,16 +19,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
-//TODO Probably should add an onresume
-
 public class MainUIFragment extends Fragment {
-	SelectedDateListener mListener;
+	OnDateSetListener mCallback;
 	/** Database instance and call to Timesheet OpenHelper */
 	private SQLiteDatabase db;
-	private TimesheetDatabaseHelper dbHelp = new TimesheetDatabaseHelper(getActivity());
+	private TimesheetDatabaseHelper dbHelp;
 	/** Gets a valid calendar instance for use */
 	final Calendar c = Calendar.getInstance();
 	/** Strings for formatting the date's and times for use */
@@ -57,6 +54,23 @@ public class MainUIFragment extends Fragment {
 			}
 		}
 	};
+	
+	public interface OnDateSetListener {
+		public void dateSetter(String date);
+	}
+	
+	@Override
+	public void onAttach(Activity act) {
+		super.onAttach(act);
+		
+		try {
+			mCallback = (OnDateSetListener) act;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(act.toString()
+					+ " must implement OnDateSetListener");
+		}
+		dbHelp = new TimesheetDatabaseHelper(getActivity());
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -121,29 +135,10 @@ public class MainUIFragment extends Fragment {
         	}
 
         });
-        
 	}
 	
-	/**
-	 * @param date
-	 */
 	protected void getDailyTimestamps(String date) {
-		mListener.selectedDateListener(date);
-		
-	}
-
-	public interface SelectedDateListener {
-		public void selectedDateListener(String date);
-	}
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mListener = (SelectedDateListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString() + " must implement SelectedDateListener");
-		}
+		mCallback.dateSetter(date);
 	}
 	
 	/** 
@@ -222,7 +217,7 @@ public class MainUIFragment extends Fragment {
 	 * 
 	 *  @param view Gets the current view context to pass with the intent
 	 */
-	public void addNewHandler(View view) {
+	private void addNewHandler(View view) {
     	Intent intent = new Intent(getActivity(), EditorActivity.class);
     	startActivity(intent);
     }
@@ -233,7 +228,7 @@ public class MainUIFragment extends Fragment {
 	 * @param view
 	 * @throws SQLException
 	 */
-   public void quickAddHandler(View view) throws SQLException {
+	private void quickAddHandler(View view) throws SQLException {
 	   /** Strings and int for the current dates and project */
 	   String timeIn, timeOut, dateIn, dateOut;
 	   int project = 1; //Will get from Default project in settings
