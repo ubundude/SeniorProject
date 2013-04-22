@@ -1,11 +1,14 @@
 package com.ubundude.timesheet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
-public class EditorActivity extends FragmentActivity implements TimestampEditorFragment.DataPullingInterface, 
-	ProjectEditorFragment.OnItemSelectedListener {
+public class EditorActivity extends FragmentActivity
+	implements TimestampEditorFragment.OnSendTimestampId {
 	
 	private int timeId, proId;
 	
@@ -24,27 +27,42 @@ public class EditorActivity extends FragmentActivity implements TimestampEditorF
         	proId = 1;
         }
         
+        Log.d("OnCreate", "TimeId: " + timeId);
+        Log.d("OnCreate", "ProId: " + proId);
+        sendTimeId(timeId, proId);
         
 	}
-
 	
 	@Override
-	public void onProjectItemSelected(int id) {
-		// TODO Auto-generated method stub
-		
-	}
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.editor_menu, menu);
+        return true;
+    }
 
-
-	/** 
-	 * @see com.ubundude.timesheet.TimestampEditorFragment.DataPullingInterface#getData()
-	 */
 	@Override
-	public Bundle getData() {
-		Bundle b = new Bundle();
-		b.putInt("TIME_ID", timeId);
-		b.putInt("PRO_ID", proId);
-		Log.d("Bundle", "Sent");
-		return b;
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.editor_preferences:
+			startActivity(new Intent(this, EditPreferences.class));
+			return(true);
+		case R.id.delete_item:
+			//deleteHandler(timeId);
+			return(true);
+		}
+		return(super.onOptionsItemSelected(item));
 	}
 
+	@Override
+	public void sendTimeId(int timeId, int proId) {
+		TimestampEditorFragment timeFrag = (TimestampEditorFragment)getSupportFragmentManager().findFragmentById(R.id.editorFragment);
+		if(timeId != 0) {
+		timeFrag.getTimestamp(timeId);
+		Log.d("SendTimeId", "Loaded the timestamp");
+		Log.d("SendTimeId", "Sending proId: " + proId);
+		timeFrag.loadSpinnerData(proId);
+		} else {
+			timeFrag.initializeButtons();
+		}
+	}
 }

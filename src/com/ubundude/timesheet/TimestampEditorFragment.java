@@ -17,12 +17,10 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +32,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
  * TimestampEditorActivity Class
@@ -43,12 +40,11 @@ import android.widget.AdapterView.OnItemSelectedListener;
  * with the editor to add a new timestamp to the database.
  */
 public class TimestampEditorFragment extends Fragment {
-	
-	private OnItemSelectedListener listener;
+	OnSendTimestampId mCallback;
 	public static final String KEY_NAME = "projectName";
 	public static final String KEY_ID = "projectId";
 	/** Datasources to get objects for using database tables */
-	private TimesheetDatabaseHelper dbHelp;
+	private TimesheetDatabaseHelper dbHelp; //TODO Needs the = new part added in the onAttach
 	private SQLiteDatabase db;
 	/** Gets a valid calendar instance */
 	final Calendar c = Calendar.getInstance();
@@ -78,11 +74,9 @@ public class TimestampEditorFragment extends Fragment {
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {		
 			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			c.set(Calendar.MINUTE, minute);
-			View v = null;
 			try {
 				updateLabel();
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -98,36 +92,48 @@ public class TimestampEditorFragment extends Fragment {
 			try {
 				updateLabel();
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	};
 	
+	public interface OnSendTimestampId {
+		public void sendTimeId(int timeId, int proId);
+	}
+	
+	@Override 
+	public void onAttach(Activity act) {
+		super.onAttach(act);
+		
+		try { 
+			mCallback = (OnSendTimestampId) act;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(act.toString() 
+					+ " must implement OnSendTimestampId");
+		}
+				
+		dbHelp = new TimesheetDatabaseHelper(getActivity());
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_editor_timestamp, container, false);
-		editButton = (Button)v.findViewById(R.id.projectEditButton);
-		projectSpinner = (Spinner)v.findViewById(R.id.projectSpinner);
-		try {
-	        if(timeId != 0) {
-	        	getTimestamp(timeId, v);
-	        	loadSpinnerData(proId);
-	        } else {
-	        	initializeButtons(v);
-	        	loadSpinnerData(proId);
-	        }
-	    }catch (Exception e) {
-	    	Log.d("Timestamps Fail", e.getLocalizedMessage(), e.fillInStackTrace());
-	    }
-		
+		return v;
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		editButton = (Button)getView().findViewById(R.id.projectEditButton);
 		editButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-	       		TextView idTv = (TextView)v.findViewById(R.id.proIdTV);
+	       		TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
+	       		Log.d("Edit Button", "textView set");
 	       		int proId = Integer.parseInt(idTv.getText().toString());
-				editProject(proId);
+	       		Log.d("Edit Button", "Project id: " + proId);
+				//FIXME editProject(proId);
 			}
 		});
 		
@@ -232,11 +238,7 @@ public class TimestampEditorFragment extends Fragment {
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v){
-				//TODO This is wrong, Need to figure out how to fix
-				//Fragment frag = new TimestampEditorFragment();
-		   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
-		   		//trans.replace(R.id.editor_frame, frag);
-		   		//trans.commit();
+				getActivity().finish();
 			}
 		});
 			
@@ -252,53 +254,19 @@ public class TimestampEditorFragment extends Fragment {
 			});
 		}
 	
-		return v;
 	}
-	
-	public interface DataPullingInterface {
-		public Bundle getData();
-	}
-	
-	private DataPullingInterface mHostInterface;
-	
-	@Override
-	public void onResume() {
-		super.onResume();
 
-			try {
-	       		loadSpinnerData(proId);
-			} catch (Exception ex){
-				Log.d("spinnerLoadFail", ex.getMessage(), ex.fillInStackTrace());
-			}
-	}
-	
-	@Override
-	public void onAttach(Activity act) {
-		Log.d("Running", "On Attach");
-		super.onAttach(act);
-		Bundle myBundle = mHostInterface.getData();
-		Log.d("Got", "The Bundle");
-		timeId = myBundle.getInt("TIME_ID");
-		Log.d("Time ID:", Integer.toString(timeId));
-		proId = myBundle.getInt("PRO_ID");
-		Log.d("Project ID:", Integer.toString(proId));
-	}
-	
-	public interface OnItemSelectedListener {
-		public void onProjectEditButtonSelected(int proId);
-	}
-	
-	private void initializeButtons(View v) {
+	public void initializeButtons() {
 		/** Initialize buttons so that they can be set to the proper date */
-		dateInButton = (Button)v.findViewById(R.id.dateInButton);
-	    timeInButton = (Button)v.findViewById(R.id.timeInButton);
-	    dateOutButton = (Button)v.findViewById(R.id.dateOutButton);
-	    timeOutButton = (Button)v.findViewById(R.id.timeOutButton);
-	    commentsEditText = (EditText)v.findViewById(R.id.commentsEditText);
-	    saveButton = (Button)v.findViewById(R.id.saveTimestampButton);
-	    cancelButton = (Button)v.findViewById(R.id.cancelTimestampButton);
-	    deleteButton = (Button)v.findViewById(R.id.timestampDeleteButton);
-	    timeEditText = (EditText)v.findViewById(R.id.timeEditText);
+		dateInButton = (Button)getView().findViewById(R.id.dateInButton);
+	    timeInButton = (Button)getView().findViewById(R.id.timeInButton);
+	    dateOutButton = (Button)getView().findViewById(R.id.dateOutButton);
+	    timeOutButton = (Button)getView().findViewById(R.id.timeOutButton);
+	    commentsEditText = (EditText)getView().findViewById(R.id.commentsEditText);
+	    saveButton = (Button)getView().findViewById(R.id.saveTimestampButton);
+	    cancelButton = (Button)getView().findViewById(R.id.cancelTimestampButton);
+	    deleteButton = (Button)getView().findViewById(R.id.timestampDeleteButton);
+	    timeEditText = (EditText)getView().findViewById(R.id.timeEditText);
 
 		/** Get current date and time and store into proper variables */
 		SimpleDateFormat dateFormer = new SimpleDateFormat(dateForm, Locale.US);
@@ -313,6 +281,8 @@ public class TimestampEditorFragment extends Fragment {
 		dateOutButton.setText(dateOut);
 		timeInButton.setText(timeIn);
 		timeOutButton.setText(timeOut);
+		
+		loadSpinnerData(0);
 	}
 	
 	/** Method to set the value of the button used to the date or time picked 
@@ -359,7 +329,7 @@ public class TimestampEditorFragment extends Fragment {
     	comments = commentsEditText.getText().toString();
     	hours = timeCalc();
     	
-    	TextView idTv = (TextView)v.findViewById(R.id.proIdTV);
+    	TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
    		int proId = Integer.parseInt(idTv.getText().toString());
     	
     	if(proId == 1) {
@@ -376,11 +346,8 @@ public class TimestampEditorFragment extends Fragment {
      
 	        /** Close the database and return to the previous context */
 	        db.close();
-	      //TODO This is wrong, Need to figure out how to fix
-	        //Fragment frag = new TimestampEditorFragment();
-	   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
-	   		//trans.replace(R.id.editor_frame, frag);
-	   		//trans.commit();
+	        
+	        getActivity().finish();
     	}
     }
 	
@@ -394,7 +361,7 @@ public class TimestampEditorFragment extends Fragment {
     	timeOut = timeOutButton.getText().toString();
     	comments = commentsEditText.getText().toString();
     	hours = timeCalc();
-    	TextView idTv = (TextView)v.findViewById(R.id.proIdTV);
+    	TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
    		int proId = Integer.parseInt(idTv.getText().toString());
     	
     	String updateSQL = "update timestamp " +
@@ -406,11 +373,8 @@ public class TimestampEditorFragment extends Fragment {
     	db = dbHelp.getWritableDatabase();
     	db.execSQL(updateSQL);
     	db.close();
-    	//TODO This is wrong, Need to figure out how to fix
-    	//Fragment frag = new TimestampEditorFragment();
-   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
-   		//trans.replace(R.id.editor_frame, frag);
-   		//trans.commit();
+    	
+    	getActivity().finish();
 	}
 	
 	public void deleteHandler(View v, int timeId) {
@@ -418,16 +382,14 @@ public class TimestampEditorFragment extends Fragment {
    		db = dbHelp.getWritableDatabase();
    		db.execSQL(deleteSQL);
    		db.close();
-   	//TODO This is wrong, Need to figure out how to fix
-   		//Fragment frag = new TimestampEditorFragment();
-   		//FragmentTransaction trans = getFragmentManager().beginTransaction();
-   		//trans.replace(R.id.editor_frame, frag);
-   		//trans.commit();
+   		
+   		getActivity().finish();
    	}
 	
 	public void loadSpinnerData(int proId) {
    		int pos = 0;
-   		
+   		int id = proId;
+   		projectSpinner = (Spinner)getView().findViewById(R.id.projectSpinner);
    		ArrayList<HashMap<String, String>> projects = new ArrayList<HashMap<String, String>>();
 		
 		String selectQuery = "select _id, name from projects";
@@ -439,39 +401,43 @@ public class TimestampEditorFragment extends Fragment {
 		if (cu != null && cu.getCount() > 0) {
 			cu.moveToFirst();
 			do {
+				Log.d("loadSpinnerData", "Hashing rows");
 				HashMap<String, String> map = new HashMap<String, String>();
 				map.put(KEY_NAME, cu.getString(1));
 				map.put(KEY_ID, Integer.toString(cu.getInt(0)));
-				if (cu.getInt(0) == proId) {
+				if (cu.getInt(0) == id) {
+					Log.d("loadSpinnerData", "Found Loaded project");
 					pos = cu.getPosition();
 				}
 				projects.add(map);
 				
 			} while(cu.moveToNext());
 		}
-		
+		Log.d("loadSpinnerData", "Closing things");
 		cu.close();
 		db.close();
-		
+		Log.d("loadSpinnerData", "Setting adapter");
    		adapter = new SpinnerAdapter(getActivity(), projects);
-   		
    		projectSpinner.setAdapter(adapter);
+   		Log.d("loadSpinnerData", "Adapter Set");
+   		Log.d("loadSpinnerData", "Setting position");
    		projectSpinner.setSelection(pos);
+   		Log.d("loadSpinnerData", "Position Set");
    	}
 	
-	private int getTimestamp(int timeId, View v) throws NullPointerException {
+	public int getTimestamp(int timeId) throws NullPointerException {
    		int id = timeId;
+   		
    		String selectTimestamp =" select * from timestamp where _id = " + id;
-   		projectSpinner = (Spinner)v.findViewById(R.id.projectSpinner);
-   		timeEditText = (EditText)v.findViewById(R.id.timeEditText);
-   		dateInButton = (Button)v.findViewById(R.id.dateInButton);
-       	timeInButton = (Button)v.findViewById(R.id.timeInButton);
- 	    dateOutButton = (Button)v.findViewById(R.id.dateOutButton);
- 	    timeOutButton = (Button)v.findViewById(R.id.timeOutButton);
- 	    commentsEditText = (EditText)v.findViewById(R.id.commentsEditText);
- 	    saveButton = (Button)v.findViewById(R.id.saveTimestampButton);
- 	    cancelButton = (Button)v.findViewById(R.id.cancelTimestampButton);
-	    deleteButton = (Button)v.findViewById(R.id.timestampDeleteButton);
+   		timeEditText = (EditText)getView().findViewById(R.id.timeEditText);
+   		dateInButton = (Button)getView().findViewById(R.id.dateInButton);
+       	timeInButton = (Button)getView().findViewById(R.id.timeInButton);
+ 	    dateOutButton = (Button)getView().findViewById(R.id.dateOutButton);
+ 	    timeOutButton = (Button)getView().findViewById(R.id.timeOutButton);
+ 	    commentsEditText = (EditText)getView().findViewById(R.id.commentsEditText);
+ 	    saveButton = (Button)getView().findViewById(R.id.saveTimestampButton);
+ 	    cancelButton = (Button)getView().findViewById(R.id.cancelTimestampButton);
+	    deleteButton = (Button)getView().findViewById(R.id.timestampDeleteButton);
        		
    		db = dbHelp.getReadableDatabase();
    		Cursor cu = db.rawQuery(selectTimestamp, null);
@@ -492,11 +458,6 @@ public class TimestampEditorFragment extends Fragment {
 	
 	public static String timeCalc() throws ParseException { //TODO Update to get values inside
    		String cdateIn, ctimeIn, cdateOut, ctimeOut;
-   		
-   		//dateInButton = (Button)findViewById(R.id.dateInButton);
-       //	timeInButton = (Button)findViewById(R.id.timeInButton);
- 	   // dateOutButton = (Button)findViewById(R.id.dateOutButton);
- 	   // timeOutButton = (Button)findViewById(R.id.timeOutButton);
  	  
  	    cdateIn = dateInButton.getText().toString();
  	    ctimeIn = timeInButton.getText().toString();
@@ -518,10 +479,6 @@ public class TimestampEditorFragment extends Fragment {
 		String hour = String.format(Locale.US, "%.2f", hr);
 		return hour;
 			
-	}
-	
-	public void editProject(int proId) {
-		listener.onProjectEditButtonSelected(proId);
 	}
 	
 }

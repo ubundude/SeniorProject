@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ubundude.timesheet"
     android:versionCode="1"
-    android:versionName="1.0.3.A5" >
+    android:versionName="1.0.3.A6" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -29,8 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ProjectEditorActivity"></activity>
-        <activity android:name="TimestampEditorActivity"></activity>
         <activity android:name="EditPreferences"></activity>
         <activity android:name="EditorActivity"></activity>
     </application>

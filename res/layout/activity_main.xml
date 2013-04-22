@@ -10,10 +10,12 @@
         android:layout_height="0dp"
         class="com.ubundude.timesheet.MainUIFragment" ></fragment>
     
-    <fragment android:id="@+id/fragment_list"
+    <fragment
+        android:id="@+id/fragment_list"
         android:layout_width="match_parent"
-        android:layout_weight="2"
         android:layout_height="0dp"
-        class="com.ubundude.timesheet.ListViewFragment" ></fragment>
+        android:layout_weight="2"
+        class="com.ubundude.timesheet.ListViewFragment" >
+</fragment>
     
 </LinearLayout>

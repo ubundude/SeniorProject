@@ -2,6 +2,13 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.3.A6
+- Fixed add new button
+- Fixed timestamps not loading to editor from listview
+- Timestamp editor working
+- FIX project edit button
+- FIX Delete button
+
 1.0.3.A5
 - Main Activity has been converted to fragment use and is working!
 - Need to hookup the add new button

@@ -34,7 +34,7 @@ public class MainUIFragment extends Fragment {
 	/** Strings to store formated calendar outputs */
 	public String date, dateView;
 	/** Prepares buttons and EditText for use */
-	public Button minusButton, plusButton, quickAdd;
+	public Button minusButton, plusButton, quickAdd, addNew;
 	public EditText dateEditText;
 	/** Formatters for the dates */
     SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
@@ -135,6 +135,16 @@ public class MainUIFragment extends Fragment {
         	}
 
         });
+        
+        addNew = (Button)getView().findViewById(R.id.addNewButton);
+        addNew.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				addNewHandler(v);
+				
+			}
+		});
 	}
 	
 	protected void getDailyTimestamps(String date) {
@@ -149,7 +159,7 @@ public class MainUIFragment extends Fragment {
      * 
      * @return date The current date formatted for SQL queries.
      */
-	public String initialDates() {
+	private String initialDates() {
 		Log.d("Initial Dates", "Funcion Entred");
         dateView = formDate.format(c.getTime());
     	date = formDate.format(c.getTime());
@@ -254,7 +264,7 @@ public class MainUIFragment extends Fragment {
 	   db.close();
     }
    
-   public void updateLabel() throws ParseException {
+   private void updateLabel() throws ParseException {
 		dateEditText.setText(formDate.format(c.getTime()));
    }
 

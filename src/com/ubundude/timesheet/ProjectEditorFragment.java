@@ -1,7 +1,5 @@
 package com.ubundude.timesheet;
 
-import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 /** 
  * ProjectEditorActivity class
@@ -22,33 +19,36 @@ import android.widget.AdapterView.OnItemSelectedListener;
  * and deleting projects in the projects table.
  */
 public class ProjectEditorFragment extends Fragment {
-	
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp;
 	private EditText shortCodeEdit, fullNameEdit, rateEdit, descEdit;
 	private int project;
 	private Button saveButton, cancelButton, deleteButton;
-	private OnItemSelectedListener listener;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_editor_project, container, false);
-		
-		saveButton = (Button)v.findViewById(R.id.saveProjectButton);
-        cancelButton = (Button)v.findViewById(R.id.cancelProjectButton);
-        deleteButton = (Button)v.findViewById(R.id.projectDeleteButton);
+		return v;
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		saveButton = (Button)getView().findViewById(R.id.saveProjectButton);
+        cancelButton = (Button)getView().findViewById(R.id.cancelProjectButton);
+        deleteButton = (Button)getView().findViewById(R.id.projectDeleteButton);
         
         if (project != 1) {
-        	loadProject(project, v);
+        	loadProject(project);
         } 
         
         saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(project != 1) {
-					updateProject(project, v);
+					updateProject(project);
 				} else {
-					insertNewProject(v);
+					insertNewProject();
 				}
 				
 			}
@@ -68,37 +68,20 @@ public class ProjectEditorFragment extends Fragment {
 			}
 		});
 		
-		return v;
 	}
 	
-	public interface OnItemSelectedListener {
-		public void onProjectItemSelected(int id);
-	}
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		if (activity instanceof OnItemSelectedListener) {
-			listener = (OnItemSelectedListener) activity;
-		} else {
-			throw new ClassCastException(activity.toString() +
-					"must implement EditorActivity.OnItemSelectedListener");
-		}
-		
-		dbHelp = new TimesheetDatabaseHelper(activity);
-	}
 	
 	/**
 	 * Method called to load project from database when ID is passed by intent
 	 * 
 	 * @param project The ID of the project selected from the spinner
 	 */
-	public void loadProject(int project, View v) {
+	public void loadProject(int project) {
 		/** Initializes the edit text fields for use */
-		shortCodeEdit = (EditText)v.findViewById(R.id.shortCodeEditText);
-		fullNameEdit = (EditText)v.findViewById(R.id.fullNameEditText);
-		rateEdit = (EditText)v.findViewById(R.id.rateEditText);
-		descEdit = (EditText)v.findViewById(R.id.descriptionEditText);
+		shortCodeEdit = (EditText)getView().findViewById(R.id.shortCodeEditText);
+		fullNameEdit = (EditText)getView().findViewById(R.id.fullNameEditText);
+		rateEdit = (EditText)getView().findViewById(R.id.rateEditText);
+		descEdit = (EditText)getView().findViewById(R.id.descriptionEditText);
 		
 		String selectProject = "select * from projects where _id = " + project;
 		db = dbHelp.getReadableDatabase();
@@ -112,12 +95,12 @@ public class ProjectEditorFragment extends Fragment {
 		db.close();
 	}
 	
-	public void updateProject(int projectId, View v) {
+	public void updateProject(int projectId) {
 		/** Initializes the edit text fields for use */
-		shortCodeEdit = (EditText)v.findViewById(R.id.shortCodeEditText);
-		fullNameEdit = (EditText)v.findViewById(R.id.fullNameEditText);
-		rateEdit = (EditText)v.findViewById(R.id.rateEditText);
-		descEdit = (EditText)v.findViewById(R.id.descriptionEditText);
+		shortCodeEdit = (EditText)getView().findViewById(R.id.shortCodeEditText);
+		fullNameEdit = (EditText)getView().findViewById(R.id.fullNameEditText);
+		rateEdit = (EditText)getView().findViewById(R.id.rateEditText);
+		descEdit = (EditText)getView().findViewById(R.id.descriptionEditText);
 		
 		/** Variables to store form elements into for insertion to database */
 		final String shortCode, fullName, rate, description;
@@ -138,8 +121,8 @@ public class ProjectEditorFragment extends Fragment {
 		db.execSQL(updateSQL);
 		db.close();
 		
-		//TODO Figure this out
-		//finish();
+		//TODO See if this works
+		getActivity().finish();
 		
 	}
 	
@@ -149,12 +132,12 @@ public class ProjectEditorFragment extends Fragment {
 	 * Only called if a new project needs to be inserted. 
 	 * Otherwise, project gets updated via updateProject()
 	 */
-	public void insertNewProject(View v) {
+	public void insertNewProject() {
 		 /** Initializes the edit text fields for use */
-		shortCodeEdit = (EditText)v.findViewById(R.id.shortCodeEditText);
-		fullNameEdit = (EditText)v.findViewById(R.id.fullNameEditText);
-		rateEdit = (EditText)v.findViewById(R.id.rateEditText);
-		descEdit = (EditText)v.findViewById(R.id.descriptionEditText);
+		shortCodeEdit = (EditText)getView().findViewById(R.id.shortCodeEditText);
+		fullNameEdit = (EditText)getView().findViewById(R.id.fullNameEditText);
+		rateEdit = (EditText)getView().findViewById(R.id.rateEditText);
+		descEdit = (EditText)getView().findViewById(R.id.descriptionEditText);
 		
 		/** Variables to store form elements into for insertion to database */
 		final String shortCode, fullName, rate, description;
