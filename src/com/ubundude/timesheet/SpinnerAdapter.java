@@ -44,7 +44,7 @@ public class SpinnerAdapter extends BaseAdapter {
 		project = data.get(position);
 		
 		proName.setText(project.get(TimestampEditorFragment.KEY_NAME));
-		proId.setText(project.get(TimestampEditorFragment.KEY_ID));
+		proId.setText(project.get(TimestampEditorFragment.PRO_ID_KEY));
 		
 		return vi;
 	}

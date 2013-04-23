@@ -1,14 +1,15 @@
 package com.ubundude.timesheet;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 public class EditorActivity extends FragmentActivity
-	implements TimestampEditorFragment.OnSendTimestampId {
+	implements TimestampEditorFragment.OnSendTimestampId,
+	ProjectEditorFragment.OnProjectNeedsEdited {
 	
 	private int timeId, proId;
 	
@@ -24,7 +25,8 @@ public class EditorActivity extends FragmentActivity
         } else {
         	Log.d("Timestamp ID's", "setting defaults");
         	timeId = 0;
-        	proId = 1;
+        	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+    		proId = Integer.parseInt(sharedPref.getString("perf_default_project", "1"));
         }
         
         Log.d("OnCreate", "TimeId: " + timeId);
@@ -32,37 +34,36 @@ public class EditorActivity extends FragmentActivity
         sendTimeId(timeId, proId);
         
 	}
-	
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.editor_menu, menu);
-        return true;
-    }
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.editor_preferences:
-			startActivity(new Intent(this, EditPreferences.class));
-			return(true);
-		case R.id.delete_item:
-			//deleteHandler(timeId);
-			return(true);
-		}
-		return(super.onOptionsItemSelected(item));
-	}
 
 	@Override
 	public void sendTimeId(int timeId, int proId) {
-		TimestampEditorFragment timeFrag = (TimestampEditorFragment)getSupportFragmentManager().findFragmentById(R.id.editorFragment);
-		if(timeId != 0) {
-		timeFrag.getTimestamp(timeId);
-		Log.d("SendTimeId", "Loaded the timestamp");
-		Log.d("SendTimeId", "Sending proId: " + proId);
-		timeFrag.loadSpinnerData(proId);
+		TimestampEditorFragment timeFrag = (TimestampEditorFragment)getSupportFragmentManager().findFragmentById(R.id.editorFragments);
+		
+		if (timeFrag != null) {
+			timeFrag.getTimestamp(timeId);
 		} else {
-			timeFrag.initializeButtons();
+			TimestampEditorFragment nTimeFrag = new TimestampEditorFragment();
+			Bundle args = new Bundle();
+			args.putInt(TimestampEditorFragment.TIME_ID_KEY, timeId);
+			args.putInt(TimestampEditorFragment.PRO_ID_KEY, proId);
+			nTimeFrag.setArguments(args);
+			FragmentTransaction fragTrans = getSupportFragmentManager().beginTransaction();
+			fragTrans.replace(R.id.editorFragments, nTimeFrag);
+			fragTrans.commit();
 		}
 	}
+
+	
+	@Override
+	public void setProject(int proId) {
+		ProjectEditorFragment proFrag = new ProjectEditorFragment();
+		Bundle args = new Bundle();
+		args.putInt(ProjectEditorFragment.PRO_KEY, proId);
+		proFrag.setArguments(args);
+		FragmentTransaction fragTrans = getSupportFragmentManager().beginTransaction();
+		fragTrans.replace(R.id.editorFragments, proFrag);
+		fragTrans.addToBackStack(null);
+		fragTrans.commit();
+	}
+	
 }

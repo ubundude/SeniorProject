@@ -8,9 +8,11 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +38,7 @@ public class MainUIFragment extends Fragment {
 	/** Prepares buttons and EditText for use */
 	public Button minusButton, plusButton, quickAdd, addNew;
 	public EditText dateEditText;
+	private int proId;
 	/** Formatters for the dates */
     SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
     SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
@@ -80,6 +83,10 @@ public class MainUIFragment extends Fragment {
 	@Override 
 	public void onStart() {
 		super.onStart();
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		String defProjectId = sharedPref.getString("perf_default_project", "");
+		proId = Integer.parseInt(defProjectId);
+		
 		/** Method to get todays date and display it in the proper places */
         date = initialDates();
         Log.d("Initial Dates", date);
@@ -241,7 +248,7 @@ public class MainUIFragment extends Fragment {
 	private void quickAddHandler(View view) throws SQLException {
 	   /** Strings and int for the current dates and project */
 	   String timeIn, timeOut, dateIn, dateOut;
-	   int project = 1; //Will get from Default project in settings
+	   //int project = 1; //Will get from Default project in settings
 	   timeIn = formTime.format(c.getTime());
 	   timeOut = timeIn;
 	   dateIn = formDate.format(c.getTime());
@@ -253,7 +260,7 @@ public class MainUIFragment extends Fragment {
 	   /** String to insert a timestamp into the database */
 	   String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, hours, project) " +
 			   "values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
-			   "', '" + timeOut + "', 0, '" + project + "')";
+			   "', '" + timeOut + "', 0, '" + proId + "')";
 	   try {
 		   db.execSQL(insertSQL);
 	   } catch(Exception e) {

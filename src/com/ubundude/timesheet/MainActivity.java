@@ -4,7 +4,9 @@
 package com.ubundude.timesheet;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 public class MainActivity extends FragmentActivity 
 	implements MainUIFragment.OnDateSetListener, 
 	ListViewFragment.OnDateGetListener {
+	
 	String lDate;
 	/** Keys for the HashMap used in the list view */
 	public static final String KEY_ID = "listviewId";

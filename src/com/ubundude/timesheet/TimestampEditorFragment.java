@@ -1,9 +1,3 @@
-/**
- * @author Kolby Cansler <golfguy90@gmail.com>
- * @version 1.0.3.A1
- * 
- * Creates the Timestamp Editor Page
- */
 package com.ubundude.timesheet;
 
 import java.text.ParseException;
@@ -17,12 +11,16 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,8 +31,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+//TODO Finish javadocing
 /**
- * TimestampEditorActivity Class
+ * @author Kolby Cansler <golfguy90@gmail.com>
+ * @version 1.0.3.A5
+ *
+ * TimestampEditorFragment Class
  *
  * Creates the layout and logic needed for the user to interact
  * with the editor to add a new timestamp to the database.
@@ -42,7 +44,8 @@ import android.widget.Toast;
 public class TimestampEditorFragment extends Fragment {
 	OnSendTimestampId mCallback;
 	public static final String KEY_NAME = "projectName";
-	public static final String KEY_ID = "projectId";
+	public static final String TIME_ID_KEY = "timeId";
+	public static final String PRO_ID_KEY = "projectId"; 
 	/** Datasources to get objects for using database tables */
 	private TimesheetDatabaseHelper dbHelp; //TODO Needs the = new part added in the onAttach
 	private SQLiteDatabase db;
@@ -71,7 +74,7 @@ public class TimestampEditorFragment extends Fragment {
 	/** Gets a new TimePickerDialog and sets the calendar time to value picked */
 	TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
 		@Override
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {		
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {	
 			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			c.set(Calendar.MINUTE, minute);
 			try {
@@ -96,50 +99,85 @@ public class TimestampEditorFragment extends Fragment {
 			}
 		}
 	};
-	
+
+	/** Interface by which host activities can interact with the fragment*/
 	public interface OnSendTimestampId {
 		public void sendTimeId(int timeId, int proId);
 	}
-	
-	@Override 
+
+	/**
+	 * Fragment onAttach
+	 * <p>
+	 * What to do when the fragment is first attached to the activity
+	 */
+	@Override
 	public void onAttach(Activity act) {
 		super.onAttach(act);
-		
-		try { 
+
+		/** Make sure that the activity implements the public interface */
+		try {
 			mCallback = (OnSendTimestampId) act;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(act.toString() 
+			throw new ClassCastException(act.toString()
 					+ " must implement OnSendTimestampId");
 		}
-				
+
+		/** Get a valid instance of the DatabaseHelper */
 		dbHelp = new TimesheetDatabaseHelper(getActivity());
+		Bundle extras = getArguments();
+        timeId = extras.getInt(TIME_ID_KEY);
+        proId = extras.getInt(PRO_ID_KEY);
+        setHasOptionsMenu(true);
 	}
-	
+
+	/**
+	 * Fragment onCreateView
+	 * <p>
+	 * After the fragment is attached, the view needs to be created
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_editor_timestamp, container, false);
+		Log.d("TIMESTAMP onCreateView", "View is being inflated");
 		return v;
 	}
-	
+
+	/**
+	 * Fragment onStart
+	 * <p>
+	 * After the view is created, the fragment needs started
+	 * and certian functions need to be run.
+	 */
 	@Override
 	public void onStart() {
 		super.onStart();
+		
+		Log.d("TIMESTAMP onStart", "Its started");
+		if (timeId != 0)
+			getTimestamp(timeId);
+		else 
+			initializeButtons();
+		loadSpinnerData(proId);
+		/** Initializes the edit button and sets the onClickListener*/
 		editButton = (Button)getView().findViewById(R.id.projectEditButton);
 		editButton.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-	       		TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
-	       		Log.d("Edit Button", "textView set");
-	       		int proId = Integer.parseInt(idTv.getText().toString());
-	       		Log.d("Edit Button", "Project id: " + proId);
-				//FIXME editProject(proId);
+				/** If button is clicked, get the value from the textview */
+				TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
+				Log.d("Edit Button", "textView set");
+				/** Get the value of textView and store it to send on */
+				int proId = Integer.parseInt(idTv.getText().toString());
+				Log.d("Edit Button", "Project id: " + proId);
+				editProject(proId);
 			}
+
 		});
-		
+
 		/**
 		 * Logic to handle clicking the Time In button
-		 * 
+		 *
 		 * Gets current time from the button to pass to the Time Picker
 		 * and then calls a new TimePickerDialog to set the button
 		 * to a new time
@@ -149,16 +187,16 @@ public class TimestampEditorFragment extends Fragment {
 				int hour, minute;
 				hour = Integer.valueOf(timeInButton.getText().toString().substring(0, 2));
 				minute = Integer.valueOf(timeInButton.getText().toString().substring(3));
-				new TimePickerDialog(getActivity(), t, 
+				new TimePickerDialog(getActivity(), t,
 						hour, minute,
 						true).show();
 				fromWhere = 1;
 			}
 		});
-		
+
 		/**
 		 * Logic to handle clicking the Time Out button
-		 * 
+		 *
 		 * Gets current time from the button to pass to the Time Picker
 		 * and then calls a new TimePickerDialog to set the button
 		 * to a new time
@@ -168,16 +206,16 @@ public class TimestampEditorFragment extends Fragment {
 				int hour, minute;
 				hour = Integer.valueOf(timeOutButton.getText().toString().substring(0, 2));
 				minute = Integer.valueOf(timeOutButton.getText().toString().substring(3));
-				new TimePickerDialog(getActivity(), t, 
+				new TimePickerDialog(getActivity(), t,
 						hour, minute,
 						true).show();
 				fromWhere = 2;
 			}
 		});
-		
+
 		/**
 		 * Logic to handle clicking the Date In button
-		 * 
+		 *
 		 * Gets current time from the button to pass to the Time Picker
 		 * and then calls a new Date PickerDialog to set the button
 		 * to a new time
@@ -194,10 +232,10 @@ public class TimestampEditorFragment extends Fragment {
 				fromWhere = 3;
 			}
 		});
-		
+
 		/**
 		 * Logic to handle clicking the Date Out button
-		 * 
+		 *
 		 * Gets current time from the button to pass to the Time Picker
 		 * and then calls a new DatePickerDialog to set the button
 		 * to a new time
@@ -214,7 +252,14 @@ public class TimestampEditorFragment extends Fragment {
 				fromWhere = 4;
 			}
 		});
-		
+
+		/**
+		 * Logic to handle clicking the Save button
+		 * <p>
+		 * If a timestamp ID was passed to the editor, then
+		 * the update handler is called, otherwise, a new
+		 * timestamp is saved to the database
+		 */
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -231,17 +276,20 @@ public class TimestampEditorFragment extends Fragment {
 						e.printStackTrace();
 					}
 				}
-				
+
 			}
 		});
-		
+
+		/**
+		 *
+		 */
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v){
 				getActivity().finish();
 			}
 		});
-			
+
 		if(android.os.Build.VERSION.RELEASE.startsWith("3.") ||
 				android.os.Build.VERSION.RELEASE.startsWith("4.")) {
 			deleteButton.setVisibility(View.GONE);
@@ -249,24 +297,45 @@ public class TimestampEditorFragment extends Fragment {
 			deleteButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					deleteHandler(v, timeId);
+					deleteHandler(timeId);
 				}
 			});
 		}
+
+	}
 	
+	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+		inflater.inflate(R.menu.editor_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.editor_preferences:
+			startActivity(new Intent(getActivity(), EditPreferences.class));
+			return(true);
+		case R.id.delete_item:
+			deleteHandler(timeId);
+			return(true);
+		}
+		return(super.onOptionsItemSelected(item));
 	}
 
-	public void initializeButtons() {
+	private void initializeButtons() {
+		Log.d("TIMESTAMP FRAGMENT", "Initializing Buttons");
 		/** Initialize buttons so that they can be set to the proper date */
 		dateInButton = (Button)getView().findViewById(R.id.dateInButton);
-	    timeInButton = (Button)getView().findViewById(R.id.timeInButton);
-	    dateOutButton = (Button)getView().findViewById(R.id.dateOutButton);
-	    timeOutButton = (Button)getView().findViewById(R.id.timeOutButton);
-	    commentsEditText = (EditText)getView().findViewById(R.id.commentsEditText);
-	    saveButton = (Button)getView().findViewById(R.id.saveTimestampButton);
-	    cancelButton = (Button)getView().findViewById(R.id.cancelTimestampButton);
-	    deleteButton = (Button)getView().findViewById(R.id.timestampDeleteButton);
-	    timeEditText = (EditText)getView().findViewById(R.id.timeEditText);
+		timeInButton = (Button)getView().findViewById(R.id.timeInButton);
+		dateOutButton = (Button)getView().findViewById(R.id.dateOutButton);
+		timeOutButton = (Button)getView().findViewById(R.id.timeOutButton);
+		commentsEditText = (EditText)getView().findViewById(R.id.commentsEditText);
+		saveButton = (Button)getView().findViewById(R.id.saveTimestampButton);
+		cancelButton = (Button)getView().findViewById(R.id.cancelTimestampButton);
+		deleteButton = (Button)getView().findViewById(R.id.timestampDeleteButton);
+		timeEditText = (EditText)getView().findViewById(R.id.timeEditText);
 
 		/** Get current date and time and store into proper variables */
 		SimpleDateFormat dateFormer = new SimpleDateFormat(dateForm, Locale.US);
@@ -281,16 +350,14 @@ public class TimestampEditorFragment extends Fragment {
 		dateOutButton.setText(dateOut);
 		timeInButton.setText(timeIn);
 		timeOutButton.setText(timeOut);
-		
-		loadSpinnerData(0);
 	}
-	
-	/** Method to set the value of the button used to the date or time picked 
+
+	/** Method to set the value of the button used to the date or time picked
 	 * @throws ParseException */
-	public void updateLabel() throws ParseException {
+	private void updateLabel() throws ParseException {
 		SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
 		SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
-		
+
 		switch (fromWhere) {
 		case 1:
 			timeInButton.setText(formTime.format(c.getTime()));
@@ -300,7 +367,7 @@ public class TimestampEditorFragment extends Fragment {
 			timeOutButton.setText(formTime.format(c.getTime()));
 			timeEditText.setText(timeCalc() + " h");
 			break;
-		case 3: 
+		case 3:
 			dateInButton.setText(formDate.format(c.getTime()));
 			timeEditText.setText(timeCalc() + " h");
 			break;
@@ -311,91 +378,97 @@ public class TimestampEditorFragment extends Fragment {
 		}
 	}
 	
+	private void editProject(int proId) {
+		((EditorActivity)getActivity()).setProject(proId);
+	}
+
 	/**
 	 * Handler to save the data entered in the form to the database
-	 * 
+	 *
 	 * @param view The current activity context
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
-	public void saveHandler(View v) throws ParseException {
+	private void saveHandler(View v) throws ParseException {
 		/** Initialize variables to store information from the form elements */
 		String timeIn, dateIn, timeOut, dateOut, comments, hours;
 
-    	/** Get and store form element values*/
-    	dateIn = dateInButton.getText().toString();
-    	timeIn = timeInButton.getText().toString();
-    	dateOut = dateOutButton.getText().toString();
-    	timeOut = timeOutButton.getText().toString();
-    	comments = commentsEditText.getText().toString();
-    	hours = timeCalc();
-    	
-    	TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
-   		int proId = Integer.parseInt(idTv.getText().toString());
-    	
-    	if(proId == 1) {
-    		Toast toast = Toast.makeText(getActivity(), "Please select a project", Toast.LENGTH_LONG);
+		/** Get and store form element values*/
+		dateIn = dateInButton.getText().toString();
+		timeIn = timeInButton.getText().toString();
+		dateOut = dateOutButton.getText().toString();
+		timeOut = timeOutButton.getText().toString();
+		comments = commentsEditText.getText().toString();
+		hours = timeCalc();
+
+		TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
+		int proId = Integer.parseInt(idTv.getText().toString());
+
+		if(proId == 1) {
+			Toast toast = Toast.makeText(getActivity(), "Please select a project", Toast.LENGTH_LONG);
 			toast.show();
-    	} else {
-    		String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, comments, hours, project) " +
-				"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
-				"', '" + timeOut + "', '" + comments + "', '" + hours + "', '" + proId + "')";
-    		
-    		db = dbHelp.getReadableDatabase();
-    		
-    		db.execSQL(insertSQL);
-     
-	        /** Close the database and return to the previous context */
-	        db.close();
-	        
-	        getActivity().finish();
-    	}
-    }
-	
+		} else {
+			String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, comments, hours, project) " +
+					"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
+					"', '" + timeOut + "', '" + comments + "', '" + hours + "', '" + proId + "')";
+
+			db = dbHelp.getReadableDatabase();
+
+			db.execSQL(insertSQL);
+
+			/** Close the database and return to the previous context */
+			db.close();
+
+			getActivity().finish();
+		}
+	}
+
 	private void updateHandler(View v, int timeId) throws ParseException {
 		String timeIn, dateIn, timeOut, dateOut, comments, hours;
-		
-    	/** Get and store form element values*/
-    	dateIn = dateInButton.getText().toString();
-    	timeIn = timeInButton.getText().toString();
-    	dateOut = dateOutButton.getText().toString();
-    	timeOut = timeOutButton.getText().toString();
-    	comments = commentsEditText.getText().toString();
-    	hours = timeCalc();
-    	TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
-   		int proId = Integer.parseInt(idTv.getText().toString());
-    	
-    	String updateSQL = "update timestamp " +
-    			"set date_in='" + dateIn + "', time_in='" + timeIn
-    			+ "', date_out='" + dateOut + "', time_out='" + timeOut
-    			+ "', comments='" + comments + "', hours='" + hours 
-    			+ "', project=" + proId + " where _id = " + timeId;
-    	
-    	db = dbHelp.getWritableDatabase();
-    	db.execSQL(updateSQL);
-    	db.close();
-    	
-    	getActivity().finish();
+
+		/** Get and store form element values*/
+		dateIn = dateInButton.getText().toString();
+		timeIn = timeInButton.getText().toString();
+		dateOut = dateOutButton.getText().toString();
+		timeOut = timeOutButton.getText().toString();
+		comments = commentsEditText.getText().toString();
+		hours = timeCalc();
+		TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
+		int proId = Integer.parseInt(idTv.getText().toString());
+
+		String updateSQL = "update timestamp " +
+				"set date_in='" + dateIn + "', time_in='" + timeIn
+				+ "', date_out='" + dateOut + "', time_out='" + timeOut
+				+ "', comments='" + comments + "', hours='" + hours
+				+ "', project=" + proId + " where _id = " + timeId;
+
+		db = dbHelp.getWritableDatabase();
+		db.execSQL(updateSQL);
+		db.close();
+
+		getActivity().finish();
 	}
-	
-	public void deleteHandler(View v, int timeId) {
-   		String deleteSQL = "delete from timestamp where _id = " + timeId;
-   		db = dbHelp.getWritableDatabase();
-   		db.execSQL(deleteSQL);
-   		db.close();
-   		
-   		getActivity().finish();
-   	}
-	
-	public void loadSpinnerData(int proId) {
-   		int pos = 0;
-   		int id = proId;
-   		projectSpinner = (Spinner)getView().findViewById(R.id.projectSpinner);
-   		ArrayList<HashMap<String, String>> projects = new ArrayList<HashMap<String, String>>();
-		
+
+	public void deleteHandler(int timeId) {
+		String deleteSQL = "delete from timestamp where _id = " + timeId;
+		db = dbHelp.getWritableDatabase();
+		db.execSQL(deleteSQL);
+		db.close();
+
+		getActivity().finish();
+	}
+
+	private void loadSpinnerData(int proId) {
+		Log.d("LoadSpinnerData", "Loading Spinner Data");
+		int pos = 0;
+		int id = proId;
+		projectSpinner = (Spinner)getView().findViewById(R.id.projectSpinner);
+		ArrayList<HashMap<String, String>> projects = new ArrayList<HashMap<String, String>>();
+
 		String selectQuery = "select _id, name from projects";
-		
+		Log.d("LoadSpinnerData", "Opeining database");
 		db = dbHelp.getReadableDatabase();
-		
+		Log.d("LoadSpinnerData", "Database Opened");
+
 		Cursor cu = db.rawQuery(selectQuery, null);
 
 		if (cu != null && cu.getCount() > 0) {
@@ -404,73 +477,73 @@ public class TimestampEditorFragment extends Fragment {
 				Log.d("loadSpinnerData", "Hashing rows");
 				HashMap<String, String> map = new HashMap<String, String>();
 				map.put(KEY_NAME, cu.getString(1));
-				map.put(KEY_ID, Integer.toString(cu.getInt(0)));
+				map.put(PRO_ID_KEY, Integer.toString(cu.getInt(0)));
 				if (cu.getInt(0) == id) {
 					Log.d("loadSpinnerData", "Found Loaded project");
 					pos = cu.getPosition();
 				}
 				projects.add(map);
-				
+
 			} while(cu.moveToNext());
 		}
 		Log.d("loadSpinnerData", "Closing things");
 		cu.close();
 		db.close();
 		Log.d("loadSpinnerData", "Setting adapter");
-   		adapter = new SpinnerAdapter(getActivity(), projects);
-   		projectSpinner.setAdapter(adapter);
-   		Log.d("loadSpinnerData", "Adapter Set");
-   		Log.d("loadSpinnerData", "Setting position");
-   		projectSpinner.setSelection(pos);
-   		Log.d("loadSpinnerData", "Position Set");
-   	}
-	
+		adapter = new SpinnerAdapter(getActivity(), projects);
+		projectSpinner.setAdapter(adapter);
+		Log.d("loadSpinnerData", "Adapter Set");
+		Log.d("loadSpinnerData", "Setting position");
+		projectSpinner.setSelection(pos);
+		Log.d("loadSpinnerData", "Position Set");
+	}
+
 	public int getTimestamp(int timeId) throws NullPointerException {
-   		int id = timeId;
-   		
-   		String selectTimestamp =" select * from timestamp where _id = " + id;
-   		timeEditText = (EditText)getView().findViewById(R.id.timeEditText);
-   		dateInButton = (Button)getView().findViewById(R.id.dateInButton);
-       	timeInButton = (Button)getView().findViewById(R.id.timeInButton);
- 	    dateOutButton = (Button)getView().findViewById(R.id.dateOutButton);
- 	    timeOutButton = (Button)getView().findViewById(R.id.timeOutButton);
- 	    commentsEditText = (EditText)getView().findViewById(R.id.commentsEditText);
- 	    saveButton = (Button)getView().findViewById(R.id.saveTimestampButton);
- 	    cancelButton = (Button)getView().findViewById(R.id.cancelTimestampButton);
-	    deleteButton = (Button)getView().findViewById(R.id.timestampDeleteButton);
-       		
-   		db = dbHelp.getReadableDatabase();
-   		Cursor cu = db.rawQuery(selectTimestamp, null);
-   		cu.moveToFirst();
-   		 
-   		dateInButton.setText(cu.getString(1));
-   		timeInButton.setText(cu.getString(2));
-   		dateOutButton.setText(cu.getString(3));
-   		timeOutButton.setText(cu.getString(4));
-   		commentsEditText.setText(cu.getString(5));
-   		timeEditText.setText(cu.getString(6));
-   		
-   		db.close();
-   		cu.close();
-   		
-   		return id;
-   	}
-	
-	public static String timeCalc() throws ParseException { //TODO Update to get values inside
-   		String cdateIn, ctimeIn, cdateOut, ctimeOut;
- 	  
- 	    cdateIn = dateInButton.getText().toString();
- 	    ctimeIn = timeInButton.getText().toString();
- 	    cdateOut = dateOutButton.getText().toString();
-   		ctimeOut = timeOutButton.getText().toString();
- 	    
+		int id = timeId;
+		Log.d("TIMESTAMP getTimestamp", "TimeId is:" + id);
+		String selectTimestamp =" select * from timestamp where _id = " + id;
+		timeEditText = (EditText)getView().findViewById(R.id.timeEditText);
+		dateInButton = (Button)getView().findViewById(R.id.dateInButton);
+		timeInButton = (Button)getView().findViewById(R.id.timeInButton);
+		dateOutButton = (Button)getView().findViewById(R.id.dateOutButton);
+		timeOutButton = (Button)getView().findViewById(R.id.timeOutButton);
+		commentsEditText = (EditText)getView().findViewById(R.id.commentsEditText);
+		saveButton = (Button)getView().findViewById(R.id.saveTimestampButton);
+		cancelButton = (Button)getView().findViewById(R.id.cancelTimestampButton);
+		deleteButton = (Button)getView().findViewById(R.id.timestampDeleteButton);
+
+		db = dbHelp.getReadableDatabase();
+		Cursor cu = db.rawQuery(selectTimestamp, null);
+		cu.moveToFirst();
+
+		dateInButton.setText(cu.getString(1));
+		timeInButton.setText(cu.getString(2));
+		dateOutButton.setText(cu.getString(3));
+		timeOutButton.setText(cu.getString(4));
+		commentsEditText.setText(cu.getString(5));
+		timeEditText.setText(cu.getString(6));
+
+		db.close();
+		cu.close();
+
+		return id;
+	}
+
+	private static String timeCalc() throws ParseException { //TODO Update to get values inside
+		String cdateIn, ctimeIn, cdateOut, ctimeOut;
+
+		cdateIn = dateInButton.getText().toString();
+		ctimeIn = timeInButton.getText().toString();
+		cdateOut = dateOutButton.getText().toString();
+		ctimeOut = timeOutButton.getText().toString();
+
 		double hr;
 		double diff;
 		String in = cdateIn + " " + ctimeIn;
 		String out = cdateOut + " " + ctimeOut;
 		Date inTime, outTime;
 		SimpleDateFormat dateForm = new SimpleDateFormat("MM/dd/yyy HH:mm", Locale.US);
-		
+
 		inTime = dateForm.parse(in);
 		outTime = dateForm.parse(out);
 		long dif = outTime.getTime() - inTime.getTime();
@@ -478,7 +551,7 @@ public class TimestampEditorFragment extends Fragment {
 		hr = diff/ (1000 * 60 * 60 );
 		String hour = String.format(Locale.US, "%.2f", hr);
 		return hour;
-			
+
 	}
-	
+
 }

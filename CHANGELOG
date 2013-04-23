@@ -2,6 +2,10 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.3.A7
+- Everything works in fragment form!
+- Need to figure out spacing issue, but it's ok for now
+
 1.0.3.A6
 - Fixed add new button
 - Fixed timestamps not loading to editor from listview

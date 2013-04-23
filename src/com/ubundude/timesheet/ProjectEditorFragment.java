@@ -1,11 +1,16 @@
 package com.ubundude.timesheet;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,11 +24,34 @@ import android.widget.Toast;
  * and deleting projects in the projects table.
  */
 public class ProjectEditorFragment extends Fragment {
+	OnProjectNeedsEdited mCallback;
+	public static final String PRO_KEY = "projectKey";
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp;
 	private EditText shortCodeEdit, fullNameEdit, rateEdit, descEdit;
 	private int project;
 	private Button saveButton, cancelButton, deleteButton;
+	
+	public interface OnProjectNeedsEdited {
+		public void setProject(int proId);
+	}
+	
+	@Override
+	public void onAttach(Activity act) {
+		super.onAttach(act);
+		
+		/** Make sure that the activity implements the public interface */
+		try {
+			mCallback = (OnProjectNeedsEdited) act;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(act.toString()
+					+ " must implement OnProjectNeedsEdited");
+		}
+		dbHelp = new TimesheetDatabaseHelper(getActivity());
+		Bundle extras = getArguments();
+		project = extras.getInt(PRO_KEY);
+		setHasOptionsMenu(true);
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,15 +89,38 @@ public class ProjectEditorFragment extends Fragment {
 			}
 		});
         
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				projectDeleteHandler(v, project);
-			}
-		});
-		
+        if(android.os.Build.VERSION.RELEASE.startsWith("3.") ||
+				android.os.Build.VERSION.RELEASE.startsWith("4.")) {
+			deleteButton.setVisibility(View.GONE);
+		} else {
+	        deleteButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					deleteHandler(project);
+				}
+			});
+		}
 	}
 	
+	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+		inflater.inflate(R.menu.editor_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.editor_preferences:
+			startActivity(new Intent(getActivity(), EditPreferences.class));
+			return(true);
+		case R.id.delete_item:
+			deleteHandler(project);
+			return(true);
+		}
+		return(super.onOptionsItemSelected(item));
+	}
 	
 	/**
 	 * Method called to load project from database when ID is passed by intent
@@ -122,7 +173,7 @@ public class ProjectEditorFragment extends Fragment {
 		db.close();
 		
 		//TODO See if this works
-		getActivity().finish();
+		finish();
 		
 	}
 	
@@ -165,7 +216,7 @@ public class ProjectEditorFragment extends Fragment {
 			
 			/** Return to the previous activity */
 			//TODO Figure this out
-			//finish();
+			finish();
 		}
 	}
 	
@@ -175,21 +226,23 @@ public class ProjectEditorFragment extends Fragment {
 	 * @param v Gets the current View
 	 */
 	public void cancelButtonHandler(View v){
-		//TODO Figure this out
-		//finish();
+		finish();
 	}
 	
-	public void projectDeleteHandler(View v, int projectId) {
+	public void deleteHandler(int projectId) {
 		String deleteSQL = "delete from projects where _id = " + projectId;
 		if(projectId != 1) {
 			db = dbHelp.getWritableDatabase();
 			db.execSQL(deleteSQL);
 			db.close();
 			//TODO Figure this out
-			//finish();
+			finish();
 		} else {
 			Toast.makeText(getActivity(), "Cannot delete an empty project", Toast.LENGTH_LONG).show();
 		}
 	}
 
+	private void finish() {
+		getActivity().getSupportFragmentManager().popBackStackImmediate();
+	}
 }
