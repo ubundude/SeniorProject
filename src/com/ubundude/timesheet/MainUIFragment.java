@@ -23,6 +23,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+//TODO Make the Date display the day - See ReportFragment
 public class MainUIFragment extends Fragment {
 	OnDateSetListener mCallback;
 	/** Database instance and call to Timesheet OpenHelper */
@@ -206,7 +207,7 @@ public class MainUIFragment extends Fragment {
     	dateView = formDate.format(c.getTime());
     	date = formDate.format(c.getTime());
     	
-    	dateEditText = (EditText)getView().findViewById(R.id.dateEditText);
+    	//dateEditText = (EditText)getView().findViewById(R.id.dateEditText);
         dateEditText.setText(dateView, TextView.BufferType.NORMAL);
 
     	return date;
@@ -223,7 +224,7 @@ public class MainUIFragment extends Fragment {
     	dateView = formDate.format(c.getTime());
     	date = formDate.format(c.getTime());
     	
-    	dateEditText = (EditText)getView().findViewById(R.id.dateEditText);
+    	//dateEditText = (EditText)getView().findViewById(R.id.dateEditText);
         dateEditText.setText(dateView, TextView.BufferType.NORMAL);
         
 		return date;

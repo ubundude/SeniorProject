@@ -20,4 +20,10 @@
         <item>sat</item>
     </array>
     
+    <array name="reports">
+        <item>Day</item>
+        <item>Week Containing</item>
+        <item>Month</item>
+    </array>
+    
 </resources>
