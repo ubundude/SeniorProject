@@ -2,6 +2,11 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.3.A8
+- Added ReportFragment and xml
+- Added Tabbed navigation to the main activity
+- Still need spacing help, but I know what the problem is
+
 1.0.3.A7
 - Everything works in fragment form!
 - Need to figure out spacing issue, but it's ok for now
