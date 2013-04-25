@@ -6,7 +6,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,20 +20,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class ReportFragment extends Fragment
-	implements AdapterView.OnItemSelectedListener {
+public class ReportFragment extends Fragment {
 	OnReportsRunListener mCallback;
 	
 	private Button plusButton, minusButton;
 	private EditText dateEditText;
+	Button reportChooser;
 	/** Gets a valid calendar instance for use */
 	final Calendar c = Calendar.getInstance();
 	/** Strings for formatting the date's and times for use */
-	private Spinner reportSpinner;
 	private String[] items;
 	public String dateForm = "MM/dd/yyyy";
 	public String dayForm = "EEE";
@@ -85,15 +84,21 @@ public class ReportFragment extends Fragment
 	@Override
 	public void onStart() {
 		super.onStart();
-		reportSpinner = (Spinner)getView().findViewById(R.id.reportSpinner);
-		reportSpinner.setOnItemSelectedListener(this);
 		items = getResources().getStringArray(R.array.reports);
+		
+		reportChooser = (Button)getView().findViewById(R.id.rChooserButton);
+		reportChooser.setText("Day");
+		reportChooser.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialogDisplay();
+			}
+		});
 		
 		ArrayAdapter<String> aa =  new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
 				items);
 		
 		aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		reportSpinner.setAdapter(aa);
 
 		dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
 		date = formDate.format(c.getTime());
@@ -201,50 +206,40 @@ public class ReportFragment extends Fragment
 		getTimestamps(date);
 	}
 	
-	private String checkSpinner(String reportType) {
-		String sDate = null;
-		Toast.makeText(getActivity(), "Spinner Changed", Toast.LENGTH_SHORT).show();
-		return sDate;
+	private void dialogDisplay() {
+		Log.d("Dialog Display", "Is Displaying");
+		AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+		build.setTitle("Choose Timeframe");
+		build.setItems(R.array.reports, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case 0: 
+					reportChooser.setText("Day");
+					date = formDate.format(c.getTime());
+					dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
+					dateEditText.setText(dateView);
+					break;
+				case 1:
+					reportChooser.setText("Week Containing");
+					date = formDate.format(c.getTime());
+					dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
+					dateEditText.setText(dateView);
+					break;
+				case 2:
+					reportChooser.setText("Month");
+					date = formMonth.format(c.getTime());
+					Log.d("Spinner Switch", "Date is: " + date);
+					dateView = date;
+					Log.d("Spinner Switch", "DateView is: " + dateView);
+					dateEditText.setText(dateView);
+					break;
+				}
+			}
+		});
+		AlertDialog diag = build.create();
+		diag.show();
 	}
-	
-	public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-		Log.d("Spinner Switch", "Item Selected at pos: " + position);
-		switch (position) {
-		case 0: date = formDate.format(c.getTime());
-			dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
-			dateEditText.setText(dateView);
-			break;
-		case 1: date = formDate.format(c.getTime());
-			dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
-			dateEditText.setText(dateView);
-			break;
-		case 2: date = formMonth.format(c.getTime());
-			Log.d("Spinner Switch", "Date is: " + date);
-			dateView = date;
-			Log.d("Spinner Switch", "DateView is: " + dateView);
-			dateEditText.setText(dateView);
-			break;
-		}
-		
-		
-//		rReportType = items[position];
-//		if (rReportType == "Day") {
-//			date = formDate.format(c.getTime());
-//			dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
-//			dateEditText.setText(dateView);
-//		} else if (rReportType == "Week Containing") {
-//			date = formDate.format(c.getTime());
-//			dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
-//			dateEditText.setText(dateView);
-//		} else if (rReportType == "Month") {
-//			date = formMonth.format(c.getTime());
-//			dateView = date;
-//			dateEditText.setText(dateView);
-//		}
-		
-	}
-	
-	public void onNothingSelected(AdapterView<?> parent) {
-		rReportType = "";
-	}
+
 }

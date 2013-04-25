@@ -170,6 +170,7 @@ public class MainActivity extends FragmentActivity
 		ListViewFragment listFrag = (ListViewFragment)getSupportFragmentManager().findFragmentById(R.id.realtabcontent2);
 		
 		if(listFrag != null) {
+			Log.d("dateGetter", "Getting daily timestamps");
 			listFrag.getDailyTimestamps(date);	
 		} else {
 			ListViewFragment nListFrag =  new ListViewFragment();

@@ -4,6 +4,7 @@
     <string name="addNew">Add New</string>
     <string name="app_name">TimeSheet</string>
     <string name="cancel">Cancel</string>
+    <string name="chooseReport">Choose Report\nTimeframe:</string>
     <string name="comments">Comments:</string>
     <string name="day">Day</string>
     <string name="defaultDate">mm/dd/yy</string>
@@ -30,6 +31,7 @@
   	<string name="perfDOWSummary">Sets the first day of the week: Not yet used</string>
     <string name="perfGeneral">General</string>
     <string name="perfGeneralKey">perf_general_key</string>
+    <string name="popupWindowTitle">Choose Timeframe</string>
     <string name="project">Project:</string>
     <string name="projectEditor">Project Editor</string>
     <string name="quickAdd">Quick Add</string>
@@ -44,6 +46,7 @@
     <string name="timeOut">Time Out:</string>
     <string name="timestampEditor">Timestamp Editor</string>
     <string name="week">Week</string>
+    <string name="weekContaining">Week Containing</string>
     <string name="x">X</string>
 
     

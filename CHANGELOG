@@ -2,7 +2,10 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
-1.0.3.A8
+1.0.3.A10
+- Added AlertDialog to get project for the Quick Add Button
+
+1.0.3.A9
 - Added spinner to reports interface
 - Bugfix: Timestamps not displaying on inital load of app
 - Bugfix: Date picker not choosing new dates in reports
