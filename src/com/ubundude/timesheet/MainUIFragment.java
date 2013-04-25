@@ -85,7 +85,7 @@ public class MainUIFragment extends Fragment {
 	public void onStart() {
 		super.onStart();
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		String defProjectId = sharedPref.getString("perf_default_project", "");
+		String defProjectId = sharedPref.getString("perf_default_project", "1");
 		proId = Integer.parseInt(defProjectId);
 		
 		/** Method to get todays date and display it in the proper places */

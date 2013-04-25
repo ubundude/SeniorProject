@@ -18,11 +18,17 @@
         android:layout_toRightOf="@+id/rTotalTV"
         android:text="@string/defaultTime" />
     
+    <Spinner
+        android:id="@+id/reportSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/rDateEditText" />
+
     <Button
         android:id="@+id/rMinusButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/reportSpinner"
         android:layout_toLeftOf="@+id/rDateEditText"
         android:background="@drawable/navigation_previous_item" />
 
@@ -30,18 +36,17 @@
         android:id="@+id/rDateEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="false"
-        android:lines="2"
-        android:minLines="1"
-        android:layout_alignBaseline="@+id/rPlusButton"
-        android:layout_alignBottom="@+id/rPlusButton"
-        android:layout_toLeftOf="@+id/rPlusButton"
+        android:layout_alignTop="@+id/rMinusButton"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
         android:ems="6"
         android:focusable="false"
-        android:clickable="true"
         android:gravity="center_horizontal"
-        android:text="@string/defaultDayDate"
-        android:inputType="textMultiLine" >
+        android:inputType="textMultiLine"
+        android:lines="3"
+        android:minLines="1"
+        android:singleLine="false"
+        android:text="@string/defaultDayDate" >
 
         <requestFocus />
     </EditText>
@@ -50,8 +55,8 @@
         android:id="@+id/rPlusButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/rDateEditText"
+        android:layout_toRightOf="@+id/rDateEditText"
         android:background="@drawable/navigation_next_item" />
     
 </RelativeLayout>

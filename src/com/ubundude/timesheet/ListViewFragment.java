@@ -18,7 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-//TODO Probably should add an onresume
+//TODO Need to get times from database and add them together to display in the totals
 
 public class ListViewFragment extends Fragment {
 	OnDateGetListener mCallback;
@@ -28,6 +28,7 @@ public class ListViewFragment extends Fragment {
 	public ListView list;
 	/** Gets the custom adapter for the listview */
 	TimestampAdapter adapter;
+	private String lDate;
 	
 	public interface OnDateGetListener {
 		public void dateGetter(String date);
@@ -45,6 +46,8 @@ public class ListViewFragment extends Fragment {
 			throw new ClassCastException(act.toString()
 					+ " must implement OnDateGetListener");
 		}
+		Bundle extras = getArguments();
+		lDate = extras.getString(MainActivity.KEY_DATE);
 		dbHelp = new TimesheetDatabaseHelper(getActivity());
 	}
 	
@@ -56,7 +59,7 @@ public class ListViewFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
-		//getDailyTimestamps(date);
+		getDailyTimestamps(lDate);
 	}
 	
 	/**

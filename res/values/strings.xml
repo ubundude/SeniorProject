@@ -37,6 +37,7 @@
     <string name="report">Report</string>
     <string name="save">Save</string>
     <string name="shortCode">Short Code:</string>
+    <string name="spinnerTitle">abSpinner</string>
     <string name="total">Total: </string>
     <string name="time">Time: </string>
     <string name="timeIn">Time In:</string>
