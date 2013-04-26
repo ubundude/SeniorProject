@@ -7,9 +7,7 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -45,6 +43,7 @@ public class MainActivity extends FragmentActivity
 		private Fragment fragment;
 		TabInfo(String tag, Class clss, Bundle args) {
 			this.tag = tag;
+			
 			this.clss = clss;
 			this.args = args;
 		}
@@ -160,18 +159,31 @@ public class MainActivity extends FragmentActivity
 
 	@Override
 	public void dateSetter(String date) {
+		int rType = 0;
 		lDate = date;
+		
 		Log.d("dateSetter", "Date is: " + lDate);
-		dateGetter(lDate);
+		dateGetter(lDate, rType);
 	}
 
-	public void dateGetter(String date) {
+	public void dateGetter(String date, int rType) {
 		Log.d("dateGetter", "Running Date Getter");
 		ListViewFragment listFrag = (ListViewFragment)getSupportFragmentManager().findFragmentById(R.id.realtabcontent2);
 		
 		if(listFrag != null) {
-			Log.d("dateGetter", "Getting daily timestamps");
-			listFrag.getDailyTimestamps(date);	
+			switch(rType) {
+			case 0: 
+				Log.d("dateGetter", "Getting daily timestamps");
+				listFrag.getDailyTimestamps(date);
+				break;
+			case 1: 
+				Log.d("dateGetter", "Getting weekly timestamps");
+				listFrag.getWeeklyTimestamps(date);	
+				break;
+			case 2: 
+				Log.d("dateGetter", "Getting monthly timestamps");
+				listFrag.getMonthlyTimestamps(date);	
+			}
 		} else {
 			ListViewFragment nListFrag =  new ListViewFragment();
 			Bundle args = new Bundle();
@@ -190,6 +202,6 @@ public class MainActivity extends FragmentActivity
 	public void sendDate(String date, int reportType) {
 		lDate = date;
 		Log.d("dateSetter", "Date is: " + lDate);
-		dateGetter(lDate);
+		dateGetter(lDate, reportType);
 	}
 }

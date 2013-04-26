@@ -1,6 +1,9 @@
 CHANGELOG
 =========
-NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
+
+1.0.3.A14
+- Listview can get from database for each report type
+- Interfaces setup to use report types
 
 1.0.3.A13
 - Timestamp Table updated with new fields
