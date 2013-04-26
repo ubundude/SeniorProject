@@ -21,6 +21,9 @@ public static final String COLUMN_TIME_IN = "time_in";
 public static final String COLUMN_DATE_IN = "date_in";
 public static final String COLUMN_TIME_OUT = "time_out";
 public static final String COLUMN_DATE_OUT = "date_out";
+public static final String COLUMN_YEAR = "year";
+public static final String COLUMN_MONTH = "month";
+public static final String COLUMN_WEEK_IN_YEAR = "week_year";
 public static final String COLUMN_COMMENTS = "comments";
 public static final String COLUMN_PROJECT = "project";
 public static final String COLUMN_HOURS = "hours";
@@ -34,6 +37,9 @@ private static final String DATABASE_CREATE = "create table "
 + COLUMN_TIME_IN + " text not null, "
 + COLUMN_DATE_OUT + " text not null, "
 + COLUMN_TIME_OUT + " text not null, "
++ COLUMN_WEEK_IN_YEAR + " text not null, "
++ COLUMN_YEAR + " text not null, "
++ COLUMN_MONTH + " text not null, "
 + COLUMN_COMMENTS + " text, "
 + COLUMN_HOURS + " text not null, "
 + COLUMN_PROJECT + " integer,"

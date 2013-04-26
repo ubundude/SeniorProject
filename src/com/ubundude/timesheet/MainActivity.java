@@ -187,7 +187,7 @@ public class MainActivity extends FragmentActivity
 
 	
 	@Override
-	public void sendDate(String date) {
+	public void sendDate(String date, int reportType) {
 		lDate = date;
 		Log.d("dateSetter", "Date is: " + lDate);
 		dateGetter(lDate);
