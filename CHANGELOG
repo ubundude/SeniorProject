@@ -2,6 +2,11 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.3.A13
+- Timestamp Table updated with new fields
+- MainUIFragment Quickadd modified to add new fields
+- Timestamp Editor now gets those fields and adds them as well
+
 1.0.3.A12
 - I just don't even know
 

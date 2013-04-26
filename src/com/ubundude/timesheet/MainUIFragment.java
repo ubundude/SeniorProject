@@ -37,6 +37,9 @@ public class MainUIFragment extends Fragment {
 	/** Strings for formatting the date's and times for use */
 	public String dateForm = "MM/dd/yyyy";
 	public String timeForm = "HH:mm";
+	public String weekInMonthForm = "ww";
+	public String monthNumForm = "MM";
+	public String yearForm = "yy";
 	/** Strings to store formated calendar outputs */
 	public String date, dateView;
 	/** Prepares buttons and EditText for use */
@@ -46,6 +49,9 @@ public class MainUIFragment extends Fragment {
 	/** Formatters for the dates */
 	SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
 	SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
+	SimpleDateFormat formWIM = new SimpleDateFormat(weekInMonthForm, Locale.US);
+	SimpleDateFormat formYear = new SimpleDateFormat(yearForm, Locale.US);
+	SimpleDateFormat formMonthNum = new SimpleDateFormat(monthNumForm, Locale.US);
 	/** Gets a new DatePickerDialog and sets the calendar time to the value picked */
 	DatePickerDialog.OnDateSetListener d = new DatePickerDialog.OnDateSetListener() {
 		@Override
@@ -250,20 +256,22 @@ public class MainUIFragment extends Fragment {
 	private void quickAddHandler(int proId) throws SQLException {
 		Log.d("QuickAdd", "Got project id: " + proId);
 		/** Strings and int for the current dates and project */
-		String timeIn, timeOut, dateIn, dateOut;
-		//int project = 1; //Will get from Default project in settings
+		String timeIn, timeOut, dateIn, dateOut, wim, month, year;
 		timeIn = formTime.format(c.getTime());
 		timeOut = timeIn;
 		dateIn = formDate.format(c.getTime());
 		dateOut = dateIn;
+		wim = formWIM.format(c.getTime());
+		month = formMonthNum.format(c.getTime());
+		year = formYear.format(c.getTime());
 
 		/** Open Database for writing */
 		db = dbHelp.getWritableDatabase();
 		Log.d("QuickAdd", "Database Opened");
 		/** String to insert a timestamp into the database */
-		String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, hours, project) " +
-				"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
-				"', '" + timeOut + "', 0, '" + proId + "')";
+		String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, week_year, year, month, hours, project) " +
+				"values('" + dateIn + "', '" + timeIn + "', '" + dateOut + "', '" + timeOut 
+				+ "', '" + wim + "', '" + year +"', '" + month + "', 0.00, '" + proId + "')";
 		try {
 			db.execSQL(insertSQL);
 			Log.d("QuickAdd", "SQL Inserted");

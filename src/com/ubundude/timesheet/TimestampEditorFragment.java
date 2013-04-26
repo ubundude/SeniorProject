@@ -54,12 +54,20 @@ public class TimestampEditorFragment extends Fragment {
 	/** Strings for correctly formating the date and time */
 	private String dateForm = "MM/dd/yyyy";
 	private String timeForm = "HH:mm";
+	public String weekInYearForm = "ww";
+	public String monthNumForm = "MM";
+	public String yearForm = "yy";
+	SimpleDateFormat dateFormer = new SimpleDateFormat(dateForm, Locale.US);
+	SimpleDateFormat timeFormer = new SimpleDateFormat(timeForm, Locale.US);
+	SimpleDateFormat formWIM = new SimpleDateFormat(weekInYearForm, Locale.US);
+	SimpleDateFormat formYear = new SimpleDateFormat(yearForm, Locale.US);
+	SimpleDateFormat formMonthNum = new SimpleDateFormat(monthNumForm, Locale.US);
 	/** Strings to store formatted dates and times */
 	private static String timeIn;
 	private static String timeOut;
 	private static String dateIn;
 	private static String dateOut;
-	/** Initialize all form elements for use*/
+	/** Initialize all form elements for use */
 	static Button dateInButton;
 	static Button timeInButton;
 	static Button dateOutButton;
@@ -71,6 +79,7 @@ public class TimestampEditorFragment extends Fragment {
 	/** Variable to store the value of the button calling the picker */
 	private int fromWhere = 0;
 	private int timeId, proId;
+	String LINE_END = System.getProperty("line.separator"); 
 	/** Gets a new TimePickerDialog and sets the calendar time to value picked */
 	TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
 		@Override
@@ -390,7 +399,7 @@ public class TimestampEditorFragment extends Fragment {
 	 */
 	private void saveHandler(View v) throws ParseException {
 		/** Initialize variables to store information from the form elements */
-		String timeIn, dateIn, timeOut, dateOut, comments, hours;
+		String timeIn, dateIn, timeOut, dateOut, wiy, month, year, comments, hours;
 
 		/** Get and store form element values*/
 		dateIn = dateInButton.getText().toString();
@@ -399,6 +408,25 @@ public class TimestampEditorFragment extends Fragment {
 		timeOut = timeOutButton.getText().toString();
 		comments = commentsEditText.getText().toString();
 		hours = timeCalc();
+		
+		String[] arrDate = dateIn.split("/");
+		int lMonth = Integer.parseInt(arrDate[0]) - 1;
+		Log.d("SaveHandler", "Month is: " + lMonth);
+		int lDay = Integer.parseInt(arrDate[1]);
+		Log.d("SaveHandler", "Day is: " + lDay);
+		int lYear = Integer.parseInt(arrDate[2]);
+		Log.d("SaveHandler", "Year is: " + lYear);
+		
+		Calendar lc = Calendar.getInstance();
+		lc.set(Calendar.YEAR, lYear);
+		lc.set(Calendar.MONTH, lMonth);
+		lc.set(Calendar.DAY_OF_MONTH, lDay);
+		
+		//Log.d("Date in Cal", Date.toString(lc.getTime()));
+		
+		wiy = formWIM.format(lc.getTime());
+		month = Integer.toString(lMonth);
+		year = Integer.toString(lYear);
 
 		TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
 		int proId = Integer.parseInt(idTv.getText().toString());
@@ -407,9 +435,9 @@ public class TimestampEditorFragment extends Fragment {
 			Toast toast = Toast.makeText(getActivity(), "Please select a project", Toast.LENGTH_LONG);
 			toast.show();
 		} else {
-			String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, comments, hours, project) " +
-					"values('" + dateIn + "', '" + timeIn + "', '" + dateOut +
-					"', '" + timeOut + "', '" + comments + "', '" + hours + "', '" + proId + "')";
+			String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, week_year, year, month, comments, hours, project) " +
+					"values('" + dateIn + "', '" + timeIn + "', '" + dateOut + "', '" + timeOut + "', '" 
+					+ wiy + "', '" + year + "', '" + month + "', '" + comments + "', '" + hours + "', '" + proId + "')";
 
 			db = dbHelp.getReadableDatabase();
 
@@ -423,7 +451,7 @@ public class TimestampEditorFragment extends Fragment {
 	}
 
 	private void updateHandler(View v, int timeId) throws ParseException {
-		String timeIn, dateIn, timeOut, dateOut, comments, hours;
+		String timeIn, dateIn, timeOut, dateOut, wiy, month, year, comments, hours;
 
 		/** Get and store form element values*/
 		dateIn = dateInButton.getText().toString();
@@ -434,10 +462,25 @@ public class TimestampEditorFragment extends Fragment {
 		hours = timeCalc();
 		TextView idTv = (TextView)getView().findViewById(R.id.proIdTV);
 		int proId = Integer.parseInt(idTv.getText().toString());
+		
+		String[] arrDate = dateIn.split("/");
+		int lMonth = Integer.parseInt(arrDate[0]) - 1;
+		int lDay = Integer.parseInt(arrDate[1]);
+		int lYear = Integer.parseInt(arrDate[2]);
+		
+		Calendar lc = Calendar.getInstance();
+		lc.set(Calendar.YEAR, lYear);
+		lc.set(Calendar.MONTH, lMonth);
+		lc.set(Calendar.DAY_OF_MONTH, lDay);
+		
+		wiy = formWIM.format(lc.get(Calendar.WEEK_OF_YEAR));
+		month = formMonthNum.format(lc.get(Calendar.MONTH));
+		year = formYear.format(lc.get(Calendar.YEAR));
 
 		String updateSQL = "update timestamp " +
 				"set date_in='" + dateIn + "', time_in='" + timeIn
 				+ "', date_out='" + dateOut + "', time_out='" + timeOut
+				+ "', week_year='" + wiy + "', year='" + year + "', month='" + month
 				+ "', comments='" + comments + "', hours='" + hours
 				+ "', project=" + proId + " where _id = " + timeId;
 
@@ -501,7 +544,7 @@ public class TimestampEditorFragment extends Fragment {
 	public int getTimestamp(int timeId) throws NullPointerException {
 		int id = timeId;
 		Log.d("TIMESTAMP getTimestamp", "TimeId is:" + id);
-		String selectTimestamp =" select * from timestamp where _id = " + id;
+		String selectTimestamp =" select _id, date_in, time_in, date_out, time_out, comments, hours from timestamp where _id = " + id;
 		timeEditText = (EditText)getView().findViewById(R.id.timeEditText);
 		dateInButton = (Button)getView().findViewById(R.id.dateInButton);
 		timeInButton = (Button)getView().findViewById(R.id.timeInButton);
