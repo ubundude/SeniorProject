@@ -56,5 +56,12 @@
              android:layout_toRightOf="@+id/listviewId"
              android:text="@string/defaultInt"
              android:visibility="invisible" />
+         
+         <View
+	        android:layout_width="fill_parent"
+	        android:layout_height="2dp"
+	        android:layout_marginBottom="5dp"
+	        android:background="@drawable/line_separator"
+	        android:layout_below="@+id/listviewEditButton" />
 
 </RelativeLayout>

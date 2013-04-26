@@ -5,39 +5,51 @@
     android:orientation="vertical" >
 
     <TextView
+        android:id="@+id/rChooseTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/chooseReport" />
+    
+    <Spinner
+        android:id="@+id/rSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/rChooseTV" />
+    
+    <TextView
         android:id="@+id/rTotalTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/rSpinner"
         android:text="@string/total" />
 
     <TextView
         android:id="@+id/rHoursTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignBaseline="@+id/rTotalTV"
+        android:layout_alignBottom="@+id/rTotalTV"
         android:layout_toRightOf="@+id/rTotalTV"
         android:text="@string/defaultTime" />
-
-    <Button
-        android:id="@+id/rMinusButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/rDateEditText"
-        android:background="@drawable/navigation_previous_item" />
-
-    <Button
-        android:id="@+id/rPlusButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/navigation_next_item" />
+    
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/line_separator"
+        android:layout_below="@+id/rDateEditText" />
 
     <EditText
         android:id="@+id/rDateEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignBaseline="@+id/rPlusButton"
+        android:layout_alignBottom="@+id/rPlusButton"
         android:layout_toLeftOf="@+id/rPlusButton"
         android:clickable="true"
         android:ems="6"
@@ -47,23 +59,26 @@
         android:lines="3"
         android:minLines="1"
         android:singleLine="false"
-        android:text="@string/defaultDayDate" />
+        android:text="@string/defaultDayDate" >
 
-    <TextView
-        android:id="@+id/rChooseTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/rDateEditText"
-        android:text="@string/chooseReport"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <requestFocus />
+    </EditText>
 
     <Button
-        android:id="@+id/rChooserButton"
+        android:id="@+id/rMinusButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/rChooseTV"
-        android:layout_toRightOf="@+id/rChooseTV"
-        android:text="@string/weekContaining" />
+        android:layout_below="@+id/rSpinner"
+        android:layout_toLeftOf="@+id/rDateEditText"
+        android:background="@drawable/navigation_previous_item" />
+
+    <Button
+        android:id="@+id/rPlusButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/rMinusButton"
+        android:layout_alignBottom="@+id/rMinusButton"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/navigation_next_item" />
     
 </RelativeLayout>

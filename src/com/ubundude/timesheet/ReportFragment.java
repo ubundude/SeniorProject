@@ -16,10 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class ReportFragment extends Fragment {
@@ -35,6 +37,7 @@ public class ReportFragment extends Fragment {
 	public String dateForm = "MM/dd/yyyy";
 	public String dayForm = "EEE";
 	public String monthForm = "LLLL";
+	Spinner rSpinner;
 	private String date, dateView, monthView;
 	SimpleDateFormat formDay = new SimpleDateFormat(dayForm, Locale.US);
 	SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
@@ -72,7 +75,6 @@ public class ReportFragment extends Fragment {
 			throw new ClassCastException(act.toString()
 					+ " must implement OnDateSetListener");
 		}
-		//setHasOptionsMenu(true);
 		
 	}
 	
@@ -84,21 +86,42 @@ public class ReportFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
-		items = getResources().getStringArray(R.array.reports);
+		rSpinner = (Spinner)getView().findViewById(R.id.rSpinner);
+		ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(getActivity(), R.array.reports, 
+				android.R.layout.simple_spinner_item);
 		
-		reportChooser = (Button)getView().findViewById(R.id.rChooserButton);
-		reportChooser.setText("Day");
-		reportChooser.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialogDisplay();
+		adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		rSpinner.setAdapter(adapt);
+		rSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
+				switch (pos) {
+				case 0: 
+					Log.d("OnItemSelected", "Look, It'sa me! Mario");
+					date = formDate.format(c.getTime());
+					dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
+					dateEditText.setText(dateView);
+					break;
+				case 1:
+					Log.d("OnItemSelected", "Look, It'sa me! Mario");
+					date = formDate.format(c.getTime());
+					dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
+					dateEditText.setText(dateView);
+					break;
+				case 2:
+					Log.d("OnItemSelected", "Look, It'sa me! Mario");
+					date = formMonth.format(c.getTime());
+					Log.d("Spinner Switch", "Date is: " + date);
+					dateView = date;
+					Log.d("Spinner Switch", "DateView is: " + dateView);
+					dateEditText.setText(dateView);
+					break;
+				}
+			}
+			
+			public void onNothingSelected(AdapterView<?> parent){
+				
 			}
 		});
-		
-		ArrayAdapter<String> aa =  new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
-				items);
-		
-		aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		dateView = formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime());
 		date = formDate.format(c.getTime());
@@ -241,5 +264,6 @@ public class ReportFragment extends Fragment {
 		AlertDialog diag = build.create();
 		diag.show();
 	}
+
 
 }

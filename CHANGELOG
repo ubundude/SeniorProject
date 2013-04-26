@@ -2,6 +2,10 @@ CHANGELOG
 =========
 NOTE: Alpha's are changed each time I finish coding for the evening, so that I can keep track of what I did when
 
+1.0.3.A11
+- Fixed layout displaying funky
+- Added a nice seperator 
+
 1.0.3.A10
 - Added AlertDialog to get project for the Quick Add Button
 
