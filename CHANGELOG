@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.0.3.A16 - manifest good
+- Total Textviews on both Reports and Create work
+- Changed Create tab to Add
+
 1.0.3.A15
 - Reports display reports based on all report types
 - ReportsEditText can be changed with pickers and forward backward buttons 

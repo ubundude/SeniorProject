@@ -214,8 +214,7 @@ public class ProjectEditorFragment extends Fragment {
 			}
 			db.close();
 			
-			/** Return to the previous activity */
-			//TODO Figure this out
+			/** Return to the Timestamp Editor */
 			finish();
 		}
 	}
@@ -235,7 +234,6 @@ public class ProjectEditorFragment extends Fragment {
 			db = dbHelp.getWritableDatabase();
 			db.execSQL(deleteSQL);
 			db.close();
-			//TODO Figure this out
 			finish();
 		} else {
 			Toast.makeText(getActivity(), "Cannot delete an empty project", Toast.LENGTH_LONG).show();

@@ -51,6 +51,7 @@ public class ReportFragment extends Fragment {
 	int monthHelp;
 	private int reportType = 0;
 	Spinner rSpinner;
+	TextView hoursTextView;
 	private String[] arrDate;
 	private String gDate, dateView, sendDate;
 	SimpleDateFormat formDay = new SimpleDateFormat(dayForm, Locale.US);
@@ -77,7 +78,8 @@ public class ReportFragment extends Fragment {
 	};
 	
 	public interface OnReportsRunListener {
-		public void sendDate(String date, int reportType);
+		public void sendDate(String date, int reportType, int frag);
+		public void rTotalSetter(String total);
 	}
 	
 	@Override
@@ -101,6 +103,7 @@ public class ReportFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
+		hoursTextView = (TextView)getView().findViewById(R.id.rHoursTV);
 		rSpinner = (Spinner)getView().findViewById(R.id.rSpinner);
 		ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(getActivity(), R.array.reports, 
 				android.R.layout.simple_spinner_item);
@@ -225,7 +228,7 @@ public class ReportFragment extends Fragment {
 	
 	protected void getTimestamps(String date, int rType) {
 		Log.d("getTimestamps", "Report type: " + reportType);
-		mCallback.sendDate(date, reportType);
+		mCallback.sendDate(date, reportType, 1);
 		
 	}
 
@@ -345,4 +348,7 @@ public class ReportFragment extends Fragment {
 		getTimestamps(sendDate, reportType);
 	}
 
+	public void setTotal(String total) {
+		hoursTextView.setText(total);
+	}
 }

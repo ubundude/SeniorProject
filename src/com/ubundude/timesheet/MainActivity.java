@@ -86,7 +86,7 @@ public class MainActivity extends FragmentActivity
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		TabInfo tabInfo = null;
-		MainActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Create"),
+		MainActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Add"),
 				(tabInfo = new TabInfo("Tab1", MainUIFragment.class, args)));
 		this.mapTabInfo.put(tabInfo.tag, tabInfo);
 		MainActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Report"),
@@ -159,23 +159,25 @@ public class MainActivity extends FragmentActivity
 	}
 
 	@Override
-	public void dateSetter(String date) {
+	public void dateSetter(String date, int frag) { // From MainUI
+		Log.d("Date Setter", "From Main UI");
 		int rType = 0;
 		lDate = date;
 		
-		Log.d("dateSetter", "Date is: " + lDate);
-		dateGetter(lDate, rType);
+		Log.d("dateSetter", "Frag is: " + frag);
+		dateGetter(lDate, rType, frag);
 	}
 
-	public void dateGetter(String date, int rType) {
-		Log.d("dateGetter", "Running Date Getter");
+	public void dateGetter(String date, int rType, int frag) { //From ListView
+		Log.d("dateGetter", "From ListView");
+		Log.d("Date Getter", "Frag is: " + frag);
 		ListViewFragment listFrag = (ListViewFragment)getSupportFragmentManager().findFragmentById(R.id.realtabcontent2);
 		
 		if(listFrag != null) {
 			switch(rType) {
 			case 0: 
 				Log.d("dateGetter", "Getting daily timestamps");
-				listFrag.getDailyTimestamps(date);
+				listFrag.getDailyTimestamps(date, frag);
 				break;
 			case 1: 
 				Log.d("dateGetter", "Getting weekly timestamps");
@@ -201,9 +203,39 @@ public class MainActivity extends FragmentActivity
 
 	
 	@Override
-	public void sendDate(String date, int reportType) {
+	public void sendDate(String date, int reportType, int frag) { //From Report
 		lDate = date;
 		Log.d("dateSetter", "Date is: " + lDate);
-		dateGetter(lDate, reportType);
+		dateGetter(lDate, reportType, frag);
 	}
+
+	@Override
+	public void mTotalSetter(String total) { // From MainUI
+		MainUIFragment uiFrag = (MainUIFragment)getSupportFragmentManager().findFragmentById(R.id.realtabcontent1);
+		uiFrag.setTotal(total);
+	}
+
+	@Override
+	public void setTotal(String total, int frag) { // From ListViewFrag
+		Log.d("Set Total", "Total: " + total);
+		Log.d("Set Total", "Frag: " + frag);
+		switch(frag){
+		case 0:
+			Log.d("Set Total", "In Case 0");
+			mTotalSetter(total);
+			break;
+		case 1:
+			Log.d("Set Total", "In Case 1");
+			rTotalSetter(total);
+			break;
+		}
+	}
+
+	@Override
+	public void rTotalSetter(String total) { // From Report
+		ReportFragment rFrag = (ReportFragment)getSupportFragmentManager().findFragmentById(R.id.realtabcontent1);
+		rFrag.setTotal(total);
+	}
+
+	
 }

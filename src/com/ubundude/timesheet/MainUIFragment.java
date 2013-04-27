@@ -45,6 +45,7 @@ public class MainUIFragment extends Fragment {
 	/** Prepares buttons and EditText for use */
 	public Button minusButton, plusButton, quickAdd, addNew;
 	public EditText dateEditText;
+	public TextView hoursTextView;
 	private int proId;
 	/** Formatters for the dates */
 	SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
@@ -69,7 +70,8 @@ public class MainUIFragment extends Fragment {
 	};
 
 	public interface OnDateSetListener {
-		public void dateSetter(String date);
+		public void dateSetter(String date, int frag);
+		public void mTotalSetter(String total);
 	}
 
 	@Override
@@ -93,7 +95,7 @@ public class MainUIFragment extends Fragment {
 	@Override 
 	public void onStart() {
 		super.onStart();
-
+		hoursTextView = (TextView)getView().findViewById(R.id.hoursTextView);
 		/** Method to get todays date and display it in the proper places */
 		date = initialDates();
 		Log.d("Initial Dates", date);
@@ -163,7 +165,7 @@ public class MainUIFragment extends Fragment {
 
 	protected void getDailyTimestamps(String date) {
 		Log.d("Get Timestamps", "Running");
-		mCallback.dateSetter(date);
+		mCallback.dateSetter(date, 0);
 	}
 
 	/** 
@@ -327,6 +329,10 @@ public class MainUIFragment extends Fragment {
 	}
 	private void updateLabel() throws ParseException {
 		dateEditText.setText(formDate.format(c.getTime()));
+	}
+	
+	public void setTotal(String total) {
+		hoursTextView.setText(total);
 	}
 
 }

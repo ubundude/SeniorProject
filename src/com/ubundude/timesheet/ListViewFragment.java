@@ -30,9 +30,13 @@ public class ListViewFragment extends Fragment {
 	TimestampAdapter adapter;
 	private String lDate;
 	private int lReport;
+	public String total = "0";
+	double numd = 0.00;
+	double dTotal = 0.00;
 
 	public interface OnDateGetListener {
-		public void dateGetter(String date, int reportType);
+		public void dateGetter(String date, int reportType, int frag);
+		public void setTotal(String total, int frag);
 	}
 
 	@Override
@@ -63,7 +67,7 @@ public class ListViewFragment extends Fragment {
 		super.onStart();
 		switch(lReport){
 		case 0:
-			getDailyTimestamps(lDate);
+			getDailyTimestamps(lDate, 0);
 			break;
 		case 1:
 			getWeeklyTimestamps(lDate);
@@ -82,9 +86,11 @@ public class ListViewFragment extends Fragment {
 	 * 
 	 * @param date The date the user has selected
 	 */
-	public void getDailyTimestamps(String date) {
+	public void getDailyTimestamps(String date, int frag) {
 		final ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
-
+		
+		dTotal = 0.00;
+		
 		/** Open the database table for reading and writing */
 		db = dbHelp.getReadableDatabase();
 
@@ -113,7 +119,10 @@ public class ListViewFragment extends Fragment {
 				map.put(MainActivity.KEY_FULL, cu.getString(2));
 				map.put(MainActivity.KEY_HOURS, cu.getString(3));
 				map.put(MainActivity.KEY_PROID, Integer.toString(cu.getInt(4)));
-
+				
+				numd = Double.parseDouble(cu.getString(3));
+				dTotal = dTotal + numd;
+				
 				stampList.add(map);
 
 			} while(cu.moveToNext());
@@ -122,14 +131,18 @@ public class ListViewFragment extends Fragment {
 		/** Close the cursor and database */
 		cu.close();
 		db.close();
-
+		
 		/** Initialize the listview */
 		list = (ListView)getActivity().findViewById(R.id.timestampListView);
 
 		/** Initialize the adapter with the stamplist for */
 		adapter = new TimestampAdapter(getActivity(), stampList);
 		list.setAdapter(adapter);
-
+		
+		total = Double.toString(dTotal) + "h";
+		Log.d("GetDaily's", "Total: " + total);
+		setTotal(total, frag);
+		
 		/** Method to handle clicked list view items */
 		list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -156,6 +169,8 @@ public class ListViewFragment extends Fragment {
 	public void getWeeklyTimestamps(String week) {
 		final ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
 
+		dTotal = 0.00;
+		
 		/** Open the database table for reading and writing */
 		db = dbHelp.getReadableDatabase();
 
@@ -185,8 +200,10 @@ public class ListViewFragment extends Fragment {
 				map.put(MainActivity.KEY_HOURS, cu.getString(3));
 				map.put(MainActivity.KEY_PROID, Integer.toString(cu.getInt(4)));
 
+				numd = Double.parseDouble(cu.getString(3));
+				dTotal = dTotal + numd;
+				
 				stampList.add(map);
-
 			} while(cu.moveToNext());
 		}
 
@@ -201,6 +218,10 @@ public class ListViewFragment extends Fragment {
 		adapter = new TimestampAdapter(getActivity(), stampList);
 		list.setAdapter(adapter);
 
+		total = Double.toString(dTotal) + "h";
+		Log.d("GetDaily's", "Total: " + total);
+		setTotal(total, 1);
+		
 		/** Method to handle clicked list view items */
 		list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -226,6 +247,9 @@ public class ListViewFragment extends Fragment {
 	public void getMonthlyTimestamps(String month) {
 		final ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
 		Log.d("Get Monthly Timestamps", "Running with month: " + month);
+		
+		dTotal = 0.00;
+		
 		/** Open the database table for reading and writing */
 		db = dbHelp.getReadableDatabase();
 
@@ -255,8 +279,10 @@ public class ListViewFragment extends Fragment {
 				map.put(MainActivity.KEY_HOURS, cu.getString(3));
 				map.put(MainActivity.KEY_PROID, Integer.toString(cu.getInt(4)));
 
+				numd = Double.parseDouble(cu.getString(3));
+				dTotal = dTotal + numd;
+				
 				stampList.add(map);
-
 			} while(cu.moveToNext());
 		}
 		
@@ -271,6 +297,10 @@ public class ListViewFragment extends Fragment {
 		adapter = new TimestampAdapter(getActivity(), stampList);
 		list.setAdapter(adapter);
 
+		total = Double.toString(dTotal) + "h";
+		Log.d("GetDaily's", "Total: " + total);
+		setTotal(total, 1);
+		
 		/** Method to handle clicked list view items */
 		list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -291,5 +321,9 @@ public class ListViewFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+	}
+	
+	protected void setTotal(String total, int frag) {
+		mCallback.setTotal(total, frag);
 	}
 }
