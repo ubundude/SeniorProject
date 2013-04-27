@@ -18,8 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-//TODO Need to get times from database and add them together to display in the totals
-
 public class ListViewFragment extends Fragment {
 	OnDateGetListener mCallback;
 	/** Database instance and call to Timesheet OpenHelper */

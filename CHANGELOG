@@ -1,7 +1,10 @@
 CHANGELOG
 =========
 
-1.0.3.A16 - manifest good
+1.0.3.A17 - manifest good
+- Fixed <New> showing in quick add dialog
+
+1.0.3.A16
 - Total Textviews on both Reports and Create work
 - Changed Create tab to Add
 

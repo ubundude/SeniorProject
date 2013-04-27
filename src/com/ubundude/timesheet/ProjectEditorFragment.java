@@ -172,7 +172,6 @@ public class ProjectEditorFragment extends Fragment {
 		db.execSQL(updateSQL);
 		db.close();
 		
-		//TODO See if this works
 		finish();
 		
 	}

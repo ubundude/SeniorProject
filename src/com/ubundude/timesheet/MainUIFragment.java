@@ -10,12 +10,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -298,34 +296,38 @@ public class MainUIFragment extends Fragment {
 		/** Open a cursor and store the return of the query */
 		Cursor cu = db.rawQuery(getProjects, null);
 
-		CharSequence[] projects = new CharSequence[cu.getCount()];
-		final int[] IDs = new int[cu.getCount()];
+		CharSequence[] projects = new CharSequence[cu.getCount() -1 ];
+		final int[] IDs = new int[cu.getCount() - 1];
 
 		/** Make sure cursor is not null */
 		if(cu != null && cu.getCount() > 0){
 			cu.moveToFirst();
-			//TODO should not display <NEW>
+			cu.moveToNext();
 			do{
-				projects[cu.getPosition()] = cu.getString(1);
-				IDs[cu.getPosition()] = cu.getInt(0);
+				projects[cu.getPosition()-1] = cu.getString(1);
+				IDs[cu.getPosition()-1] = cu.getInt(0);
 			} while (cu.moveToNext());
+			
 		}
+		
+			AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+			build.setTitle("Choose Project");
+			build.setItems(projects, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					proId = IDs[which];
+					quickAddHandler(proId);
+					// TODO Should display new again and if new clicked, open Editor, loading projectEditor
+				}
+			});
+
+			
+		
 		/** Close the cursor and database */
 		cu.close();
 		db.close();
 
-		AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-		build.setTitle("Choose Project");
-		build.setItems(projects, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				proId = IDs[which];
-				quickAddHandler(proId);
-			}
-		});
-
-		AlertDialog diag = build.create();
-		diag.show();
+		
 	}
 	private void updateLabel() throws ParseException {
 		dateEditText.setText(formDate.format(c.getTime()));

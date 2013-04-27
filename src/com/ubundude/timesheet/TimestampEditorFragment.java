@@ -47,7 +47,7 @@ public class TimestampEditorFragment extends Fragment {
 	public static final String TIME_ID_KEY = "timeId";
 	public static final String PRO_ID_KEY = "projectId"; 
 	/** Datasources to get objects for using database tables */
-	private TimesheetDatabaseHelper dbHelp; //TODO Needs the = new part added in the onAttach
+	private TimesheetDatabaseHelper dbHelp; 
 	private SQLiteDatabase db;
 	/** Gets a valid calendar instance */
 	final Calendar c = Calendar.getInstance();
@@ -572,7 +572,7 @@ public class TimestampEditorFragment extends Fragment {
 		return id;
 	}
 
-	private static String timeCalc() throws ParseException { //TODO Update to get values inside
+	private static String timeCalc() throws ParseException { 
 		String cdateIn, ctimeIn, cdateOut, ctimeOut;
 
 		cdateIn = dateInButton.getText().toString();
