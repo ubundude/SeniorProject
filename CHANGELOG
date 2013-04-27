@@ -1,7 +1,13 @@
 CHANGELOG
 =========
 
-1.0.3.A17 - manifest good
+1.0.3.B1
+- Merged from testing
+- Reenabled bugsense
+- Put the update check back in
+- Fixed Quick add not working
+
+1.0.3.A17 
 - Fixed <New> showing in quick add dialog
 
 1.0.3.A16
