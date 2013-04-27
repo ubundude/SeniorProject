@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/rChooseTV" />
+        android:layout_toRightOf="@+id/rMinusButton" />
     
     <TextView
         android:id="@+id/rTotalTV"
@@ -35,14 +35,6 @@
         android:layout_alignBottom="@+id/rTotalTV"
         android:layout_toRightOf="@+id/rTotalTV"
         android:text="@string/defaultTime" />
-    
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/line_separator"
-        android:layout_below="@+id/rDateEditText" />
 
     <EditText
         android:id="@+id/rDateEditText"
@@ -80,5 +72,13 @@
         android:layout_alignBottom="@+id/rMinusButton"
         android:layout_alignParentRight="true"
         android:background="@drawable/navigation_next_item" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/rDateEditText"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/line_separator" />
     
 </RelativeLayout>

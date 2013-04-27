@@ -29,6 +29,7 @@ public class ListViewFragment extends Fragment {
 	/** Gets the custom adapter for the listview */
 	TimestampAdapter adapter;
 	private String lDate;
+	private int lReport;
 
 	public interface OnDateGetListener {
 		public void dateGetter(String date, int reportType);
@@ -48,6 +49,7 @@ public class ListViewFragment extends Fragment {
 		}
 		Bundle extras = getArguments();
 		lDate = extras.getString(MainActivity.KEY_DATE);
+		lReport = extras.getInt(MainActivity.KEY_REPORT);
 		dbHelp = new TimesheetDatabaseHelper(getActivity());
 	}
 
@@ -59,7 +61,17 @@ public class ListViewFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
-		getDailyTimestamps(lDate);
+		switch(lReport){
+		case 0:
+			getDailyTimestamps(lDate);
+			break;
+		case 1:
+			getWeeklyTimestamps(lDate);
+			break;
+		case 2:
+			getMonthlyTimestamps(lDate);
+			break;
+		}
 	}
 
 	/**
@@ -213,7 +225,7 @@ public class ListViewFragment extends Fragment {
 
 	public void getMonthlyTimestamps(String month) {
 		final ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
-
+		Log.d("Get Monthly Timestamps", "Running with month: " + month);
 		/** Open the database table for reading and writing */
 		db = dbHelp.getReadableDatabase();
 
@@ -221,10 +233,10 @@ public class ListViewFragment extends Fragment {
 		String getTimestamps = "select ti._id, pr.name, pr.shortcode, ti.hours, ti.project "
 				+ "from timestamp ti inner join projects pr "
 				+ "where ti.project = pr._id and ti.month = '" + month + "'";
-
+		
 		/** Open a cursor and store the return of the query */
 		Cursor cu = db.rawQuery(getTimestamps, null);
-
+		
 		/** Make sure cursor is not null */
 		if(cu != null && cu.getCount() > 0){
 			cu.moveToFirst();
@@ -247,11 +259,11 @@ public class ListViewFragment extends Fragment {
 
 			} while(cu.moveToNext());
 		}
-
+		
 		/** Close the cursor and database */
 		cu.close();
 		db.close();
-
+		Log.d("Get Timestamps", "Stuff closed");
 		/** Initialize the listview */
 		list = (ListView)getActivity().findViewById(R.id.timestampListView);
 

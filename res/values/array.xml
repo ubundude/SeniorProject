@@ -22,8 +22,23 @@
     
     <string-array name="reports">
         <item>Day</item>
-        <item>Week Containing</item>
+        <item>Week</item>
         <item>Month</item>
     </string-array>
+    
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+		<item>December</item>
+	</string-array>
     
 </resources>

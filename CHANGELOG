@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.0.3.A15
+- Reports display reports based on all report types
+- ReportsEditText can be changed with pickers and forward backward buttons 
+
 1.0.3.A14
 - Listview can get from database for each report type
 - Interfaces setup to use report types

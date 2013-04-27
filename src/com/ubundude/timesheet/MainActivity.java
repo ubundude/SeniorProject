@@ -35,6 +35,7 @@ public class MainActivity extends FragmentActivity
 	public static final String KEY_HOURS = "listviewHoursTV";
 	public static final String KEY_PROID = "projectIdTV";
 	public static final String KEY_DATE = "dateKey";
+	public static final String KEY_REPORT = "reportKey";
 	
 	private class TabInfo {
 		private String tag;
@@ -188,6 +189,7 @@ public class MainActivity extends FragmentActivity
 			ListViewFragment nListFrag =  new ListViewFragment();
 			Bundle args = new Bundle();
 			args.putString(KEY_DATE, date);
+			args.putInt(KEY_REPORT, rType);
 			nListFrag.setArguments(args);
 			
 			FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
