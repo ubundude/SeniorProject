@@ -287,7 +287,6 @@ public class MainUIFragment extends Fragment {
 	}
 
 	private void displayDialog() {
-		Log.d("Display Dialog", "Has been called");
 		/** Open the database table for reading and writing */
 		db = dbHelp.getReadableDatabase();
 
@@ -311,10 +310,6 @@ public class MainUIFragment extends Fragment {
 			
 		}
 		
-		/** Close the cursor and database */
-		cu.close();
-		db.close();
-		
 			AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
 			build.setTitle("Choose Project");
 			build.setItems(projects, new DialogInterface.OnClickListener() {
@@ -325,10 +320,14 @@ public class MainUIFragment extends Fragment {
 					// TODO Should display new again and if new clicked, open Editor, loading projectEditor
 				}
 			});
-		
-			AlertDialog diag = build.create();
-			diag.show();
 
+			
+		
+		/** Close the cursor and database */
+		cu.close();
+		db.close();
+
+		
 	}
 	private void updateLabel() throws ParseException {
 		dateEditText.setText(formDate.format(c.getTime()));

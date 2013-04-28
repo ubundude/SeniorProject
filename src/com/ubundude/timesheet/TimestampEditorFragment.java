@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-//TODO Finish javadocing
+// TODO Finish Javadoc's - Variables and method internals
 /**
  * @author Kolby Cansler <golfguy90@gmail.com>
  * @version 1.0.3.A5
@@ -109,14 +109,14 @@ public class TimestampEditorFragment extends Fragment {
 		}
 	};
 
-	/** Interface by which host activities can interact with the fragment*/
+	/** 
+	 * Interface by which host activities can interact with the fragment
+	 */
 	public interface OnSendTimestampId {
 		public void sendTimeId(int timeId, int proId);
 	}
 
 	/**
-	 * Fragment onAttach
-	 * <p>
 	 * What to do when the fragment is first attached to the activity
 	 */
 	@Override
@@ -140,8 +140,6 @@ public class TimestampEditorFragment extends Fragment {
 	}
 
 	/**
-	 * Fragment onCreateView
-	 * <p>
 	 * After the fragment is attached, the view needs to be created
 	 */
 	@Override
@@ -152,10 +150,7 @@ public class TimestampEditorFragment extends Fragment {
 	}
 
 	/**
-	 * Fragment onStart
-	 * <p>
-	 * After the view is created, the fragment needs started
-	 * and certian functions need to be run.
+	 * After the view is created, Views need initialied and initial logic happens
 	 */
 	@Override
 	public void onStart() {
@@ -313,6 +308,9 @@ public class TimestampEditorFragment extends Fragment {
 
 	}
 	
+	/**
+	 * Create a fragment specific menu
+	 */
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -320,6 +318,9 @@ public class TimestampEditorFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+	/**
+	 * Menu Click handler for the options menu created above
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -333,6 +334,12 @@ public class TimestampEditorFragment extends Fragment {
 		return(super.onOptionsItemSelected(item));
 	}
 
+	/** 
+	 * Method to initialize buttons
+	 * 
+	 * This method sets the values of the buttons to the current date 
+	 * and time if a timestamp is not being loaded from the database.
+	 */
 	private void initializeButtons() {
 		Log.d("TIMESTAMP FRAGMENT", "Initializing Buttons");
 		/** Initialize buttons so that they can be set to the proper date */
@@ -361,8 +368,11 @@ public class TimestampEditorFragment extends Fragment {
 		timeOutButton.setText(timeOut);
 	}
 
-	/** Method to set the value of the button used to the date or time picked
-	 * @throws ParseException */
+	/** 
+	 * Method to set the value of the button used to the date or time picked
+	 * 
+	 * @throws ParseException
+	 */
 	private void updateLabel() throws ParseException {
 		SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
 		SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
@@ -387,15 +397,20 @@ public class TimestampEditorFragment extends Fragment {
 		}
 	}
 	
+	/**
+	 * Method call to pass the project id to the Project Editor fragment
+	 * 
+	 * @param proId The project that is getting edited
+	 */
 	private void editProject(int proId) {
 		((EditorActivity)getActivity()).setProject(proId);
 	}
 
 	/**
-	 * Handler to save the data entered in the form to the database
-	 *
-	 * @param view The current activity context
-	 * @throws ParseException
+	 * Method to save a new timestamp in the database
+	 * 
+	 * @param v               The View of the cliked button
+	 * @throws ParseException Thrown if problem parsing Integers to Strings
 	 */
 	private void saveHandler(View v) throws ParseException {
 		/** Initialize variables to store information from the form elements */
@@ -450,6 +465,13 @@ public class TimestampEditorFragment extends Fragment {
 		}
 	}
 
+	/**
+	 * Method to update a timestamp in database based on changes from editor
+	 * 
+	 * @param v               The View from the click
+	 * @param timeId          The Id of the timestamp to be updated
+	 * @throws ParseException Thrown if problem parsing Integers to Strings
+	 */
 	private void updateHandler(View v, int timeId) throws ParseException {
 		String timeIn, dateIn, timeOut, dateOut, wiy, month, year, comments, hours;
 
@@ -491,6 +513,11 @@ public class TimestampEditorFragment extends Fragment {
 		getActivity().finish();
 	}
 
+	/**
+	 * Method to delete a project from the database
+	 * 
+	 * @param timeId The Id of the timestamp to delete
+	 */
 	public void deleteHandler(int timeId) {
 		String deleteSQL = "delete from timestamp where _id = " + timeId;
 		db = dbHelp.getWritableDatabase();
@@ -500,6 +527,18 @@ public class TimestampEditorFragment extends Fragment {
 		getActivity().finish();
 	}
 
+	/**
+	 * Gets all projects from database and loads to spinner
+	 * 
+	 * If a timestamp is being loaded from the database, this method gets the 
+	 * project that corresponds to that timestamp and displays it in the spinner
+	 * by default
+	 * <p>
+	 * If no timestamp is being loaded, then the project id will be the default
+	 * project
+	 * 
+	 * @param proId The project Id being passed in
+	 */
 	private void loadSpinnerData(int proId) {
 		Log.d("LoadSpinnerData", "Loading Spinner Data");
 		int pos = 0;
@@ -541,6 +580,17 @@ public class TimestampEditorFragment extends Fragment {
 		Log.d("loadSpinnerData", "Position Set");
 	}
 
+	/**
+	 * Method called to get timestamp from database
+	 * 
+	 * This this method it call when a user clicks on a row from the ListView
+	 * and returns the selected row from the databse. It also inializes the Views 
+	 * used by the editor
+	 * 
+	 * @param timeId                The id of the timestamp to get 
+	 * @return id                   Returns the Id of the timestamp for updating purposes
+	 * @throws NullPointerException Problem with the query being empty
+	 */
 	public int getTimestamp(int timeId) throws NullPointerException {
 		int id = timeId;
 		Log.d("TIMESTAMP getTimestamp", "TimeId is:" + id);
@@ -572,16 +622,26 @@ public class TimestampEditorFragment extends Fragment {
 		return id;
 	}
 
-	private static String timeCalc() throws ParseException { 
+	/** 
+	 * Method to calculate the time covered
+	 * 
+	 * This method calculated the total time covered by both the time
+	 * buttons and the date buttons and returns that time for use.
+	 * 
+	 * @throws ParseException There is a problem converting from strings to Dates
+	 * @return hour           The hours calculated above
+	 */
+	private static String timeCalc() throws ParseException {
+		/** Strings to store the current button values for the method */
 		String cdateIn, ctimeIn, cdateOut, ctimeOut;
-
+		
+		/** Stores the button values as strings */
 		cdateIn = dateInButton.getText().toString();
 		ctimeIn = timeInButton.getText().toString();
 		cdateOut = dateOutButton.getText().toString();
 		ctimeOut = timeOutButton.getText().toString();
 
-		double hr;
-		double diff;
+		double hr, diff;
 		String in = cdateIn + " " + ctimeIn;
 		String out = cdateOut + " " + ctimeOut;
 		Date inTime, outTime;
@@ -594,7 +654,6 @@ public class TimestampEditorFragment extends Fragment {
 		hr = diff/ (1000 * 60 * 60 );
 		String hour = String.format(Locale.US, "%.2f", hr);
 		return hour;
-
 	}
 
 }

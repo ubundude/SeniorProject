@@ -1,13 +1,4 @@
-/**
- * @author Kolby Cansler
- * @version 1.0.ALPHA
- * 
- * Builds a custom adapter to 
- */
-
 package com.ubundude.timesheet;
-
-//TODO Write JavaDoc's
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +11,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+// TODO Write JavaDoc's
+/**
+* @author Kolby Cansler
+* @version 1.0.3.B1
+* 
+* Builds a custom adapter to bind database information to a custom listview 
+*/
 public class TimestampAdapter extends BaseAdapter {
 	private Activity activity;
 	private ArrayList<HashMap<String, String>> data;
@@ -43,6 +41,9 @@ public class TimestampAdapter extends BaseAdapter {
 		return position;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = convertView;

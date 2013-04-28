@@ -197,13 +197,10 @@ public class ListViewFragment extends Fragment {
 				map.put(MainActivity.KEY_FULL, cu.getString(2));
 				map.put(MainActivity.KEY_HOURS, cu.getString(3));
 				map.put(MainActivity.KEY_PROID, Integer.toString(cu.getInt(4)));
-				
-				
+
 				numd = Double.parseDouble(cu.getString(3));
-				Log.d("GetWeekly", "Numd is :" + numd);
-				Log.d("GetWeekly", "dTotal before is: " + dTotal);
 				dTotal = dTotal + numd;
-				Log.d("GetWeekly", "dTotal after is: " + dTotal);
+				
 				stampList.add(map);
 			} while(cu.moveToNext());
 		}

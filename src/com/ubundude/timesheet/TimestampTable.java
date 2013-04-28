@@ -5,7 +5,7 @@ import android.util.Log;
 
 /**
 * @author Kolby Cansler
-* @version 1.0.3.A5
+* @version 1.0.3.B1
 *
 * Class to define the Timestamp table and methods
 * relating to creating and updating that table
