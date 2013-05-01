@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.0.3.B1_2 
+- Using First day of week
+- 
+
 1.0.3.B1_1 
 - Fixed: Month picker title was Choose Project, now Choose Month
 - Fixed: No whitespace in Total hours display

@@ -76,7 +76,7 @@ TabHost.OnTabChangeListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
+		//BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
 		setContentView(R.layout.activity_main);
 
 		/** Calls temporary method for checking updates

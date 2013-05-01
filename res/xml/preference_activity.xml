@@ -15,7 +15,7 @@
 	        android:dialogTitle="@string/prefDOW"
 	        android:entries="@array/days"
 	        android:entryValues="@array/daysVals"
-	        android:defaultValue="sun" />
+	        android:defaultValue="SUNDAY" />
 	    <EditTextPreference
 	        android:key="@string/prefHoursKey"
 	        android:title="@string/prefHours"

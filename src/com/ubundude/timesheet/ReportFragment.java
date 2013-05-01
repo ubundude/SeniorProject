@@ -9,7 +9,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +51,8 @@ public class ReportFragment extends Fragment {
 	TextView hoursTextView;
 	private String[] arrDate;
 	private String gDate, dateView, sendDate;
+	private String firstDay;
+	private int firstDOW;
 	SimpleDateFormat formDay = new SimpleDateFormat(dayForm, Locale.US);
 	SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
 	SimpleDateFormat formMonth = new SimpleDateFormat(monthForm, Locale.US);
@@ -63,6 +67,7 @@ public class ReportFragment extends Fragment {
 			c.set(Calendar.YEAR, year);
 			c.set(Calendar.MONTH, month);
 			c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+			c.setFirstDayOfWeek(firstDOW);
 			try {
 				updateLabel();
 			} catch (ParseException e) {
@@ -98,6 +103,11 @@ public class ReportFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		firstDay = prefs.getString(getActivity().getString(R.string.prefDOWKey), "SUNDAY");
+		
+		firstDOW = getFirstDay(firstDay);
+		
 		hoursTextView = (TextView)getView().findViewById(R.id.rHoursTV);
 		rSpinner = (Spinner)getView().findViewById(R.id.rSpinner);
 		ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(getActivity(), R.array.reports, 
@@ -221,6 +231,25 @@ public class ReportFragment extends Fragment {
 		});
 	}
 	
+	private int getFirstDay(String lFirstDay) {
+		int DOW = Calendar.SUNDAY ;
+		
+		if(lFirstDay == "MONDAY")
+			DOW = Calendar.MONDAY;
+		else if(lFirstDay == "TUESDAY")
+			DOW = Calendar.TUESDAY;
+		else if(lFirstDay == "WEDNESDAY")
+			DOW = Calendar.WEDNESDAY;
+		else if(lFirstDay == "THURSDAY")
+			DOW = Calendar.THURSDAY;
+		else if(lFirstDay == "FRIDAY")
+			DOW = Calendar.FRIDAY;
+		else if(lFirstDay == "SATURDAY")
+			DOW = Calendar.SATURDAY;
+		
+		return DOW;
+	}
+
 	protected void getTimestamps(String date, int rType) {
 		Log.d("getTimestamps", "Report type: " + reportType);
 		mCallback.sendDate(date, reportType, 1);
@@ -234,6 +263,7 @@ public class ReportFragment extends Fragment {
     private String plusButtonHandler() throws ParseException {
     	
     	c.setTime(formDate.parse(gDate));
+    	c.setFirstDayOfWeek(firstDOW);
     	switch (reportType) {
     	case 0: 
     		c.add(Calendar.DAY_OF_MONTH, 1);
@@ -269,6 +299,7 @@ public class ReportFragment extends Fragment {
      */
 	private String minusButtonHandler() throws ParseException {
 		c.setTime(formDate.parse(gDate));
+		c.setFirstDayOfWeek(firstDOW);
 		Log.d("Minus Handler", "gDate: " + gDate);
     	switch (reportType) {
     	case 0: 
