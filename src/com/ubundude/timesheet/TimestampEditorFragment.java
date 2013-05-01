@@ -135,14 +135,16 @@ public class TimestampEditorFragment extends Fragment {
 		dbHelp = new TimesheetDatabaseHelper(getActivity());
 		Bundle extras = getArguments();
         timeId = extras.getInt(TIME_ID_KEY);
+        Log.d("TIMESTAMP onAttach", "Got TimeId: " + timeId);
         proId = extras.getInt(PRO_ID_KEY);
+        Log.d("TIMESTAMP onAttach", "Got ProId: " + proId);
         setHasOptionsMenu(true);
 	}
 
 	/**
 	 * Fragment onCreateView
-	 * <p>
-	 * After the fragment is attached, the view needs to be created
+	 * 
+	 * After the fragment is attached, the view is created
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -162,10 +164,13 @@ public class TimestampEditorFragment extends Fragment {
 		super.onStart();
 		
 		Log.d("TIMESTAMP onStart", "Its started");
-		if (timeId != 0)
+		if (timeId != 0) {
+			Log.d("TIMESTAMP onStart", "Getting timestamps");
 			getTimestamp(timeId);
-		else 
+		} else {
+			Log.d("TIMESTAMP onStart", "Initializing Buttons");
 			initializeButtons();
+		}
 		loadSpinnerData(proId);
 		/** Initializes the edit button and sets the onClickListener*/
 		editButton = (Button)getView().findViewById(R.id.projectEditButton);
@@ -504,6 +509,7 @@ public class TimestampEditorFragment extends Fragment {
 		Log.d("LoadSpinnerData", "Loading Spinner Data");
 		int pos = 0;
 		int id = proId;
+		Log.d("LoadSpinnerData", "Gotten proId: " + id);
 		projectSpinner = (Spinner)getView().findViewById(R.id.projectSpinner);
 		ArrayList<HashMap<String, String>> projects = new ArrayList<HashMap<String, String>>();
 
@@ -519,7 +525,9 @@ public class TimestampEditorFragment extends Fragment {
 			do {
 				Log.d("loadSpinnerData", "Hashing rows");
 				HashMap<String, String> map = new HashMap<String, String>();
+				Log.d("Spinner Load", "Project name: " + cu.getString(1));
 				map.put(KEY_NAME, cu.getString(1));
+				Log.d("SpinnerLoad", "Project Id: " + cu.getInt(0));
 				map.put(PRO_ID_KEY, Integer.toString(cu.getInt(0)));
 				if (cu.getInt(0) == id) {
 					Log.d("loadSpinnerData", "Found Loaded project");

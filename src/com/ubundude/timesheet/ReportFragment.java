@@ -318,7 +318,7 @@ public class ReportFragment extends Fragment {
 	
 	private void pickMonth() {
 		AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-		build.setTitle("Choose Project");
+		build.setTitle("Choose Month");
 		build.setItems(R.array.months, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 
 /**
  * EditPreferences
@@ -39,7 +40,7 @@ public class EditPreferences extends PreferenceActivity {
 	     * Section to get all projects from the database 
 	     * and hand them to the ListPreference as entries
 	     */
-	    ListPreference projectsList = (ListPreference)findPreference(getString(R.string.perfProjectKey));
+	    ListPreference projectsList = (ListPreference)findPreference(getString(R.string.prefProjectKey));
 	    /** Open the database table for reading and writing */
 	    db = dbHelp.getReadableDatabase();
 	    /** The string to get the projects from the database */
@@ -58,7 +59,9 @@ public class EditPreferences extends PreferenceActivity {
 	        /** For each entry in the cursor, set the array values */
 	        do {
 	            entries.add(cu.getString(1));
+	            Log.d("Pref Getter", "Adding Project: " + cu.getString(1));
 	            entryValues.add(Integer.toString(cu.getInt(0)));
+	            Log.d("Pref Getter", "Adding ID: " + cu.getInt(0));
 	        } while (cu.moveToNext());
 	
 	    }
