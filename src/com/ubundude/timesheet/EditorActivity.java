@@ -26,7 +26,7 @@ public class EditorActivity extends FragmentActivity
         	Log.d("Timestamp ID's", "setting defaults");
         	timeId = 0;
         	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-    		proId = Integer.parseInt(sharedPref.getString("perf_default_project", "1"));
+    		proId = Integer.parseInt(sharedPref.getString("pref_default_project", "1"));
         }
         
         Log.d("OnCreate", "TimeId: " + timeId);
@@ -35,6 +35,9 @@ public class EditorActivity extends FragmentActivity
         
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void sendTimeId(int timeId, int proId) {
 		TimestampEditorFragment timeFrag = (TimestampEditorFragment)getSupportFragmentManager().findFragmentById(R.id.editorFragments);
@@ -53,7 +56,9 @@ public class EditorActivity extends FragmentActivity
 		}
 	}
 
-	
+	/**
+	 * Method to start the ProjectEditorFragment and pass a project to load
+	 */
 	@Override
 	public void setProject(int proId) {
 		ProjectEditorFragment proFrag = new ProjectEditorFragment();

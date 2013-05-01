@@ -11,13 +11,13 @@
     </array>
     
     <array name="daysVals">
-        <item>sun</item>
-        <item>mon</item>
-        <item>tue</item>
-        <item>wed</item>
-        <item>thu</item>
-        <item>fri</item>
-        <item>sat</item>
+        <item>SUNDAY</item>
+        <item>MONDAY</item>
+        <item>TUESDAY</item>
+        <item>WEDNESDAY</item>
+        <item>THURSDAY</item>
+        <item>FRIDAY</item>
+        <item>SATURDAY</item>
     </array>
     
     <string-array name="reports">

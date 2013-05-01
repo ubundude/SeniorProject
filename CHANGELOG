@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+1.0.3.B1_2 
+- Using First day of week
+- 
+
+1.0.3.B1_1 
+- Fixed: Month picker title was Choose Project, now Choose Month
+- Fixed: No whitespace in Total hours display
+- Fixed: Timestamp editor not displaying default project
+- Added: Hours per week preference
+- Added: Default preferences
+
 1.0.3.B1
 - Merged from testing
 - Reenabled bugsense

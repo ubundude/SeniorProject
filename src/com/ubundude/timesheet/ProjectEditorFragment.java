@@ -242,4 +242,8 @@ public class ProjectEditorFragment extends Fragment {
 	private void finish() {
 		getActivity().getSupportFragmentManager().popBackStackImmediate();
 	}
+	
+	public void setProject(int projectId) {
+		
+	}
 }
