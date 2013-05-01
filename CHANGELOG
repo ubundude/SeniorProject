@@ -1,9 +1,15 @@
 CHANGELOG
 =========
 
+1.0.3.B3
+- Fixed: Quick Add dialog not showing. Two lines of code missing....
+- Publishing
+
+1.0.3.B2
+- Merged this. That was a nightmare....
+
 1.0.3.B1_2 
 - Using First day of week
-- 
 
 1.0.3.B1_1 
 - Fixed: Month picker title was Choose Project, now Choose Month

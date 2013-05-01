@@ -307,32 +307,33 @@ public class MainUIFragment extends Fragment {
 				projects[cu.getPosition()-1] = cu.getString(1);
 				IDs[cu.getPosition()-1] = cu.getInt(0);
 			} while (cu.moveToNext());
-			
-		}
-		
-			AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-			build.setTitle("Choose Project");
-			build.setItems(projects, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					proId = IDs[which];
-					quickAddHandler(proId);
-					// TODO Should display new again and if new clicked, open Editor, loading projectEditor
-				}
-			});
 
-			
-		
+		}
+
+		AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+		build.setTitle("Choose Project");
+		build.setItems(projects, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				proId = IDs[which];
+				quickAddHandler(proId);
+				// TODO Should display new again and if new clicked, open Editor, loading projectEditor
+			}
+		});
+
+		AlertDialog diag = build.create();
+		diag.show();	
+
 		/** Close the cursor and database */
 		cu.close();
 		db.close();
 
-		
+
 	}
 	private void updateLabel() throws ParseException {
 		dateEditText.setText(formDate.format(c.getTime()));
 	}
-	
+
 	public void setTotal(String total) {
 		hoursTextView.setText(total);
 	}
