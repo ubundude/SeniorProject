@@ -155,7 +155,7 @@ public class ListViewFragment extends Fragment {
 				int timeId = Integer.parseInt(test.get(MainActivity.KEY_ID));
 
 				/** Intent to move to TimestampEditorActivity and pass values to load */
-				Intent intent = new Intent(getActivity(), EditorActivity.class);
+				Intent intent = new Intent(getActivity(), TimestampEditorActivity.class);
 				intent.putExtra("TIMESTAMP_ID", timeId);
 				intent.putExtra("PROJECT_ID", proId);
 				startActivity(intent);
@@ -234,7 +234,7 @@ public class ListViewFragment extends Fragment {
 				int timeId = Integer.parseInt(test.get(MainActivity.KEY_ID));
 
 				/** Intent to move to TimestampEditorActivity and pass values to load */
-				Intent intent = new Intent(getActivity(), EditorActivity.class);
+				Intent intent = new Intent(getActivity(), TimestampEditorActivity.class);
 				intent.putExtra("TIMESTAMP_ID", timeId);
 				intent.putExtra("PROJECT_ID", proId);
 				startActivity(intent);
@@ -313,7 +313,7 @@ public class ListViewFragment extends Fragment {
 				int timeId = Integer.parseInt(test.get(MainActivity.KEY_ID));
 
 				/** Intent to move to TimestampEditorActivity and pass values to load */
-				Intent intent = new Intent(getActivity(), EditorActivity.class);
+				Intent intent = new Intent(getActivity(), TimestampEditorActivity.class);
 				intent.putExtra("TIMESTAMP_ID", timeId);
 				intent.putExtra("PROJECT_ID", proId);
 				startActivity(intent);

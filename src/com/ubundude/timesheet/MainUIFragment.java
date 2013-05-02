@@ -243,7 +243,7 @@ public class MainUIFragment extends Fragment {
 	 *  @param view Gets the current view context to pass with the intent
 	 */
 	private void addNewHandler(View view) {
-		Intent intent = new Intent(getActivity(), EditorActivity.class);
+		Intent intent = new Intent(getActivity(), TimestampEditorActivity.class);
 		startActivity(intent);
 	}
 
@@ -296,31 +296,43 @@ public class MainUIFragment extends Fragment {
 		/** Open a cursor and store the return of the query */
 		Cursor cu = db.rawQuery(getProjects, null);
 
-		CharSequence[] projects = new CharSequence[cu.getCount() -1 ];
-		final int[] IDs = new int[cu.getCount() - 1];
+		CharSequence[] projects = new CharSequence[cu.getCount()];
+		Log.d("Display Dialog", "Char Sequence initialized with size: " + cu.getCount());
+		final int[] IDs = new int[cu.getCount()];
+		Log.d("Display Dialog", "ID's int initialized with size: " + cu.getCount());
 
+		
 		/** Make sure cursor is not null */
 		if(cu != null && cu.getCount() > 0){
 			cu.moveToFirst();
-			cu.moveToNext();
+			//cu.moveToNext();
 			do{
-				projects[cu.getPosition()-1] = cu.getString(1);
-				IDs[cu.getPosition()-1] = cu.getInt(0);
+				projects[cu.getPosition()] = cu.getString(1);
+				IDs[cu.getPosition()] = cu.getInt(0);
 			} while (cu.moveToNext());
 
 		}
-
+		Log.d("Display Dialog", "About to build the dialog");
 		AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
 		build.setTitle("Choose Project");
+		Log.d("Display Dialog", "Title Set");
 		build.setItems(projects, new DialogInterface.OnClickListener() {
+			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				proId = IDs[which];
-				quickAddHandler(proId);
-				// TODO Should display new again and if new clicked, open Editor, loading projectEditor
+				
+				if(proId == 1) {
+					Intent intent = new Intent(getActivity(), ProjectEditorActivity.class);
+					intent.putExtra(ProjectEditorActivity.PRO_KEY, proId);
+					startActivity(intent);
+				} else {
+					quickAddHandler(proId);
+				}
+					
 			}
 		});
-
+		Log.d("Display Dialog", "Items set");
 		AlertDialog diag = build.create();
 		diag.show();	
 

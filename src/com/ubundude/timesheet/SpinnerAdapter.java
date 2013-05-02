@@ -43,8 +43,8 @@ public class SpinnerAdapter extends BaseAdapter {
 		HashMap<String, String> project = new HashMap<String, String>();
 		project = data.get(position);
 		
-		proName.setText(project.get(TimestampEditorFragment.KEY_NAME));
-		proId.setText(project.get(TimestampEditorFragment.PRO_ID_KEY));
+		proName.setText(project.get(TimestampEditorActivity.KEY_NAME));
+		proId.setText(project.get(TimestampEditorActivity.PRO_ID_KEY));
 		
 		return vi;
 	}

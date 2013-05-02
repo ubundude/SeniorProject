@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.0.3.B3_1
+- Moved editors back to Activities for my own convienence
+- Maybe a bugfix or two I forgot
+
 1.0.3.B3
 - Fixed: Quick Add dialog not showing. Two lines of code missing....
 - Publishing
