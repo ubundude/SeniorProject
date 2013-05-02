@@ -76,7 +76,7 @@ TabHost.OnTabChangeListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
+		BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
 		setContentView(R.layout.activity_main);
 
 		/** Calls temporary method for checking updates
@@ -112,7 +112,6 @@ TabHost.OnTabChangeListener {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-
 	@SuppressWarnings("deprecation")
 	private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException {
 		/** String to store the version from the url */
