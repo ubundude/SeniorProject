@@ -1,6 +1,18 @@
-/**
- * 
- */
+/** Copyright 2013 Kolby Cansler
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  * 
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  * 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+
 package com.ubundude.timesheet;
 
 import java.io.IOException;
@@ -26,6 +38,14 @@ import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
+/**
+ * @author Kolby Cansler
+ * @version 1.0.3.B4
+ * 
+ * Inflates the main activity and handles all interaction with it as well
+ * as interaction between attached fragments. It implements several listeners 
+ * from the fragments it uses
+ */
 public class MainActivity extends FragmentActivity 
 implements MainUIFragment.OnDateSetListener, 
 ListViewFragment.OnDateGetListener,
@@ -45,6 +65,8 @@ TabHost.OnTabChangeListener {
 	public static final String KEY_DATE = "dateKey";
 	public static final String KEY_REPORT = "reportKey";
 
+	/* This section BORROWED from an online tutorial */
+	/** Class to bind information about a tab */
 	private class TabInfo {
 		private String tag;
 		private Class clss;
@@ -58,6 +80,7 @@ TabHost.OnTabChangeListener {
 		}
 	}
 	
+	/** Class to use tabFactory to create new tabs*/
 	class TabFactory implements TabContentFactory {
 		private final Context mContext;
 		
@@ -72,17 +95,19 @@ TabHost.OnTabChangeListener {
 		return v;
 		}
 	}
+	/* End BORROWED */
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		/** Implements the Bug Sense API for tracking issues */
 		BugSenseHandler.initAndStartSession(MainActivity.this, "8b04fe90");
 		setContentView(R.layout.activity_main);
 
 		/** Calls temporary method for checking updates
 		 *
-		 * Should be removed for actual production app*/
-
+		 * Should be removed for actual production app
+		 */
 		try {
 			updateCheck();
 		} catch (NameNotFoundException e1) {
@@ -116,16 +141,18 @@ TabHost.OnTabChangeListener {
 	private void updateCheck() throws NameNotFoundException, IOException, InterruptedException, ExecutionException {
 		/** String to store the version from the url */
 		String urlVersion;
+		
 		/** Get instance of UpdateCheck.java and get the version returned from it */
-
 		UpdateCheck check = new UpdateCheck();
 		urlVersion = check.execute().get();
 
+		/** Get the currently running version of the app for comparision */
 		PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 		String packageVersion = pInfo.versionName;
 
 		Log.d("Package Version", packageVersion);
 
+		/** Builds an alert dialog to let the user know that they need to upgrade */
 		if (!urlVersion.equals(packageVersion)) {
 			AlertDialog alert = new AlertDialog.Builder(this).create();
 			alert.setTitle("Version Check");
@@ -140,13 +167,13 @@ TabHost.OnTabChangeListener {
 		}
 	}
 
-
-
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putString("tab", mTabHost.getCurrentTabTag()); //save the tab selected
 		super.onSaveInstanceState(outState);
 	}
 
+	/* This section BORROWED from an online tutorial */
+	/** Method for initializing the tab host and adding tabs to it */
 	private void initialiseTabHost(Bundle args) {
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 		mTabHost.setup();
@@ -205,6 +232,7 @@ TabHost.OnTabChangeListener {
 			this.getSupportFragmentManager().executePendingTransactions();
 		}
 	}
+	/* End Borrowed */
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -223,6 +251,9 @@ TabHost.OnTabChangeListener {
 		return(super.onOptionsItemSelected(item));
 	}
 
+	/**
+	 * The interface used the selected date from MainUIFragment and pass to ListViewFragment  
+	 */
 	@Override
 	public void dateSetter(String date, int frag) { // From MainUI
 		Log.d("Date Setter", "From Main UI");
@@ -233,6 +264,13 @@ TabHost.OnTabChangeListener {
 		dateGetter(lDate, rType, frag);
 	}
 
+	/** 
+	 * Method used to send the selected date to ListViewFragment and get the appropriate timestamps
+	 * 
+	 * @param date  The date being passed
+	 * @param rType The type of report to run, daily, weekly, monthly
+	 * @param frag  The if of the fragment that made the call
+	 */
 	public void dateGetter(String date, int rType, int frag) { //From ListView
 		Log.d("dateGetter", "From ListView");
 		Log.d("Date Getter", "Frag is: " + frag);
@@ -266,7 +304,7 @@ TabHost.OnTabChangeListener {
 
 	}
 
-
+	/** The interface used the selected date from ReportFragment and pass to ListViewFragment */
 	@Override
 	public void sendDate(String date, int reportType, int frag) { //From Report
 		lDate = date;
@@ -274,14 +312,21 @@ TabHost.OnTabChangeListener {
 		dateGetter(lDate, reportType, frag);
 	}
 
+	/** Passes the total from the listview to the MainUI fragment */
 	@Override
-	public void mTotalSetter(String total) { // From MainUI
+	public void mTotalSetter(String total) { 
 		MainUIFragment uiFrag = (MainUIFragment)getSupportFragmentManager().findFragmentById(R.id.realtabcontent1);
 		uiFrag.setTotal(total);
 	}
 
+	/** 
+	 * Interface the listview fragment uses to return the total to the active UI fragment
+	 * 
+	 *  @param total The total to pass to the fragment callback
+	 *  @param frag	 The id of the fragment that made the request in the first place
+	 */
 	@Override
-	public void setTotal(String total, int frag) { // From ListViewFrag
+	public void setTotal(String total, int frag) { 
 		Log.d("Set Total", "Total: " + total);
 		Log.d("Set Total", "Frag: " + frag);
 		switch(frag){
@@ -296,8 +341,9 @@ TabHost.OnTabChangeListener {
 		}
 	}
 
+	/** Call back from ReportFragment to set the total returned from the listview */
 	@Override
-	public void rTotalSetter(String total) { // From Report
+	public void rTotalSetter(String total) { 
 		ReportFragment rFrag = (ReportFragment)getSupportFragmentManager().findFragmentById(R.id.realtabcontent1);
 		rFrag.setTotal(total);
 	}

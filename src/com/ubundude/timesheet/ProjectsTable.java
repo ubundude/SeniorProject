@@ -1,12 +1,34 @@
+/** Copyright 2013 Kolby Cansler
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  * 
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  * 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+
 package com.ubundude.timesheet;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+/**
+* @author Kolby Cansler
+* @version 1.0.3.B4
+*
+* Class to define the projects table and methods
+* relating to creating and updating that table
+*/
 public class ProjectsTable {
 
-	/* Define Database Constants */
+	/** Define Database Constants */
 	public static final String TABLE_PROJECTS = "projects";
 	public static final String COLUMN_PROJECT_ID = "_id";
 	public static final String COLUMN_NAME = "name";
@@ -14,7 +36,7 @@ public class ProjectsTable {
 	public static final String COLUMN_RATE = "rate";
 	public static final String COLUMN_DESC = "description";
 	
-	/* Database Creation SQL Statement */
+	/** String to create the table */
 	private static final String DATABASE_CREATE = "create table "
 			+ TABLE_PROJECTS
 			+ "("
@@ -25,16 +47,17 @@ public class ProjectsTable {
 			+ COLUMN_DESC + " text"
 			+ ");";
 	
-	/* Create the Database Table Projects */
+	/** Method Called to create the Database Table projects */
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);
+		/** Adds a new project to the table on at creation time */
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_NAME, "<NEW>");
 		values.put(COLUMN_SHORTCODE, "NEW");
 		database.insert(TABLE_PROJECTS, null, values);
 	}
 	
-	/* Update to the new Database Version */
+	/** Method called to update the Database table Timestamp */
 	public static void onUpdate(SQLiteDatabase database, int oldVersion, int newVersion) {
 		Log.w(ProjectsTable.class.getName(), "Upgrading Database from version "
 				+ oldVersion + " to " + newVersion 

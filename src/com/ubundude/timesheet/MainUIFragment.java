@@ -1,3 +1,17 @@
+/** Copyright 2013 Kolby Cansler
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  * 
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  * 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
 package com.ubundude.timesheet;
 
 import java.text.ParseException;
@@ -25,6 +39,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 //TODO Make the Date display the day - See ReportFragment
+/**
+ * @author Kolby Cansler
+ * @version 1.0.3.B4
+ *
+ * Method to inflate the MainUIFragment and handle all interaction
+ * with the fragment
+ */
 public class MainUIFragment extends Fragment {
 	OnDateSetListener mCallback;
 	/** Database instance and call to Timesheet OpenHelper */
@@ -40,7 +61,7 @@ public class MainUIFragment extends Fragment {
 	public String yearForm = "yy";
 	/** Strings to store formated calendar outputs */
 	public String date, dateView;
-	/** Prepares buttons and EditText for use */
+	/** Prepares View Elements for use */
 	public Button minusButton, plusButton, quickAdd, addNew;
 	public EditText dateEditText;
 	public TextView hoursTextView;
@@ -67,6 +88,7 @@ public class MainUIFragment extends Fragment {
 		}
 	};
 
+	/** Public interfaces the host activity can send information through */
 	public interface OnDateSetListener {
 		public void dateSetter(String date, int frag);
 		public void mTotalSetter(String total);
@@ -76,6 +98,7 @@ public class MainUIFragment extends Fragment {
 	public void onAttach(Activity act) {
 		super.onAttach(act);
 
+		/** Attaches the callback interfaces to the activity */
 		try {
 			mCallback = (OnDateSetListener) act;
 		} catch (ClassCastException e) {
@@ -105,7 +128,8 @@ public class MainUIFragment extends Fragment {
 		 * Initialize minus button
 		 * 
 		 * This method calls the minus button handler and stores the date returned
-		 * and also gets new timestamps for the date returned. */
+		 * and also gets new timestamps for the date returned. 
+		 */
 		minusButton = (Button)getView().findViewById(R.id.minusButton);
 		minusButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -122,7 +146,8 @@ public class MainUIFragment extends Fragment {
 		 * Initialize plus button 
 		 * 
 		 * This method calls the plus button handler and stores the date returned
-		 * and also gets new timestamps for the date returned. */
+		 * and also gets new timestamps for the date returned. 
+		 */
 		plusButton = (Button)getView().findViewById(R.id.plusButton);
 		plusButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -136,7 +161,7 @@ public class MainUIFragment extends Fragment {
 		});
 
 		/** 
-		 * Initilize the quick add button
+		 * Initialize the Quick Add button
 		 * 
 		 * This method calls the quick add handler and then 
 		 * reloads timestamps for the current date.
@@ -150,6 +175,12 @@ public class MainUIFragment extends Fragment {
 
 		});
 
+		/**
+		 * Initialize the Add New Button and set OnClickListener
+		 * 
+		 * This method calls the add new handler when the button is clicked 
+		 * which loads the Timestamp Editor
+		 */
 		addNew = (Button)getView().findViewById(R.id.addNewButton);
 		addNew.setOnClickListener(new View.OnClickListener() {
 
@@ -161,8 +192,8 @@ public class MainUIFragment extends Fragment {
 		});
 	}
 
+	/** Callback to the host activity to get the timestamps for the current date */
 	protected void getDailyTimestamps(String date) {
-		Log.d("Get Timestamps", "Running");
 		mCallback.dateSetter(date, 0);
 	}
 
@@ -182,9 +213,7 @@ public class MainUIFragment extends Fragment {
 
 		/** Sets the text in the dateEditText to the current date */
 		dateEditText = (EditText)getView().findViewById(R.id.dateEditText);
-		Log.d("Initial Dates", "DateEditText Initialized");
 		dateEditText.setText(dateView, TextView.BufferType.NORMAL);
-		Log.d("Initial Dates", "Before onCLickListener");
 		dateEditText.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -231,7 +260,6 @@ public class MainUIFragment extends Fragment {
 		dateView = formDate.format(c.getTime());
 		date = formDate.format(c.getTime());
 
-		//dateEditText = (EditText)getView().findViewById(R.id.dateEditText);
 		dateEditText.setText(dateView, TextView.BufferType.NORMAL);
 
 		return date;
@@ -267,14 +295,13 @@ public class MainUIFragment extends Fragment {
 
 		/** Open Database for writing */
 		db = dbHelp.getWritableDatabase();
-		Log.d("QuickAdd", "Database Opened");
+
 		/** String to insert a timestamp into the database */
 		String insertSQL = "insert into timestamp (date_in, time_in, date_out, time_out, week_year, year, month, hours, project) " +
 				"values('" + dateIn + "', '" + timeIn + "', '" + dateOut + "', '" + timeOut 
 				+ "', '" + wim + "', '" + year +"', '" + month + "', 0.00, '" + proId + "')";
 		try {
 			db.execSQL(insertSQL);
-			Log.d("QuickAdd", "SQL Inserted");
 		} catch(Exception e) {
 			Log.d("save Fail", e.getLocalizedMessage(), e.fillInStackTrace());
 		}
@@ -296,23 +323,22 @@ public class MainUIFragment extends Fragment {
 		/** Open a cursor and store the return of the query */
 		Cursor cu = db.rawQuery(getProjects, null);
 
+		/** Arrays to store the project names and ID's in */
 		CharSequence[] projects = new CharSequence[cu.getCount()];
-		Log.d("Display Dialog", "Char Sequence initialized with size: " + cu.getCount());
 		final int[] IDs = new int[cu.getCount()];
-		Log.d("Display Dialog", "ID's int initialized with size: " + cu.getCount());
-
 		
 		/** Make sure cursor is not null */
 		if(cu != null && cu.getCount() > 0){
 			cu.moveToFirst();
-			//cu.moveToNext();
+
+			/** While there is a cursor row, store the contents of that row in an array */
 			do{
 				projects[cu.getPosition()] = cu.getString(1);
 				IDs[cu.getPosition()] = cu.getInt(0);
 			} while (cu.moveToNext());
 
 		}
-		Log.d("Display Dialog", "About to build the dialog");
+		/** Create a new list dialog to allow the user to select a project */
 		AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
 		build.setTitle("Choose Project");
 		Log.d("Display Dialog", "Title Set");
@@ -322,6 +348,7 @@ public class MainUIFragment extends Fragment {
 			public void onClick(DialogInterface dialog, int which) {
 				proId = IDs[which];
 				
+				/** If the project ID is 1, start the project editor activity */
 				if(proId == 1) {
 					Intent intent = new Intent(getActivity(), ProjectEditorActivity.class);
 					intent.putExtra(ProjectEditorActivity.PRO_KEY, proId);
@@ -332,20 +359,22 @@ public class MainUIFragment extends Fragment {
 					
 			}
 		});
-		Log.d("Display Dialog", "Items set");
+		
+		/** Create and show the dialog */
 		AlertDialog diag = build.create();
 		diag.show();	
 
 		/** Close the cursor and database */
 		cu.close();
 		db.close();
-
-
 	}
+	
+	/** Method called by the date picker to set the label in the Date Edit Text */
 	private void updateLabel() throws ParseException {
 		dateEditText.setText(formDate.format(c.getTime()));
 	}
 
+	/** Method called from the host activity to set the Hours Text View */
 	public void setTotal(String total) {
 		hoursTextView.setText(total);
 	}

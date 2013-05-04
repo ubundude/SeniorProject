@@ -1,3 +1,18 @@
+/** 
+ * Copyright 2013 Kolby Cansler
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ubundude.timesheet;
 
 import java.text.ParseException;
@@ -32,6 +47,7 @@ import android.widget.Toast;
 
 public class TimestampEditorActivity extends Activity {
 
+	/** Keys for bundle passing */
 	public static final String KEY_NAME = "projectName";
 	public static final String TIME_ID_KEY = "timeId";
 	public static final String PRO_ID_KEY = "projectId";
@@ -46,6 +62,7 @@ public class TimestampEditorActivity extends Activity {
 	public String weekInYearForm = "ww";
 	public String monthNumForm = "MM";
 	public String yearForm = "yy";
+	/** DateFormaters */
 	SimpleDateFormat dateFormer = new SimpleDateFormat(dateForm, Locale.US);
 	SimpleDateFormat timeFormer = new SimpleDateFormat(timeForm, Locale.US);
 	SimpleDateFormat formWIM = new SimpleDateFormat(weekInYearForm, Locale.US);
@@ -104,6 +121,7 @@ public class TimestampEditorActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.editor_timestamp);
 
+		/** Get the shared preference for the Default Project */
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		int proIdPref = Integer.parseInt(pref.getString(getResources().getString(R.string.prefProjectKey), "1"));
 		
@@ -251,7 +269,7 @@ public class TimestampEditorActivity extends Activity {
 		});
 
 		/**
-		 *
+		 *Set the Cancel Button OnClickListener
 		 */
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -260,6 +278,12 @@ public class TimestampEditorActivity extends Activity {
 			}
 		});
 
+		/**
+		 * Checks the build number of the host android platform and if 
+		 * 3.x or 4.x, hides the delete button in the layout as it will 
+		 * be shown in the action bar, otherwise sets the Delete Button
+		 * with an OnClickListener
+		 */
 		if(android.os.Build.VERSION.RELEASE.startsWith("3.") ||
 				android.os.Build.VERSION.RELEASE.startsWith("4.")) {
 			deleteButton.setVisibility(View.GONE);
@@ -273,6 +297,11 @@ public class TimestampEditorActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Method to start the project editor and pass the projectId
+	 * 
+	 * @param lProId
+	 */
 	protected void editProject(int lProId) {
 		Intent intent = new Intent(this, ProjectEditorActivity.class);
 		intent.putExtra(ProjectEditorActivity.PRO_KEY, lProId);
@@ -298,6 +327,9 @@ public class TimestampEditorActivity extends Activity {
 		return(super.onOptionsItemSelected(item));
 	}
 
+	/**
+	 * Initialize the buttons for the editor
+	 */
 	private void initializeButtons() {
 		Log.d("TIMESTAMP FRAGMENT", "Initializing Buttons");
 		/** Initialize buttons so that they can be set to the proper date */
@@ -327,7 +359,9 @@ public class TimestampEditorActivity extends Activity {
 	}
 
 	/** Method to set the value of the button used to the date or time picked
-	 * @throws ParseException */
+	 * 
+	 * @throws ParseException 
+	 */
 	private void updateLabel() throws ParseException {
 		SimpleDateFormat formTime = new SimpleDateFormat(timeForm, Locale.US);
 		SimpleDateFormat formDate = new SimpleDateFormat(dateForm, Locale.US);
@@ -370,6 +404,7 @@ public class TimestampEditorActivity extends Activity {
 		comments = commentsEditText.getText().toString();
 		hours = timeCalc();
 
+		/** Splits the date into a string array that can be proccessed and used to set the calendar instance */
 		String[] arrDate = dateIn.split("/");
 		int lMonth = Integer.parseInt(arrDate[0]) - 1;
 		Log.d("SaveHandler", "Month is: " + lMonth);
@@ -384,15 +419,16 @@ public class TimestampEditorActivity extends Activity {
 		lc.set(Calendar.DAY_OF_MONTH, lDay);
 		//TODO set first day of week from preference
 
-		//Log.d("Date in Cal", Date.toString(lc.getTime()));
-
+		/** Sets the date of the calendar instance */
 		wiy = formWIM.format(lc.getTime());
 		month = Integer.toString(lMonth);
 		year = Integer.toString(lYear);
 
+		/** Get the project id from the spinner text view */
 		TextView idTv = (TextView)findViewById(R.id.proIdTV);
 		int proId = Integer.parseInt(idTv.getText().toString());
 
+		/** If the project Id is 1, display a toast, else insert time stamp into database */
 		if(proId == 1) {
 			Toast toast = Toast.makeText(this, "Please select a project", Toast.LENGTH_LONG);
 			toast.show();
@@ -412,6 +448,13 @@ public class TimestampEditorActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Method to update record in the database
+	 * 
+	 * @param v      The passed view from the button
+	 * @param timeId The Id of the time stamp to update
+	 * @throws ParseException
+	 */
 	private void updateHandler(View v, int timeId) throws ParseException {
 		String timeIn, dateIn, timeOut, dateOut, wiy, month, year, comments, hours;
 
@@ -425,20 +468,24 @@ public class TimestampEditorActivity extends Activity {
 		TextView idTv = (TextView)findViewById(R.id.proIdTV);
 		int proId = Integer.parseInt(idTv.getText().toString());
 
+		/** Splits the date into a string array that can be proccessed and used to set the calendar instance */
 		String[] arrDate = dateIn.split("/");
 		int lMonth = Integer.parseInt(arrDate[0]) - 1;
 		int lDay = Integer.parseInt(arrDate[1]);
 		int lYear = Integer.parseInt(arrDate[2]);
 
+		/** Sets the date of the calendar instance */
 		Calendar lc = Calendar.getInstance();
 		lc.set(Calendar.YEAR, lYear);
 		lc.set(Calendar.MONTH, lMonth);
 		lc.set(Calendar.DAY_OF_MONTH, lDay);
 
+		/** Format the date into variables for storage */
 		wiy = formWIM.format(lc.get(Calendar.WEEK_OF_YEAR));
 		month = formMonthNum.format(lc.get(Calendar.MONTH));
 		year = formYear.format(lc.get(Calendar.YEAR));
 
+		/** SQL Query to update the time stamp */
 		String updateSQL = "update timestamp " +
 				"set date_in='" + dateIn + "', time_in='" + timeIn
 				+ "', date_out='" + dateOut + "', time_out='" + timeOut
@@ -453,7 +500,13 @@ public class TimestampEditorActivity extends Activity {
 		finish();
 	}
 
+	/**
+	 * Method to delete the timestamp from the database
+	 * 
+	 * @param timeId The Id of the timestamp to delete
+	 */
 	public void deleteHandler(int timeId) {
+		/** SQL Query to delete the timestamp */
 		String deleteSQL = "delete from timestamp where _id = " + timeId;
 		db = dbHelp.getWritableDatabase();
 		db.execSQL(deleteSQL);
@@ -462,54 +515,73 @@ public class TimestampEditorActivity extends Activity {
 		finish();
 	}
 
+	/**
+	 * Method to load the projects into the custom spinner adapter]
+	 * 
+	 * @param proId The Id of the project to load
+	 */
 	private void loadSpinnerData(int proId) {
-		Log.d("LoadSpinnerData", "Loading Spinner Data");
 		int pos = 0;
 		int id = proId;
-		Log.d("LoadSpinnerData", "Gotten proId: " + id);
+		
+		/** Instantiates the spinner */
 		projectSpinner = (Spinner)findViewById(R.id.projectSpinner);
+		/** Creates a new array list that takes a Hash Map for arguments */
 		ArrayList<HashMap<String, String>> projects = new ArrayList<HashMap<String, String>>();
 
+		/** SQL Query to get the projects from the database */
 		String selectQuery = "select _id, name from projects";
-		Log.d("LoadSpinnerData", "Opeining database");
 		db = dbHelp.getReadableDatabase();
-		Log.d("LoadSpinnerData", "Database Opened");
 
 		Cursor cu = db.rawQuery(selectQuery, null);
 
 		if (cu != null && cu.getCount() > 0) {
 			cu.moveToFirst();
 			do {
-				Log.d("loadSpinnerData", "Hashing rows");
+				/** Create a new HashMap to pass to the ArrayList */
 				HashMap<String, String> map = new HashMap<String, String>();
-				Log.d("Spinner Load", "Project name: " + cu.getString(1));
+				
+				/** Puts the cursor values in the HashMap */
 				map.put(KEY_NAME, cu.getString(1));
-				Log.d("SpinnerLoad", "Project Id: " + cu.getInt(0));
 				map.put(PRO_ID_KEY, Integer.toString(cu.getInt(0)));
+				
+				/** Looks for the project that matches the passed id to set the spinner to */
 				if (cu.getInt(0) == id) {
 					Log.d("loadSpinnerData", "Found Loaded project");
 					pos = cu.getPosition();
 				}
+				
+				/** Add the map to projects */
 				projects.add(map);
 
 			} while(cu.moveToNext());
 		}
-		Log.d("loadSpinnerData", "Closing things");
+		
+		/** Close the cursor and database */
 		cu.close();
 		db.close();
-		Log.d("loadSpinnerData", "Setting adapter");
+		
+		/** Get a new spinner adapter instance and set the adapter to it */
 		adapter = new SpinnerAdapter(this, projects);
 		projectSpinner.setAdapter(adapter);
-		Log.d("loadSpinnerData", "Adapter Set");
-		Log.d("loadSpinnerData", "Setting position");
+
 		projectSpinner.setSelection(pos);
-		Log.d("loadSpinnerData", "Position Set");
 	}
 
+	/**
+	 * 
+	 * @param  timeId The id of the timestamp to load into the editor
+	 * @return id     Returns the id of the timestamp
+	 * @throws NullPointerException
+	 */
 	public int getTimestamp(int timeId) throws NullPointerException {
+		/** Set id to the timeId */
 		int id = timeId;
-		Log.d("TIMESTAMP getTimestamp", "TimeId is:" + id);
+		
+		/** Select SQL to select the timestamp from the database */
 		String selectTimestamp =" select _id, date_in, time_in, date_out, time_out, comments, hours from timestamp where _id = " + id;
+		
+		/** Initiaates the textviews and buttons */
 		timeEditText = (EditText)findViewById(R.id.timeEditText);
 		dateInButton = (Button)findViewById(R.id.dateInButton);
 		timeInButton = (Button)findViewById(R.id.timeInButton);
@@ -520,10 +592,12 @@ public class TimestampEditorActivity extends Activity {
 		cancelButton = (Button)findViewById(R.id.cancelTimestampButton);
 		deleteButton = (Button)findViewById(R.id.timestampDeleteButton);
 
+		/** Open the database, and run the query */
 		db = dbHelp.getReadableDatabase();
 		Cursor cu = db.rawQuery(selectTimestamp, null);
 		cu.moveToFirst();
 
+		/** Sets the views to the loaded timestamp values */
 		dateInButton.setText(cu.getString(1));
 		timeInButton.setText(cu.getString(2));
 		dateOutButton.setText(cu.getString(3));
@@ -537,30 +611,49 @@ public class TimestampEditorActivity extends Activity {
 		return id;
 	}
 
+	/** 
+	 * Method to calculate the difference between the clock in and clock out time 
+	 * 
+	 * @return hour
+	 * @throws ParseException
+	 */
 	private static String timeCalc() throws ParseException {
+		/** Local variables to store dates and times getting calculated */
 		String cdateIn, ctimeIn, cdateOut, ctimeOut;
+		/** Variables to store calculated times */
+		double hr;
+		double diff;
 
+		/** Gets the button labels and stores them */
 		cdateIn = dateInButton.getText().toString();
 		ctimeIn = timeInButton.getText().toString();
 		cdateOut = dateOutButton.getText().toString();
 		ctimeOut = timeOutButton.getText().toString();
 
-		double hr;
-		double diff;
+		/** Puts the dates and times together formating */
 		String in = cdateIn + " " + ctimeIn;
 		String out = cdateOut + " " + ctimeOut;
+		
+		/** Creates date variables and form for parsing date strings */
 		Date inTime, outTime;
 		SimpleDateFormat dateForm = new SimpleDateFormat("MM/dd/yyy HH:mm", Locale.US);
 
+		/** Parses the in time and out time into Dates */
 		inTime = dateForm.parse(in);
 		outTime = dateForm.parse(out);
+		
+		/** Calculate the difference between the Dates and store as a long */
 		long dif = outTime.getTime() - inTime.getTime();
+		
+		/** Cast the long to a double */
 		diff = (double)dif;
+		
+		/** Calculate the hours from milliseconds */
 		hr = diff/ (1000 * 60 * 60 );
+		
+		/** Cast the hours to a string and return hours */
 		String hour = String.format(Locale.US, "%.2f", hr);
 		return hour;
-
 	}
-
 
 }

@@ -1,3 +1,18 @@
+/** 
+ * Copyright 2013 Kolby Cansler
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ubundude.timesheet;
 
 import java.text.ParseException;
@@ -26,8 +41,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 /**
- * @author kolby
- *
+ * @author Kolby Cansler <kolby@ubundude.com>
+ * @version 1.0.3.B4
+ * 
+ * Inflates the report fragment and handles all interaction with that fragment
  */
 public class ReportFragment extends Fragment {
 	OnReportsRunListener mCallback;
@@ -103,6 +120,7 @@ public class ReportFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
+		/** Get the shared preference for the first day of the week */
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		firstDay = prefs.getString(getActivity().getString(R.string.prefDOWKey), "SUNDAY");
 		
@@ -157,12 +175,14 @@ public class ReportFragment extends Fragment {
 		
 		getTimestamps(sendDate, reportType);
 		
+		/** Instantiates the dateEditText, set's it's text to the dateView, and sets the onClickListener */
 		dateEditText = (EditText)getView().findViewById(R.id.rDateEditText);
 		dateEditText.setText(dateView);
 		dateEditText.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				/** Gets the date based on the report type selected */
 				switch(reportType) {
 				case 0:
 					Log.d("Initial Dates", "In the On Click Listener");
@@ -231,6 +251,12 @@ public class ReportFragment extends Fragment {
 		});
 	}
 	
+	/**
+	 * Method to get the Calendar day of week Integer
+	 * 
+	 * @param lFirstDay The day of the from the shared preferences
+	 * @return DOW The integer for the day of the week
+	 */
 	private int getFirstDay(String lFirstDay) {
 		int DOW = Calendar.SUNDAY ;
 		
@@ -250,13 +276,14 @@ public class ReportFragment extends Fragment {
 		return DOW;
 	}
 
+	
 	protected void getTimestamps(String date, int rType) {
-		Log.d("getTimestamps", "Report type: " + reportType);
 		mCallback.sendDate(date, reportType, 1);
 		
 	}
 
 	/** Gets the next day and displays to dateEditText 
+	 * 
 	 * @throws ParseException 
 	 * @return date The current date formatted for SQL queries
 	 */
@@ -294,6 +321,7 @@ public class ReportFragment extends Fragment {
 	}
 
     /** Gets the previous day and displays to dateEditText 
+     * 
      * @throws ParseException
      * @return date The current date formatted for SQL queries
      */
@@ -330,7 +358,13 @@ public class ReportFragment extends Fragment {
 		return sendDate;
 	}
 
+	/**
+	 * Method called by the Date Picker to set the dateEditText to the date selected
+	 * 
+	 * @throws ParseException
+	 */
 	private void updateLabel() throws ParseException {
+		
 		switch (reportType) {
 		case 0:
 			dateEditText.setText(formDay.format(c.getTime()) + "\n" + formDate.format(c.getTime()));
@@ -347,6 +381,9 @@ public class ReportFragment extends Fragment {
 		}
 	}
 	
+	/**
+	 * Method to start a ListDialog that displays the months
+	 */
 	private void pickMonth() {
 		AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
 		build.setTitle("Choose Month");
@@ -361,19 +398,39 @@ public class ReportFragment extends Fragment {
 		diag.show();
 	}
 	
+	/**
+	 * Method to get the month selected and pass it to the host Activity 
+	 * 
+	 * @param month The month selected in the date view 
+	 */
 	private void month(int month) {
+		/** Creates an array of months */
 		String[] months;
+		
+		/** Stores the array of months from the array resource */
 		months = getResources().getStringArray(R.array.months);
+		
+		/** Get the month from the months array */
 		String lMonth = months[month];
+		
+		/** Calculate a value for the Global gDate */
 		gDate = Integer.toString(month + 1) + "/01/" + formYear.format(c.getTime());
-		Log.d("Pick Date", "gDate: " + gDate);
+	
+		/** Store the month in sendDate */
 		sendDate = Integer.toString(month);
-		Log.d("PickDate", "sendDate: " + sendDate);
+		
+		/** Set the dateEditText to lMonth */
 		dateView = lMonth;
 		dateEditText.setText(dateView);
+		
 		getTimestamps(sendDate, reportType);
 	}
 
+	/**
+	 * Method called from the host activity to set the Hours Text View returned from the ListView
+	 * 
+	 * @param total The total hours represented by ListViewFragment
+	 */
 	public void setTotal(String total) {
 		hoursTextView.setText(total);
 	}

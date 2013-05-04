@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.0.3.B4_1
+- Added Apache v2 License
+- Mainly just commenting after that
+
 1.0.3.B4
 - Merged testing into master and released new beta
 

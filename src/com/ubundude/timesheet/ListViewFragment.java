@@ -1,3 +1,18 @@
+/** Copyright 2013 Kolby Cansler
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  * 
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  * 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+
 package com.ubundude.timesheet;
 
 import java.util.ArrayList;
@@ -18,18 +33,31 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * @author Kolby Cansler
+ * @version 1.0.3.B4
+ *
+ * Method called to inflate the ListViewFragment and handle all interaction
+ * with the fragment
+ */
 public class ListViewFragment extends Fragment {
 	OnDateGetListener mCallback;
 	/** Database instance and call to Timesheet OpenHelper */
 	private SQLiteDatabase db;
 	private TimesheetDatabaseHelper dbHelp;
+	/** Instantiate a new listview object */
 	public ListView list;
 	/** Gets the custom adapter for the listview */
 	TimestampAdapter adapter;
+	/** String for dealing with the date */
 	private String lDate;
+	/** int determining the report type*/
 	private int lReport;
+	/** The total hours covered by the returned timestamps */
 	public String total = "0";
+	/** The current hours returned for a timestamp */
 	double numd = 0.00;
+	/** The total hours covered by the returned timestamps */
 	double dTotal = 0.00;
 
 	public interface OnDateGetListener {
@@ -49,6 +77,8 @@ public class ListViewFragment extends Fragment {
 			throw new ClassCastException(act.toString()
 					+ " must implement OnDateGetListener");
 		}
+		
+		/** Gets the extras from the passed bundle for use by the methods */
 		Bundle extras = getArguments();
 		lDate = extras.getString(MainActivity.KEY_DATE);
 		lReport = extras.getInt(MainActivity.KEY_REPORT);
@@ -60,6 +90,12 @@ public class ListViewFragment extends Fragment {
 		return inflater.inflate(R.layout.fragment_listview, container, false);
 	}
 
+	/**
+	 * Method called when starting the fragment.
+	 * 
+	 * On start, this looks at the report type passed from the activity and 
+	 * uses that information to determine how the timestamps should be loaded
+	 */
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -83,6 +119,7 @@ public class ListViewFragment extends Fragment {
 	 * date and displays them in a list view
 	 * 
 	 * @param date The date the user has selected
+	 * @param frag The id of the fragment that called the method
 	 */
 	public void getDailyTimestamps(String date, int frag) {
 		final ArrayList<HashMap<String, String>> stampList = new ArrayList<HashMap<String, String>>();
@@ -321,6 +358,7 @@ public class ListViewFragment extends Fragment {
 		});
 	}
 	
+	/** Callback to the parent activity to pass information to a related fragment */
 	protected void setTotal(String total, int frag) {
 		mCallback.setTotal(total, frag);
 	}
